@@ -1,3 +1,12 @@
-# Fullstack Authentication Example with Next.js and NextAuth.js
+# Reservation system for a ski rental shop ⛷️
 
-This is the starter project for the fullstack tutorial with Next.js and Prisma. You can find the final version of this project in the [`final`](https://github.com/prisma/blogr-nextjs-prisma/tree/final) branch of this repo.
+## Proposal
+
+- Develop a reservation system for the first week of the season to rent ski sets for the entire season
+
+## Installation
+
+1. Run npx create-next-app@latest .
+2. Install ts-node as a dev dependency: npm install --save-dev ts-node
+3. Install Prisma as a dev dependency: npm install --save-dev prisma
+4. Initialize Prisma with SQLite as the data source: npx prisma init --datasource-provider sqlite
