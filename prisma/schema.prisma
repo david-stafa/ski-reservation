@@ -9,3 +9,33 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Reservation {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     Int
+  dateTime  DateTime
+  skiSets   SkiSet[]
+  createdAt DateTime @default(now())
+}
+
+model SkiSet {
+  id            Int         @id @default(autoincrement())
+  ski           Boolean
+  skiBoot       Boolean
+  skiPole       Boolean
+  skiHelmet     Boolean
+  skiGoogle     Boolean
+  ageCategory   AgeCategory @relation(fields: [ageCategoryId], references: [id])
+  ageCategoryId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
+  reservationId String
+}
+
+model AgeCategory {
+  id      String   @id @default(uuid())
+  name    String
+  skiSets SkiSet[]
+}
