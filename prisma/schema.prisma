@@ -15,7 +15,7 @@ model Reservation {
   firstName String
   lastName  String
   email     String
-  phone     Int
+  phone     String
   dateTime  DateTime
   skiSets   SkiSet[]
   createdAt DateTime @default(now())
