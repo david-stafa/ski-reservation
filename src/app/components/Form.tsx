@@ -9,16 +9,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import React, { useEffect, useState } from "react";
-import { Reservation } from "@prisma/client";
 import PeopleInput from "./PeopleInput";
 import DayInput from "./DayInut";
 import TimeInput from "./TimeInput";
 import EquipmentInput from "./EquipmentInput";
 import UserDataInput from "./UserDataInput";
+import { ReservationType } from "@/lib/types";
 
 export default function Form() {
   const [peopleCount, setPeopleCount] = useState<number>(0);
-  const [reservation, setReservation] = useState<Reservation | object>({});
+  const [reservation, setReservation] = useState<ReservationType>({});
 
   useEffect(() => console.log(peopleCount), [reservation, peopleCount]);
 

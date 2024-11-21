@@ -1,11 +1,11 @@
 import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
 import { timeSlots } from "@/lib/timeSlots";
-import { Reservation } from "@prisma/client";
+import { ReservationType, SetReservationType } from "@/lib/types";
 
 interface TimeInputProps {
-  reservation: Reservation | object;
-  setReservation: React.Dispatch<React.SetStateAction<Reservation | object>>;
+  reservation: ReservationType;
+  setReservation: SetReservationType;
   peopleCount: number;
 }
 

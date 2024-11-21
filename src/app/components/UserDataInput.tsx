@@ -1,11 +1,11 @@
 import H3 from "@/components/h3";
 import { Input } from "@/components/ui/input";
-import { Reservation } from "@prisma/client";
+import { ReservationType, SetReservationType } from "@/lib/types";
 import { Label } from "@radix-ui/react-label";
 
 interface UserDataInputProps {
-  reservation: Reservation | object;
-  setReservation: React.Dispatch<React.SetStateAction<object | Reservation>>;
+  reservation: ReservationType;
+  setReservation: SetReservationType;
 }
 
 export default function UserDataInput({

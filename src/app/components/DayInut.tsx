@@ -1,10 +1,10 @@
 import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
-import { Reservation } from "@prisma/client";
+import { ReservationType, SetReservationType } from "@/lib/types";
 
 interface DayInputProps {
-  reservation: Reservation | object;
-  setReservation: React.Dispatch<React.SetStateAction<object | Reservation>>;
+  reservation: ReservationType;
+  setReservation: SetReservationType;
 }
 
 export default function DayInput({
