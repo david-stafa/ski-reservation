@@ -18,7 +18,7 @@ export default function DayInput({
 
   return (
     <section>
-      <H3>Vyberte termin:</H3>
+      <H3>Vyberte termín:</H3>
       <DayButton handleClick={handleDayClick} day="2025-10-6" dayCZ="Pondělí" />
       <DayButton handleClick={handleDayClick} day="2025-10-7" dayCZ="Úterý" />
       <DayButton handleClick={handleDayClick} day="2025-10-8" dayCZ="Středa" />

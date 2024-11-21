@@ -1,6 +1,5 @@
 "use client";
 
-import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,10 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { timeSlots } from "@/lib/timeSlots";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Reservation } from "@prisma/client";
 import PeopleInput from "./PeopleInput";
@@ -23,10 +18,9 @@ import UserDataInput from "./UserDataInput";
 
 export default function Form() {
   const [peopleCount, setPeopleCount] = useState<number>(0);
-
   const [reservation, setReservation] = useState<Reservation | object>({});
 
-  useEffect(() => console.log(reservation), [reservation, peopleCount]);
+  useEffect(() => console.log(peopleCount), [reservation, peopleCount]);
 
   return (
     <Card className="w-3/6 mx-auto">
@@ -44,6 +38,7 @@ export default function Form() {
           <TimeInput
             setReservation={setReservation}
             reservation={reservation}
+            peopleCount={peopleCount}
           />
           {/* get equipment user want to rent */}
           <EquipmentInput />
