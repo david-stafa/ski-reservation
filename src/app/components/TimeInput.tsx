@@ -6,11 +6,13 @@ import { Reservation } from "@prisma/client";
 interface TimeInputProps {
   reservation: Reservation | object;
   setReservation: React.Dispatch<React.SetStateAction<Reservation | object>>;
+  peopleCount: number;
 }
 
 export default function TimeInput({
   reservation,
   setReservation,
+  peopleCount,
 }: TimeInputProps) {
   function handleTimeClick(time: string): void {
     setReservation({
@@ -21,7 +23,7 @@ export default function TimeInput({
 
   return (
     <section>
-      <H3>Vyberte čas:</H3>
+      <TimeInputHeading peopleCount={peopleCount} />
       <div className="grid grid-flow-col grid-rows-6 gap-2 mb-2">
         {timeSlots.map((time, i) => (
           <TimeButton key={i} handleClick={handleTimeClick} time={time} />
@@ -41,5 +43,19 @@ function TimeButton({ handleClick, time }: TimeButtonProps) {
     <Button onClick={() => handleClick(time)} type="button" variant="secondary">
       {time}
     </Button>
+  );
+}
+
+interface TimeInputHeadingProps {
+  peopleCount: number;
+}
+
+function TimeInputHeading({ peopleCount }: TimeInputHeadingProps) {
+  return (
+    <>
+      {peopleCount === 0 && <H3>Vyberte X časových bloků:</H3>}
+      {peopleCount === 1 && <H3>Vyberte 1 časový blok:</H3>}
+      {peopleCount > 1 && <H3>Vyberte {peopleCount} časové bloky:</H3>}
+    </>
   );
 }
