@@ -17,7 +17,6 @@ import UserDataInput from "./UserDataInput";
 import { ReservationType } from "@/lib/types/types";
 import { useFormStatus } from "react-dom";
 import { createReservation } from "../_actions/formActions";
-import { formatTime } from "@/lib/utils";
 
 export default function Form() {
   const [peopleCount, setPeopleCount] = useState<number>(0);
