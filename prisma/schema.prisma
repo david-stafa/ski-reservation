@@ -11,14 +11,15 @@ datasource db {
 }
 
 model Reservation {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String
-  phone     String
-  dateTime  DateTime
-  skiSets   SkiSet[]
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String
+  phone       String
+  peopleCount Int
+  dateTime    DateTime
+  skiSets     SkiSet[]
+  createdAt   DateTime @default(now())
 }
 
 model SkiSet {
@@ -27,15 +28,15 @@ model SkiSet {
   skiBoot       Boolean
   skiPole       Boolean
   skiHelmet     Boolean
-  skiGoogle     Boolean
-  ageCategory   AgeCategory @relation(fields: [ageCategoryId], references: [id])
-  ageCategoryId String
+  skiGoggle     Boolean
+  // ageCategory   AgeCategory @relation(fields: [ageCategoryId], references: [id])
+  // ageCategoryId String
   reservation   Reservation @relation(fields: [reservationId], references: [id])
   reservationId String
 }
 
-model AgeCategory {
-  id      String   @id @default(uuid())
-  name    String
-  skiSets SkiSet[]
-}
+// model AgeCategory {
+//   id      String   @id @default(uuid())
+//   name    String
+//   skiSets SkiSet[]
+// }

@@ -1,7 +1,8 @@
 import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
 import { timeSlots } from "@/lib/timeSlots";
-import { ReservationType, SetReservationType } from "@/lib/types";
+import { ReservationType, SetReservationType } from "@/lib/types/types";
+import { useState } from "react";
 
 interface TimeInputProps {
   reservation: ReservationType;
@@ -15,20 +16,42 @@ export default function TimeInput({
   peopleCount,
 }: TimeInputProps) {
   function handleTimeClick(time: string): void {
+    // get hours and minutes to separate variables
+    const [hours, minutes] = time.split(":");
+    // handle that updatedDate has Date type - without this workaround the .setHours return number type
+    const updatedDate = new Date(reservation.dateTime!); // clone the Date object
+    updatedDate.setHours(+hours, +minutes); // update hours and minutes in date object
+
     setReservation({
       ...reservation,
-      dateTime: reservation.dateTime.split(" ")[0] + " " + time,
+      dateTime: updatedDate,
     });
+
+    setTime(time);
   }
+
+  const [time, setTime] = useState<string>();
 
   return (
     <section>
       <TimeInputHeading peopleCount={peopleCount} />
       <div className="grid grid-flow-col grid-rows-6 gap-2 mb-2">
         {timeSlots.map((time, i) => (
-          <TimeButton key={i} handleClick={handleTimeClick} time={time} />
+          <TimeButton
+            key={i}
+            handleClick={() => handleTimeClick(time)}
+            time={time.split(":").slice(0, 2).join(":")}
+          />
         ))}
       </div>
+      <input
+        type="string"
+        name="time"
+        id="time"
+        hidden
+        value={time || ""}
+        readOnly
+      />
     </section>
   );
 }

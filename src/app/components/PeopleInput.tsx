@@ -3,9 +3,14 @@ import { Button } from "@/components/ui/button";
 
 interface PeopleInputProps {
   setPeopleCount: React.Dispatch<React.SetStateAction<number>>;
+  peopleCount: number;
 }
 
-export default function PeopleInput({ setPeopleCount }: PeopleInputProps) {
+export default function PeopleInput({
+  setPeopleCount,
+  peopleCount,
+}: PeopleInputProps) {
+  
   function handlePeopleClick(peopleCount: number) {
     setPeopleCount(peopleCount);
   }
@@ -17,8 +22,18 @@ export default function PeopleInput({ setPeopleCount }: PeopleInputProps) {
       <PeopleButton numOfPeople={2} handleClick={handlePeopleClick} />
       <PeopleButton numOfPeople={3} handleClick={handlePeopleClick} />
       <PeopleButton numOfPeople={4} handleClick={handlePeopleClick} />
+      <input
+        type="number"
+        name="peopleCount"
+        id="peopleCount"
+        value={peopleCount || 0}
+        readOnly
+        hidden
+      />
       {/* dodelat dialog pokud uzivatel chce pujcit set pro 5 a vice lidi */}
-      <Button type="button" variant="secondary">5+</Button>
+      <Button type="button" variant="secondary">
+        5+
+      </Button>
     </section>
   );
 }
@@ -35,6 +50,7 @@ function PeopleButton({ numOfPeople, handleClick }: PeopleButtonProps) {
       type="button"
       className="mr-2"
       variant="secondary"
+      name="peopleCount"
     >
       {numOfPeople}
     </Button>

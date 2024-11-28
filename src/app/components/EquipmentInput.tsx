@@ -2,37 +2,43 @@
 
 import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
-import { Reservation, SkiSet } from "@prisma/client";
+import { ReservationType, SetReservationType } from "@/lib/types/types";
+import { SkiSet } from "@prisma/client";
 import { Label } from "@radix-ui/react-label";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-interface EquipmentInput {
-  reservation: Reservation | object;
-  setReservation: React.Dispatch<React.SetStateAction<object | Reservation>>;
+interface EquipmentInputProps {
+  reservation: ReservationType;
+  setReservation: SetReservationType;
 }
 
-type Equipment = "ski" | "skiBoot" | "skiPole" | "skiHelmet" | "skiGoogle";
+type Equipment = "ski" | "skiBoot" | "skiPole" | "skiHelmet" | "skiGoggle";
 
-export default function EquipmentInput() {
-  const [skiSet, setSkiset] = useState<SkiSet>({
-    id: 0,
+export default function EquipmentInput({
+  reservation,
+  setReservation,
+}: EquipmentInputProps) {
+  // skiSet object with Omit -> reservationId will be created during creation of whole reservation
+  const [skiSet, setSkiset] = useState<Omit<SkiSet, "reservationId" | "id">>({
     ski: false,
     skiBoot: false,
     skiPole: false,
     skiHelmet: false,
-    skiGoogle: false,
-    ageCategoryId: "",
-    reservationId: "",
+    skiGoggle: false,
   });
 
+  // handle user input -> click on the equipment button
   function handleEquipmentClick(equipment: Equipment) {
+    // set equipment in skiSet object to true or false when btton is clicked
     setSkiset({ ...skiSet, [equipment]: !skiSet[equipment] });
-  }
 
-  useEffect(() => {
-    console.log(skiSet);
-  }, [skiSet]);
+    // add skiSet object to reservation.skiSets[]
+    setReservation({
+      ...reservation,
+      skiSets: [skiSet, ...reservation.skiSets.slice(1)],
+    });
+  }
 
   return (
     <section>
@@ -64,7 +70,7 @@ export default function EquipmentInput() {
           handleClick={handleEquipmentClick}
         />
         <EquipmentButton
-          equipment="skiGoogle"
+          equipment="skiGoggle"
           equipmentLabel="Brýle"
           logoUrl="/Ski-Goggles-icon.png"
           handleClick={handleEquipmentClick}
@@ -89,7 +95,9 @@ function EquipmentButton({
 }: EquipmentButtonProps) {
   return (
     <div className="flex flex-col items-center">
-      <Label htmlFor="ski" className="text-sm">{equipmentLabel}</Label>
+      <Label htmlFor="ski" className="text-sm">
+        {equipmentLabel}
+      </Label>
       <Button
         className="p-4"
         id="ski"
