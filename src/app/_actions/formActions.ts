@@ -29,19 +29,23 @@ export async function createReservation(
   prevState: unknown,
   formData: FormData
 ) {
+  // parsing reservation form inputs with zod
   const result = ReservationSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
 
+  // return field error when validation fails
   if (result.success === false) {
     return result.error.formErrors.fieldErrors;
   }
 
+  // result data from form inputs
   const data = result.data;
   // creates date in UTC format - now it saves actual value (input time: 15:00:00, db value is the same)
   // but it does not correlate with UTC time - its wrong but to fulfill purpose of this app its decent
   const date = new Date(data.date + "T" + data.time + "Z");
 
+  // create new reservation
   await prisma.reservation.create({
     data: {
       firstName: data.firstName,
@@ -58,5 +62,6 @@ export async function createReservation(
     },
   });
 
+  // TODO: Revalidate app after reservation is created
   revalidatePath("/");
 }

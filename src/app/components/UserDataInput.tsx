@@ -6,9 +6,7 @@ import {
   SetReservationType,
 } from "@/lib/types/types";
 import { Label } from "@radix-ui/react-label";
-import { type } from "os";
 import { useEffect } from "react";
-import { array } from "zod";
 
 interface UserDataInputProps {
   reservation: ReservationType;
@@ -16,15 +14,13 @@ interface UserDataInputProps {
   error: ErrorType;
 }
 
-
-
 export default function UserDataInput({
   reservation,
   setReservation,
   error,
 }: UserDataInputProps) {
 
-
+  // test for phoneFormatFunction -> in progress
   useEffect(()=> {
     phoneNumFormat(reservation.phone)
   },[reservation])
