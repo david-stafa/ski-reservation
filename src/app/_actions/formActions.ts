@@ -27,8 +27,8 @@ const ReservationSchema = z.object({
 
 export async function createReservation(
   prevState: unknown,
-  formData: FormData
-) {
+  formData: FormData,
+){
   // parsing reservation form inputs with zod
   const result = ReservationSchema.safeParse(
     Object.fromEntries(formData.entries())
@@ -36,7 +36,11 @@ export async function createReservation(
 
   // return field error when validation fails
   if (result.success === false) {
-    return result.error.formErrors.fieldErrors;
+    return {
+      success: false,
+      error: result.error.formErrors.fieldErrors,
+      prevData: formData
+    };
   }
 
   // result data from form inputs
@@ -64,4 +68,9 @@ export async function createReservation(
 
   // TODO: Revalidate app after reservation is created
   revalidatePath("/");
+
+  return {
+    success: true,
+    message: "Reservation created.",
+  };
 }

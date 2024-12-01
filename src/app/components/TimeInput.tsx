@@ -1,36 +1,18 @@
 import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
 import { timeSlots } from "@/lib/timeSlots";
-import { ReservationType, SetReservationType } from "@/lib/types/types";
 import { useState } from "react";
 
 interface TimeInputProps {
-  reservation: ReservationType;
-  setReservation: SetReservationType;
   peopleCount: number;
 }
 
-export default function TimeInput({
-  reservation,
-  setReservation,
-  peopleCount,
-}: TimeInputProps) {
-  function handleTimeClick(time: string): void {
-    // get hours and minutes to separate variables
-    const [hours, minutes] = time.split(":");
-    // handle that updatedDate has Date type - without this workaround the .setHours return number type
-    const updatedDate = new Date(reservation.dateTime!); // clone the Date object
-    updatedDate.setHours(+hours, +minutes); // update hours and minutes in date object
+export default function TimeInput({ peopleCount }: TimeInputProps) {
+  const [time, setTime] = useState<string>();
 
-    setReservation({
-      ...reservation,
-      dateTime: updatedDate,
-    });
-
+  function handleTimeClick(time: string) {
     setTime(time);
   }
-
-  const [time, setTime] = useState<string>();
 
   return (
     <section>

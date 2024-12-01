@@ -1,30 +1,13 @@
 import H3 from "@/components/h3";
 import { Input } from "@/components/ui/input";
-import {
-  ErrorType,
-  ReservationType,
-  SetReservationType,
-} from "@/lib/types/types";
+import { ErrorType } from "@/lib/types/types";
 import { Label } from "@radix-ui/react-label";
-import { useEffect } from "react";
 
 interface UserDataInputProps {
-  reservation: ReservationType;
-  setReservation: SetReservationType;
   error: ErrorType;
 }
 
-export default function UserDataInput({
-  reservation,
-  setReservation,
-  error,
-}: UserDataInputProps) {
-
-  // test for phoneFormatFunction -> in progress
-  useEffect(()=> {
-    phoneNumFormat(reservation.phone)
-  },[reservation])
-
+export default function UserDataInput({ error }: UserDataInputProps) {
   return (
     <section>
       <H3>Vyplňte osobní údaje:</H3>
@@ -38,12 +21,6 @@ export default function UserDataInput({
             id="firstName"
             name="firstName"
             type="text"
-            onChange={(e) =>
-              setReservation({
-                ...reservation,
-                firstName: e.target.value,
-              })
-            }
             defaultValue="David"
           />
         </span>
@@ -56,58 +33,31 @@ export default function UserDataInput({
             name="lastName"
             id="lastName"
             type="text"
-            onChange={(e) =>
-              setReservation({
-                ...reservation,
-                lastName: e.target.value,
-              })
-            }
             defaultValue="Test"
           />
         </span>
       </div>
       {error?.email && <div className="text-destructive">{error.email}</div>}
       <Label htmlFor="email">Email:</Label>
-      <Input
-        id="email"
-        name="email"
-        type="email"
-        onChange={(e) =>
-          setReservation({
-            ...reservation,
-            email: e.target.value,
-          })
-        }
-        defaultValue="d@s.cz"
-      />
+      <Input id="email" name="email" type="email" defaultValue="d@s.cz" />
       {error?.phone && <div className="text-destructive">{error.phone}</div>}
       <Label htmlFor="phone">Telefon:</Label>
-      <Input
-        type="tel"
-        name="phone"
-        id="phone"
-        onChange={(e) =>
-          setReservation({
-            ...reservation,
-            phone: e.target.value,
-          })
-        }
-        defaultValue="123 456 987"
-      />
+      <Input type="tel" name="phone" id="phone" defaultValue="123 456 987" />
     </section>
   );
 }
 
-function phoneNumFormat(telNum:string | undefined){
+// TODO - finish phone number format
+// function phoneNumFormat(telNum:string | undefined){
 
-  if (telNum == undefined) return
+//   if (telNum == undefined) return
 
-  let formattedNum: string[] = telNum.split("")
+//   let formattedNum: string[] = telNum.split("")
 
-  if (formattedNum.length == 3) {
-    formattedNum = telNum.split("");
-    formattedNum.push(" ");
-  }
+//   if (formattedNum.length == 3) {
+//     formattedNum = telNum.split("");
+//     formattedNum.push(" ");
+//   }
 
-  console.log(formattedNum); 
-}
+//   console.log(formattedNum);
+// }

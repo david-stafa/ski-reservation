@@ -1,19 +1,9 @@
 import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
-import { ReservationType, SetReservationType } from "@/lib/types/types";
 import { useState } from "react";
 
-interface DayInputProps {
-  reservation: ReservationType;
-  setReservation: SetReservationType;
-}
-
-export default function DayInput({
-  reservation,
-  setReservation,
-}: DayInputProps) {
+export default function DayInput() {
   function handleDayClick(day: string): void {
-    setReservation({ ...reservation, dateTime: new Date(day) });
     setDate(day);
   }
 

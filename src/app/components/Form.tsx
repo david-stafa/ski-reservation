@@ -8,27 +8,32 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import React, { useActionState, useEffect, useState } from "react";
+import React, { useActionState, useState } from "react";
 import PeopleInput from "./PeopleInput";
 import DayInput from "./DayInut";
 import TimeInput from "./TimeInput";
 // import EquipmentInput from "./EquipmentInput";
 import UserDataInput from "./UserDataInput";
-import { ReservationType } from "@/lib/types/types";
-import { useFormStatus } from "react-dom";
+// import { ReservationType } from "@/lib/types/types";
 import { createReservation } from "../_actions/formActions";
 
+// type ReservationState = {
+//   success: boolean;
+//   error?: {
+//     [key: string]: string[]; // Map of field errors
+//   };
+//   message?: string;
+// };
+
+// const initialState: ReservationState = { success: false };
+
 export default function Form() {
+  const [data, action, isPending] = useActionState(createReservation, null);
   const [peopleCount, setPeopleCount] = useState<number>(0);
-  const [reservation, setReservation] = useState<ReservationType>({
-    skiSets: [],
-  });
 
-  const [error, action] = useActionState(createReservation, {});
-
-  if (error) console.log(error);
-
-  useEffect(() => console.log(reservation), [reservation, peopleCount]);
+  // const [reservation, setReservation] = useState<ReservationType>({
+  //   skiSets: [],
+  // });
 
   return (
     <Card className="w-3/6 mx-auto">
@@ -39,45 +44,43 @@ export default function Form() {
       <CardContent>
         <form action={action}>
           {/* get number of people requiring reservation */}
-          {error?.peopleCount && (
-            <div className="text-destructive">{error.peopleCount}</div>
+          {data?.error?.peopleCount && (
+            <div className="text-destructive">{data.error.peopleCount}</div>
           )}
+
           <PeopleInput
             setPeopleCount={setPeopleCount}
             peopleCount={peopleCount}
           />
+          {data?.error?.date && (
+            <div className="text-destructive">{data.error?.date}</div>
+          )}
           {/* get day of reservation */}
-          <DayInput setReservation={setReservation} reservation={reservation} />
+          <DayInput />
+          {data?.error?.time && (
+            <div className="text-destructive">{data.error?.time}</div>
+          )}
           {/* get time of reservation */}
-          <TimeInput
-            setReservation={setReservation}
-            reservation={reservation}
-            peopleCount={peopleCount}
-          />
+          <TimeInput peopleCount={peopleCount} />
           {/* get equipment user want to rent */}
           {/* <EquipmentInput
             reservation={reservation}
             setReservation={setReservation}
           /> */}
           {/* user info */}
-          <UserDataInput
-            reservation={reservation}
-            setReservation={setReservation}
-            error={error}
-          />
+          <UserDataInput error={data?.error} />
           {/* submit button */}
-          <SubmitButton />
+          <SubmitButton pending={isPending} />
         </form>
       </CardContent>
     </Card>
   );
 }
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ pending }: { pending: boolean }) {
   return (
     <Button className="w-full mt-4" variant="default" disabled={pending}>
-      Odeslat rezervaci
+      {pending ? "Vytváření rezervace" : "Odeslat rezervaci"}
     </Button>
   );
 }
