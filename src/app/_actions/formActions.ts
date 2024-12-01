@@ -18,7 +18,7 @@ const ReservationSchema = z.object({
   firstName: z.string().min(2),
   lastName: z.string().min(2),
   email: z.string().email(),
-  phone: z.string(),
+  phone: z.coerce.string().min(9),
   peopleCount: z.coerce.number().min(1).max(4),
   date: z.string().date(),
   time: z.string().time(),
@@ -41,8 +41,6 @@ export async function createReservation(
   // creates date in UTC format - now it saves actual value (input time: 15:00:00, db value is the same)
   // but it does not correlate with UTC time - its wrong but to fulfill purpose of this app its decent
   const date = new Date(data.date + "T" + data.time + "Z");
-
-  console.log(date);
 
   await prisma.reservation.create({
     data: {
