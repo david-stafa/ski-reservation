@@ -15,13 +15,14 @@ import { revalidatePath } from "next/cache";
 // );
 
 const ReservationSchema = z.object({
-  firstName: z.string().min(2),
-  lastName: z.string().min(2),
-  email: z.string().email(),
+  firstName: z.string().min(2, { message: "Jméno musí mít aspoň 2 znaky." }),
+  lastName: z.string().min(2, { message: "Příjmení musí mít aspoň 2 znaky." }),
+  email: z.string().email({ message: "Zadejte validní email." }),
+  // TODO finish phone error message and validation
   phone: z.string().min(9),
-  peopleCount: z.coerce.number().min(1).max(4),
-  date: z.string().date(),
-  time: z.string().time(),
+  peopleCount: z.coerce.number().min(1, { message: "Vyberte počet osob." }),
+  date: z.string().date("Vyberte datum rezervace."),
+  time: z.string().time("Vyberte čas rezervace"),
   // skiSets: SkiSetsSchema,
 });
 
@@ -33,14 +34,7 @@ export async function createReservation(
   const result = ReservationSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
-  const form = {
-    firstName: formData.get("firstName") as string,
-    lastName: formData.get("lastName") as string,
-    email: formData.get("email") as string,
-    phone: formData.get("phone") as string,
-  };
 
-  console.log(form);
   // return field error when validation fails
   if (result.success === false) {
     return {
