@@ -17,3 +17,12 @@ export type ErrorType =
       peopleCount?: string[] | undefined;
     }
   | undefined;
+
+export type PrevFormData =
+  | {
+      firstName: string;
+      lastName: string;
+      email: string;
+      phone: string;
+    }
+  | undefined;

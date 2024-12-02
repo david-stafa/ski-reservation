@@ -18,7 +18,7 @@ const ReservationSchema = z.object({
   firstName: z.string().min(2),
   lastName: z.string().min(2),
   email: z.string().email(),
-  phone: z.coerce.string().min(9),
+  phone: z.string().min(9),
   peopleCount: z.coerce.number().min(1).max(4),
   date: z.string().date(),
   time: z.string().time(),
@@ -27,19 +27,32 @@ const ReservationSchema = z.object({
 
 export async function createReservation(
   prevState: unknown,
-  formData: FormData,
-){
+  formData: FormData
+) {
   // parsing reservation form inputs with zod
   const result = ReservationSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
+  const form = {
+    firstName: formData.get("firstName") as string,
+    lastName: formData.get("lastName") as string,
+    email: formData.get("email") as string,
+    phone: formData.get("phone") as string,
+  };
 
+  console.log(form);
   // return field error when validation fails
   if (result.success === false) {
     return {
       success: false,
       error: result.error.formErrors.fieldErrors,
-      prevData: formData
+      // return data for uncontrolle inputs -> they are erased after submit
+      prevData: {
+        firstName: formData.get("firstName") as string,
+        lastName: formData.get("lastName") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+      },
     };
   }
 

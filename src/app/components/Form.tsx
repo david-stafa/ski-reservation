@@ -68,7 +68,7 @@ export default function Form() {
             setReservation={setReservation}
           /> */}
           {/* user info */}
-          <UserDataInput error={data?.error} />
+          <UserDataInput error={data?.error} prevData={data?.prevData} />
           {/* submit button */}
           <SubmitButton pending={isPending} />
         </form>
