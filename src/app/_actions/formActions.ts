@@ -22,7 +22,7 @@ const ReservationSchema = z.object({
   phone: z.string().min(9),
   peopleCount: z.coerce.number().min(1, { message: "Vyberte počet osob." }),
   date: z.string().date("Vyberte datum rezervace."),
-  time: z.string().time("Vyberte čas rezervace"),
+  time: z.string().time("Vyberte čas rezervace."),
   // skiSets: SkiSetsSchema,
 });
 
@@ -40,7 +40,7 @@ export async function createReservation(
     return {
       success: false,
       error: result.error.formErrors.fieldErrors,
-      // return data for uncontrolle inputs -> they are erased after submit
+      // return data for uncontrolled inputs -> they are erased after submit
       prevData: {
         firstName: formData.get("firstName") as string,
         lastName: formData.get("lastName") as string,
