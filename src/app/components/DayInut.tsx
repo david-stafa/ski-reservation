@@ -1,13 +1,16 @@
 import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
-export default function DayInput() {
+interface DayInputProps {
+  date: string;
+  setDate: Dispatch<SetStateAction<string>>;
+}
+
+export default function DayInput({ date, setDate }: DayInputProps) {
   function handleDayClick(day: string): void {
     setDate(day);
   }
-
-  const [date, setDate] = useState<string>();
 
   return (
     <section>
@@ -20,14 +23,7 @@ export default function DayInput() {
       <DayButton handleClick={handleDayClick} day="2025-10-07" dayCZ="Úterý" />
       <DayButton handleClick={handleDayClick} day="2025-10-08" dayCZ="Středa" />
       <DayButton handleClick={handleDayClick} day="2025-10-10" dayCZ="Pátek" />
-      <input
-        type="string"
-        name="date"
-        id="date"
-        value={date || ""}
-        hidden
-        readOnly
-      />
+      <input type="string" name="date" id="date" value={date} hidden readOnly />
     </section>
   );
 }
