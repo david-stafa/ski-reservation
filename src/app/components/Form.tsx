@@ -29,8 +29,8 @@ import { createReservation } from "../_actions/formActions";
 
 export default function Form() {
   const [data, action, isPending] = useActionState(createReservation, null);
-  const [peopleCount, setPeopleCount] = useState<number>(0);
-  const [date, setDate] = useState<string>("");
+  const [selectedPeopleCount, setSelectedPeopleCount] = useState<number>(0);
+  const [selectedDate, setSelectedDate] = useState<string>("");
 
   // const [reservation, setReservation] = useState<ReservationType>({
   //   skiSets: [],
@@ -50,19 +50,19 @@ export default function Form() {
           )}
 
           <PeopleInput
-            setPeopleCount={setPeopleCount}
-            peopleCount={peopleCount}
+            setSelectedPeopleCount={setSelectedPeopleCount}
+            selectedPeopleCount={selectedPeopleCount}
           />
           {data?.error?.date && (
             <div className="text-destructive">{data.error?.date}</div>
           )}
           {/* get day of reservation */}
-          <DayInput date={date} setDate={setDate} />
+          <DayInput selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
           {data?.error?.time && (
             <div className="text-destructive">{data.error?.time}</div>
           )}
           {/* get time of reservation */}
-          <TimeInput peopleCount={peopleCount} date={date}/>
+          <TimeInput peopleCount={selectedPeopleCount} date={selectedDate} />
           {/* get equipment user want to rent */}
           {/* <EquipmentInput
             reservation={reservation}

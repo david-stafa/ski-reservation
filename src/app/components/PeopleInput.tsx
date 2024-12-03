@@ -2,31 +2,47 @@ import H3 from "@/components/h3";
 import { Button } from "@/components/ui/button";
 
 interface PeopleInputProps {
-  setPeopleCount: React.Dispatch<React.SetStateAction<number>>;
-  peopleCount: number;
+  setSelectedPeopleCount: React.Dispatch<React.SetStateAction<number>>;
+  selectedPeopleCount: number;
 }
 
 export default function PeopleInput({
-  setPeopleCount,
-  peopleCount,
+  setSelectedPeopleCount,
+  selectedPeopleCount,
 }: PeopleInputProps) {
   
   function handlePeopleClick(peopleCount: number) {
-    setPeopleCount(peopleCount);
+    setSelectedPeopleCount(peopleCount);
   }
 
   return (
     <section>
       <H3>Pro kolik lidi chcete set rezervovat?</H3>
-      <PeopleButton numOfPeople={1} handleClick={handlePeopleClick} />
-      <PeopleButton numOfPeople={2} handleClick={handlePeopleClick} />
-      <PeopleButton numOfPeople={3} handleClick={handlePeopleClick} />
-      <PeopleButton numOfPeople={4} handleClick={handlePeopleClick} />
+      <PeopleButton
+        numOfPeople={1}
+        handleClick={handlePeopleClick}
+        selectedPeopleCount={selectedPeopleCount}
+      />
+      <PeopleButton
+        numOfPeople={2}
+        handleClick={handlePeopleClick}
+        selectedPeopleCount={selectedPeopleCount}
+      />
+      <PeopleButton
+        numOfPeople={3}
+        handleClick={handlePeopleClick}
+        selectedPeopleCount={selectedPeopleCount}
+      />
+      <PeopleButton
+        numOfPeople={4}
+        handleClick={handlePeopleClick}
+        selectedPeopleCount={selectedPeopleCount}
+      />
       <input
         type="number"
         name="peopleCount"
         id="peopleCount"
-        value={peopleCount || 0}
+        value={selectedPeopleCount || 0}
         readOnly
         hidden
       />
@@ -41,15 +57,20 @@ export default function PeopleInput({
 interface PeopleButtonProps {
   numOfPeople: number;
   handleClick: (numOfPeople: number) => void;
+  selectedPeopleCount: number;
 }
 
-function PeopleButton({ numOfPeople, handleClick }: PeopleButtonProps) {
+function PeopleButton({
+  numOfPeople,
+  handleClick,
+  selectedPeopleCount,
+}: PeopleButtonProps) {
   return (
     <Button
       onClick={() => handleClick(numOfPeople)}
       type="button"
       className="mr-2"
-      variant="secondary"
+      variant={selectedPeopleCount === numOfPeople ? "default" : "secondary"}
       name="peopleCount"
     >
       {numOfPeople}

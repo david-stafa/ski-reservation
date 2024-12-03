@@ -3,13 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction } from "react";
 
 interface DayInputProps {
-  date: string;
-  setDate: Dispatch<SetStateAction<string>>;
+  selectedDate: string;
+  setSelectedDate: Dispatch<SetStateAction<string>>;
 }
 
-export default function DayInput({ date, setDate }: DayInputProps) {
+export default function DayInput({
+  selectedDate,
+  setSelectedDate,
+}: DayInputProps) {
   function handleDayClick(day: string): void {
-    setDate(day);
+    setSelectedDate(day);
   }
 
   return (
@@ -19,11 +22,34 @@ export default function DayInput({ date, setDate }: DayInputProps) {
         handleClick={handleDayClick}
         day="2025-10-06"
         dayCZ="Pondělí"
+        selectedDay={selectedDate}
       />
-      <DayButton handleClick={handleDayClick} day="2025-10-07" dayCZ="Úterý" />
-      <DayButton handleClick={handleDayClick} day="2025-10-08" dayCZ="Středa" />
-      <DayButton handleClick={handleDayClick} day="2025-10-10" dayCZ="Pátek" />
-      <input type="string" name="date" id="date" value={date} hidden readOnly />
+      <DayButton
+        handleClick={handleDayClick}
+        day="2025-10-07"
+        dayCZ="Úterý"
+        selectedDay={selectedDate}
+      />
+      <DayButton
+        handleClick={handleDayClick}
+        day="2025-10-08"
+        dayCZ="Středa"
+        selectedDay={selectedDate}
+      />
+      <DayButton
+        handleClick={handleDayClick}
+        day="2025-10-10"
+        dayCZ="Pátek"
+        selectedDay={selectedDate}
+      />
+      <input
+        type="string"
+        name="date"
+        id="date"
+        value={selectedDate}
+        hidden
+        readOnly
+      />
     </section>
   );
 }
@@ -32,15 +58,16 @@ interface DayButtonProps {
   day: string;
   dayCZ: string;
   handleClick: (day: string) => void;
+  selectedDay: string;
 }
 
-function DayButton({ handleClick, day, dayCZ }: DayButtonProps) {
+function DayButton({ handleClick, day, dayCZ, selectedDay }: DayButtonProps) {
   return (
     <Button
       onClick={() => handleClick(day)}
       type="button"
       className="mr-2 grow"
-      variant="secondary"
+      variant={selectedDay === day ? "default" : "secondary"}
     >
       {dayCZ}
     </Button>
