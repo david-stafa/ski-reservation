@@ -1,17 +1,17 @@
 import Container from "../components/container";
-import { ModeToggle } from "../components/modeToggle";
-import Form from "./components/Form";
+import Form from "./components/Form/Form";
+import { ModeToggle } from "@/components/modeToggle";
 
 export default function Home() {
   return (
     <Container>
-      <Container className="flex justify-between relative">
-        <div className="w-32 h-9 bg-zinc-200 rounded-xl" />
-        <h1 className="font-bold text-primary text-3xl text-center dark:text-white">
+      <Container>
+        <h1 className="font-bold text-3xl text-center flex-1">
           Rezervace celoročních setů
         </h1>
         <ModeToggle />
       </Container>
+      {/* <Form /> */}
       <Form />
     </Container>
   );

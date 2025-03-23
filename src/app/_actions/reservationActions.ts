@@ -1,6 +1,6 @@
-"use server"
+"use server";
 
-import prisma from "@/db/db";
+import { prisma } from "@/db/prisma";
 
 // input: date in format 2025-10-07
 export async function getAllReservationsDates(date: string) {
@@ -15,7 +15,7 @@ export async function getAllReservationsDates(date: string) {
       },
     },
     select: {
-        dateTime: true
-    }
+      dateTime: true,
+    },
   });
 }
