@@ -1,30 +1,7 @@
 "use server";
 
-import { z } from "zod";
-import prisma from "@/db/db";
-import { revalidatePath } from "next/cache";
-
-// const SkiSetsSchema = z.array(
-//   z.object({
-//     ski: z.boolean(),
-//     skiBoot: z.boolean(),
-//     skiPole: z.boolean(),
-//     skiHelmet: z.boolean(),
-//     skiGoggle: z.boolean(),
-//   })
-// );
-
-const ReservationSchema = z.object({
-  firstName: z.string().min(2, { message: "Jméno musí mít aspoň 2 znaky." }),
-  lastName: z.string().min(2, { message: "Příjmení musí mít aspoň 2 znaky." }),
-  email: z.string().email({ message: "Zadejte validní email." }),
-  // TODO finish phone error message and validation
-  phone: z.string().min(9),
-  peopleCount: z.coerce.number().min(1, { message: "Vyberte počet osob." }),
-  date: z.string().date("Vyberte datum rezervace."),
-  time: z.string().time("Vyberte čas rezervace."),
-  // skiSets: SkiSetsSchema,
-});
+import { prisma } from "@/db/prisma";
+import { ReservationSchema } from "@/lib/types/types";
 
 export async function createReservation(
   prevState: unknown,
@@ -54,7 +31,7 @@ export async function createReservation(
   const data = result.data;
   // creates date in UTC format - now it saves actual value (input time: 15:00:00, db value is the same)
   // but it does not correlate with UTC time - its wrong but to fulfill purpose of this app its decent
-  const date = new Date(data.date + "T" + data.time + "Z");
+  // const date = new Date(data.date + "T" + data.time + "Z");
 
   // create new reservation
   await prisma.reservation.create({
@@ -64,17 +41,9 @@ export async function createReservation(
       email: data.email,
       phone: data.phone,
       peopleCount: data.peopleCount,
-      dateTime: date,
-      // skiSets: {
-      //   create: data.skiSets.map((set) => ({
-      //     ...set,
-      //   })),
-      // },
+      dateTime: data.date,
     },
   });
-
-  // TODO: Revalidate app after reservation is created
-  revalidatePath("/");
 
   return {
     success: true,
