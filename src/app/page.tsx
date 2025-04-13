@@ -1,8 +1,12 @@
 import Container from "../components/container";
-import Form from "./components/Form/Form";
+import { getSumOfReservations } from "./_actions/reservationActions";
 import { ModeToggle } from "@/components/modeToggle";
 
-export default function Home() {
+export default async function Home() {
+
+  // Fetch data from the server
+  const reservations = await getSumOfReservations();
+
   return (
     <Container>
       <Container>
@@ -10,9 +14,8 @@ export default function Home() {
           Rezervace celoročních setů
         </h1>
         <ModeToggle />
+        <div>Celkem vytvořených rezervací: {reservations}</div>
       </Container>
-      {/* <Form /> */}
-      <Form />
     </Container>
   );
 }

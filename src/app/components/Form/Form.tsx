@@ -18,6 +18,7 @@ import { ReservationSchema } from "@/lib/types/types";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import TimeInput from "./TimeInput";
 
 const [STARTDATE, ENDDATE] = ["2025-03-24", "2025-03-30"];
 
@@ -26,26 +27,38 @@ const Form = () => {
     register,
     handleSubmit,
     control,
-    // setValue,
+    setValue,
+    setError,
+    // getValues,
+    watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(ReservationSchema),
-    defaultValues: { email: "asd@ase.cy", phone: "123456789", date: undefined },
+    defaultValues: {
+      email: "asd@ase.cy",
+      phone: "123 456 789",
+      date: "",
+      peopleCount: 1,
+    },
   });
 
-  console.log(control._formValues.peopleCount)
-
   const onSubmitForm: SubmitHandler<ReservationSchema> = async (data) => {
-    console.log("Submitting form:", data); // Debugging log
-    console.log("type", typeof data.peopleCount);
+    const res = await createReservation(null, data);
 
-    // Convert `data` to FormData
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value as string);
-    });
+    console.log(res);
 
-    await createReservation(null, formData);
+    if (!res.success) {
+      for (const [field, messages] of Object.entries(res.error)) {
+        setError(field as keyof ReservationSchema | "root", {
+          type: "server",
+          message: messages[0],
+        });
+      }
+      throw new Error("Could not create reservation");
+    }
+
+    if (res.success) reset();
   };
 
   return (
@@ -81,12 +94,13 @@ const Form = () => {
       />
       {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-      <Label htmlFor="phone">Phone</Label>
+      <Label htmlFor="phone">Telefon</Label>
       <Input
         {...register("phone")}
         aria-invalid={errors.phone ? "true" : "false"}
         type="string"
         id="phone"
+
       />
       {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
 
@@ -103,12 +117,10 @@ const Form = () => {
             </SelectTrigger>
             <SelectContent id="peopleCount">
               <SelectGroup>
-                <SelectLabel>Fruits</SelectLabel>
+                <SelectLabel>Počet osob</SelectLabel>
                 <SelectItem value="1">1</SelectItem>
                 <SelectItem value="2">2</SelectItem>
                 <SelectItem value="3">3</SelectItem>
-                <SelectItem value="4">4</SelectItem>
-                <SelectItem value="5">5</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -118,7 +130,7 @@ const Form = () => {
         <p className="text-red-500">{errors.peopleCount.message}</p>
       )}
 
-      <Label htmlFor="date">Date</Label>
+      <Label htmlFor="date">Datum</Label>
       <Input
         {...register("date")}
         aria-invalid={errors.date ? "true" : "false"}
@@ -129,9 +141,15 @@ const Form = () => {
       />
       {errors.date && <p className="text-red-500">{errors.date.message}</p>}
 
-      <Input type="time" min="16:00" max="19:00" step="600"/>
-      <input type="time" value="16:00" step="600"/>
-      
+
+      <Label htmlFor="date">Čas</Label>
+      <TimeInput
+        register={register}
+        date={watch("date")}
+        peopleCount={watch("peopleCount")}
+        error={errors.time}
+        setValue={setValue}
+      />
 
       <Button
         className={cn("mt-2", { "bg-red-500": isSubmitting })}
