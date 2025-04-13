@@ -11,11 +11,11 @@ import {
 import React, { useActionState, useState } from "react";
 import PeopleInput from "./PeopleInput";
 import DayInput from "./DayInut";
-import TimeInput from "./TimeInput";
+import TimeInput from "../Form/TimeInput";
 // import EquipmentInput from "./EquipmentInput";
 import UserDataInput from "./UserDataInput";
 // import { ReservationType } from "@/lib/types/types";
-import { createReservation } from "../_actions/formActions";
+import { createReservation } from "../../_actions/formActions";
 
 // type ReservationState = {
 //   success: boolean;
@@ -27,7 +27,7 @@ import { createReservation } from "../_actions/formActions";
 
 // const initialState: ReservationState = { success: false };
 
-export default function Form() {
+export default function Formular() {
   const [data, action, isPending] = useActionState(createReservation, null);
   const [selectedPeopleCount, setSelectedPeopleCount] = useState<number>(0);
   const [selectedDate, setSelectedDate] = useState<string>("");

@@ -9,13 +9,19 @@ export async function getAllReservationsDates(date: string) {
 
   return await prisma.reservation.findMany({
     where: {
-      dateTime: {
+      startDate: {
         gte: startOfTheDay,
         lte: endOfTheDay,
       },
     },
     select: {
-      dateTime: true,
+      startDate: true,
+      endDate: true,
+      peopleCount: true,
     },
   });
+}
+
+export async function getSumOfReservations(){
+  return await prisma.reservation.count()
 }

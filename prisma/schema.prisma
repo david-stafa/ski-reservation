@@ -17,6 +17,7 @@ model Reservation {
   email       String
   phone       String
   peopleCount Int
-  dateTime    DateTime
+  startDate   DateTime @unique
+  endDate     DateTime @unique
   createdAt   DateTime @default(now())
 }
