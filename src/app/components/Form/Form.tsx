@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import TimeInput from "./TimeInput";
+import ReservationModal from "./ReservationModal";
 
 const [STARTDATE, ENDDATE] = ["2025-03-24", "2025-03-30"];
 
@@ -29,7 +30,7 @@ const Form = () => {
     control,
     setValue,
     setError,
-    // getValues,
+    getValues,
     watch,
     reset,
     formState: { errors, isSubmitting },
@@ -41,7 +42,10 @@ const Form = () => {
       date: "",
       peopleCount: 1,
     },
+    mode: "onBlur",
   });
+
+  console.log("errors", errors);
 
   const onSubmitForm: SubmitHandler<ReservationSchema> = async (data) => {
     const res = await createReservation(null, data);
@@ -62,102 +66,107 @@ const Form = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)}>
-      <Label htmlFor="firstName">Jméno</Label>
-      <Input
-        {...register("firstName")}
-        aria-invalid={errors.firstName ? "true" : "false"}
-        type="text"
-        id="firstName"
-      />
-      {errors.firstName && (
-        <p className="text-red-500">{errors.firstName.message}</p>
-      )}
+    <>
+      <button type="button" onClick={() => console.log(getValues())}>
+        GET VALUES
+      </button>
 
-      <Label htmlFor="lastName">Příjmení</Label>
-      <Input
-        {...register("lastName")}
-        aria-invalid={errors.lastName ? "true" : "false"}
-        type="text"
-        id="lastName"
-      />
-      {errors.lastName && (
-        <p className="text-red-500">{errors.lastName.message}</p>
-      )}
-
-      <Label htmlFor="email">Email</Label>
-      <Input
-        {...register("email")}
-        aria-invalid={errors.email ? "true" : "false"}
-        type="email"
-        id="email"
-      />
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-
-      <Label htmlFor="phone">Telefon</Label>
-      <Input
-        {...register("phone")}
-        aria-invalid={errors.phone ? "true" : "false"}
-        type="string"
-        id="phone"
-
-      />
-      {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
-
-      <Controller
-        name="peopleCount"
-        control={control}
-        render={({ field }) => (
-          <Select
-            onValueChange={(value) => field.onChange(Number(value))} // Convert to number
-            value={field.value?.toString()} // Ensure correct display
-          >
-            <SelectTrigger className="w-[180px] mt-2">
-              <SelectValue placeholder="Vyberte počet lidí" />
-            </SelectTrigger>
-            <SelectContent id="peopleCount">
-              <SelectGroup>
-                <SelectLabel>Počet osob</SelectLabel>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="2">2</SelectItem>
-                <SelectItem value="3">3</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+      <form onSubmit={handleSubmit(onSubmitForm)}>
+        <Label htmlFor="firstName">Jméno</Label>
+        <Input
+          {...register("firstName")}
+          aria-invalid={errors.firstName ? "true" : "false"}
+          type="text"
+          id="firstName"
+        />
+        {errors.firstName && (
+          <p className="text-red-500">{errors.firstName.message}</p>
         )}
-      />
-      {errors.peopleCount && (
-        <p className="text-red-500">{errors.peopleCount.message}</p>
-      )}
 
-      <Label htmlFor="date">Datum</Label>
-      <Input
-        {...register("date")}
-        aria-invalid={errors.date ? "true" : "false"}
-        type="date"
-        id="date"
-        min={STARTDATE}
-        max={ENDDATE}
-      />
-      {errors.date && <p className="text-red-500">{errors.date.message}</p>}
+        <Label htmlFor="lastName">Příjmení</Label>
+        <Input
+          {...register("lastName")}
+          aria-invalid={errors.lastName ? "true" : "false"}
+          type="text"
+          id="lastName"
+        />
+        {errors.lastName && (
+          <p className="text-red-500">{errors.lastName.message}</p>
+        )}
 
+        <Label htmlFor="email">Email</Label>
+        <Input
+          {...register("email")}
+          aria-invalid={errors.email ? "true" : "false"}
+          type="email"
+          id="email"
+        />
+        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-      <Label htmlFor="date">Čas</Label>
-      <TimeInput
-        register={register}
-        date={watch("date")}
-        peopleCount={watch("peopleCount")}
-        error={errors.time}
-        setValue={setValue}
-      />
+        <Label htmlFor="phone">Telefon</Label>
+        <Input
+          {...register("phone")}
+          aria-invalid={errors.phone ? "true" : "false"}
+          type="string"
+          id="phone"
+        />
+        {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
 
-      <Button
-        className={cn("mt-2", { "bg-red-500": isSubmitting })}
-        type="submit"
-      >
-        Odeslat
-      </Button>
-    </form>
+        <Controller
+          name="peopleCount"
+          control={control}
+          render={({ field }) => (
+            <Select
+              onValueChange={(value) => field.onChange(Number(value))} // Convert to number
+              value={field.value?.toString()} // Ensure correct display
+            >
+              <SelectTrigger className="w-[180px] mt-2">
+                <SelectValue placeholder="Vyberte počet lidí" />
+              </SelectTrigger>
+              <SelectContent id="peopleCount">
+                <SelectGroup>
+                  <SelectLabel>Počet osob</SelectLabel>
+                  <SelectItem value="1">1</SelectItem>
+                  <SelectItem value="2">2</SelectItem>
+                  <SelectItem value="3">3</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.peopleCount && (
+          <p className="text-red-500">{errors.peopleCount.message}</p>
+        )}
+
+        <Label htmlFor="date">Datum</Label>
+        <Input
+          {...register("date")}
+          aria-invalid={errors.date ? "true" : "false"}
+          type="date"
+          id="date"
+          min={STARTDATE}
+          max={ENDDATE}
+        />
+        {errors.date && <p className="text-red-500">{errors.date.message}</p>}
+
+        <Label htmlFor="date">Čas</Label>
+        <TimeInput
+          register={register}
+          date={watch("date")}
+          peopleCount={watch("peopleCount")}
+          error={errors.time}
+          setValue={setValue}
+        />
+
+        <ReservationModal getValues={getValues} onConfirm={() => handleSubmit(onSubmitForm)()} disabled={getValues() == {}} />
+        {/* <Button
+          className={cn("mt-2", { "bg-red-500": isSubmitting })}
+          type="submit"
+        >
+          Odeslat
+        </Button> */}
+      </form>
+    </>
   );
 };
 
