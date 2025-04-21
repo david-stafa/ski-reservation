@@ -45,7 +45,10 @@ export default function TimeInput({
       const reservationsTimeArray: string[] = [];
 
       data.map((reservation) => {
-        let startHour = reservation.startDate.getHours();
+
+        console.log("reservation", reservation.startDate);
+        let startHour = reservation.startDate.getUTCHours() + 2;
+        console.log(reservation.startDate.getUTCHours() + 2);
         let startMinutes = reservation.startDate.getMinutes();
         let resTime: string;
 
