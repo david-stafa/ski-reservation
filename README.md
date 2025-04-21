@@ -61,3 +61,74 @@ Next steps:
 
 More information in our documentation:
 https://pris.ly/d/getting-started
+
+New production database - Neon
+
+✅ Goal
+Development: use SQLite (already working).
+Production: use Neon PostgreSQL on Vercel.
+
+🔧 Step-by-step Setup (Recap)
+1. Create Neon Database
+Done via Vercel integration or directly on Neon.
+
+You should now have a PostgreSQL connection string that looks like:
+postgres://user:password@host.neon.tech/dbname
+
+2. Update .env Files
+Keep SQLite for local development:
+
+DATABASE_URL="file:./dev.db"
+
+Add production DB connection for deployment:
+DATABASE_URL_PROD="postgres://user:password@host.neon.tech/dbname"
+
+Vercel Setup:
+Go to your project on Vercel → Settings → Environment Variables.
+
+Add:
+DATABASE_URL=postgres://user:password@host.neon.tech/dbname
+(You can paste from DATABASE_URL_PROD.)
+
+3. Update schema.prisma
+Use this logic in your schema.prisma:
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+✅ This way, it uses whatever DATABASE_URL is defined at runtime (SQLite locally, Neon on Vercel).
+
+4. Generate Client + Migrate Production DB
+Run locally (⚠️ only once):
+
+npx prisma migrate reset --schema ./prisma/schema.prisma
+OR to push schema without creating new migrations:
+
+npx prisma db push --schema ./prisma/schema.prisma
+Then generate the client:
+
+npx prisma generate
+
+OR 
+
+Automate Prisma DB Sync on Deploy
+In your package.json, add:
+"scripts": {
+  "postinstall": "prisma generate && prisma db push"
+}
+On deploy, Vercel will:
+
+Install dependencies
+Generate Prisma client
+Push your Prisma schema to Neon automatically
+
+🔒 Make sure your DATABASE_URL is correctly set in Vercel’s Environment Variables!
+
+5. Deploy to Vercel
+Once pushed:
+
+Vercel will use your production DATABASE_URL (Neon).
+
+Everything works.
+

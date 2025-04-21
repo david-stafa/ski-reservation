@@ -17,7 +17,7 @@ model Reservation {
   email       String
   phone       String
   peopleCount Int
-  startDate   DateTime @unique @db.Timestamptz(3)
-  endDate     DateTime @unique @db.Timestamptz(3)
+  startDate   DateTime @unique 
+  endDate     DateTime @unique
   createdAt   DateTime @default(now())
 }

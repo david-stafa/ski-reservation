@@ -15,13 +15,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ReservationSchema } from "@/lib/types/types";
-import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import TimeInput from "./TimeInput";
 import ReservationModal from "./ReservationModal";
-
-const [STARTDATE, ENDDATE] = ["2025-03-24", "2025-03-30"];
+import { ENDDATE, STARTDATE } from "@/lib/constants";
 
 const Form = () => {
   const {
@@ -45,12 +43,8 @@ const Form = () => {
     mode: "onBlur",
   });
 
-  console.log("errors", errors);
-
   const onSubmitForm: SubmitHandler<ReservationSchema> = async (data) => {
     const res = await createReservation(null, data);
-
-    console.log(res);
 
     if (!res.success) {
       for (const [field, messages] of Object.entries(res.error)) {
@@ -158,7 +152,11 @@ const Form = () => {
           setValue={setValue}
         />
 
-        <ReservationModal getValues={getValues} onConfirm={() => handleSubmit(onSubmitForm)()} disabled={getValues() == {}} />
+        <ReservationModal
+          getValues={getValues}
+          onConfirm={() => handleSubmit(onSubmitForm)()}
+          disabled={getValues() == {}}
+        />
         {/* <Button
           className={cn("mt-2", { "bg-red-500": isSubmitting })}
           type="submit"
