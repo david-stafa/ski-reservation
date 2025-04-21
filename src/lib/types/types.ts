@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ENDDATE, STARTDATE } from "../constants";
 
 export type ErrorType =
   | {
@@ -33,11 +34,15 @@ export const ReservationSchema = z.object({
   peopleCount: z.coerce.number({ message: "Vyberte počet osob." }).min(1),
   date: z
     .string()
-    .refine((val) => new Date(val) >= new Date("2025-03-24"), {
-      message: "Datum musí být nejdříve 24. března 2025",
+    .refine((val) => new Date(val) >= new Date(STARTDATE), {
+      message: `Datum musí být nejdříve ${new Date(
+        STARTDATE
+      ).toLocaleDateString("cs-CZ", { month: "long", day: "numeric", year: "numeric" })}.`,
     })
-    .refine((val) => new Date(val) <= new Date("2025-03-30"), {
-      message: "Datum musí být nejpozději 30. března 2025",
+    .refine((val) => new Date(val) <= new Date(ENDDATE), {
+      message: `Datum musí být nejpozději ${new Date(
+        ENDDATE
+      ).toLocaleDateString("cs-CZ", { month: "long", day: "numeric", year: "numeric" })}.`,
     }),
   time: z
     .string()
