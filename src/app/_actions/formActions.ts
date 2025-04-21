@@ -67,28 +67,31 @@ export async function createReservation(
     };
   }
 
-  console.log(newStartDate.getHours())
-  console.log(newStartDate.getMinutes())
-  
   // stop when peopleCount > 1 and time would exceed opening hours
-  if(newStartDate.getHours() >= 18 && newStartDate.getMinutes() >= 40){
-    if(data.peopleCount === 2 && newStartDate.getMinutes() >= 50){
+  if (newStartDate.getHours() >= 18 && newStartDate.getMinutes() >= 40) {
+    if (data.peopleCount === 2 && newStartDate.getMinutes() >= 50) {
       return {
         success: false,
         error: {
-          time: ["Zvolte jiný čas. Pro dvě osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby"]
-        }
-      }
+          time: [
+            "Zvolte jiný čas. Pro dvě osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby",
+          ],
+        },
+      };
     }
-    if(data.peopleCount === 3 && newStartDate.getMinutes() >= 40){
+    if (data.peopleCount === 3 && newStartDate.getMinutes() >= 40) {
       return {
         success: false,
         error: {
-          time: ["Zvolte jiný čas. Pro tři osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby"]
-        }
-      }
+          time: [
+            "Zvolte jiný čas. Pro tři osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby",
+          ],
+        },
+      };
     }
   }
+
+  console.log("newStartDate", newStartDate);
 
   // create new reservation
   try {
@@ -113,7 +116,7 @@ export async function createReservation(
     };
   } catch (error: unknown) {
     // TODO - Find some usefull usage to this error value
-    console.log(error)
+    console.log(error);
     // I think this is not needet now. I check for overlaping reservation and unique email up in the code.
     // if (error instanceof PrismaClientKnownRequestError) {
     //   if (error.code === "P2002") {
