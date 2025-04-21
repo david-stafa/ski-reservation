@@ -3,6 +3,7 @@
 import { prisma } from "@/db/prisma";
 import { ReservationResult, ReservationSchema } from "@/lib/types/types";
 import { revalidatePath } from "next/cache";
+import { DateTime } from "luxon";
 
 export async function createReservation(
   prevState: unknown,
@@ -20,17 +21,19 @@ export async function createReservation(
   }
   // result data from form inputs
   const data = result.data;
-
-  // Set newStartDate in local time - it will create UTC date in this format: 2025-03-30T13:20:00.000Z (input time was 14:20 or )
-  const newStartDate = new Date(`${data.date}T${data.time}`);
-  // Clone start date (safe, no shared reference)
-  const newEndDate = new Date(newStartDate);
   // Calculate duration based on peopleCount (10 mins each )
   const duration = 10 * data.peopleCount;
-  // Add duration and handle minute rollover
-  const newMinutes = newStartDate.getMinutes() + duration;
-  newEndDate.setMinutes(newMinutes);
-  // JS will auto handle hour rollover, so 15:50 + 20 → 16:10 ✅
+
+  // ***** Create dateTime with Prague time zone(becouse Vercel threast is as UTC otherwise) *****
+  const dateTime = DateTime.fromFormat(
+    `${data.date} ${data.time}`,
+    "yyyy-MM-dd HH:mm:ss",
+    { zone: "Europe/Prague" }
+  );
+
+  // ***** Convert dateTime to UTC and create new start and end date using luxon *****
+  const newStartDate = dateTime.toUTC().toJSDate();
+  const newEndDate = dateTime.plus({ minutes: duration }).toUTC().toJSDate();
 
   // check for already existing reservation
   const conflictingReservations = await prisma.reservation.findFirst({
@@ -90,8 +93,6 @@ export async function createReservation(
       };
     }
   }
-
-  console.log("newStartDate", newStartDate);
 
   // create new reservation
   try {
