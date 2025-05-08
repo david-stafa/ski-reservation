@@ -2,7 +2,6 @@
 
 import { createReservation } from "@/app/_actions/formActions";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import {
@@ -14,12 +13,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ReservationSchema } from "@/lib/types/types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import TimeInput from "./TimeInput";
-import ReservationModal from "./ReservationModal";
 import { ENDDATE, STARTDATE } from "@/lib/constants";
+import { ReservationSchema } from "@/lib/types/types";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { InputWithLabel } from "./InputWithLabel";
+import TimeInput from "./TimeInput";
+
+/* Type containing all form fields for reservation */
+export type ReservationFormValues = {
+  email: string;
+  phone: string;
+  date: string;
+  peopleCount: number;
+  firstName: string;
+  lastName: string;
+  time: string;
+};
 
 const Form = () => {
   const {
@@ -61,51 +72,42 @@ const Form = () => {
 
   return (
     <>
-      <button type="button" onClick={() => console.log(getValues())}>
-        GET VALUES
-      </button>
-
       <form onSubmit={handleSubmit(onSubmitForm)}>
-        <Label htmlFor="firstName">Jméno</Label>
-        <Input
-          {...register("firstName")}
-          aria-invalid={errors.firstName ? "true" : "false"}
+        <InputWithLabel
+          name="firstName"
+          label="Jméno"
+          error={errors.firstName}
           type="text"
-          id="firstName"
+          register={register}
         />
-        {errors.firstName && (
-          <p className="text-red-500">{errors.firstName.message}</p>
-        )}
 
-        <Label htmlFor="lastName">Příjmení</Label>
-        <Input
-          {...register("lastName")}
-          aria-invalid={errors.lastName ? "true" : "false"}
+        <InputWithLabel
+          name="lastName"
+          label="Příjmení"
+          error={errors.lastName}
           type="text"
-          id="lastName"
+          register={register}
         />
-        {errors.lastName && (
-          <p className="text-red-500">{errors.lastName.message}</p>
-        )}
 
-        <Label htmlFor="email">Email</Label>
-        <Input
-          {...register("email")}
-          aria-invalid={errors.email ? "true" : "false"}
+        <InputWithLabel
+          name="email"
+          label="Email"
+          error={errors.email}
           type="email"
-          id="email"
+          register={register}
         />
-        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-        <Label htmlFor="phone">Telefon</Label>
-        <Input
-          {...register("phone")}
-          aria-invalid={errors.phone ? "true" : "false"}
+        <InputWithLabel
+          name="phone"
+          label="Telefon"
+          error={errors.phone}
           type="string"
-          id="phone"
+          register={register}
         />
-        {errors.phone && <p className="text-red-500">{errors.phone.message}</p>}
 
+        <Label htmlFor="peopleCount" className="mt-4 mb-2">
+          Počet lidí
+        </Label>
         <Controller
           name="peopleCount"
           control={control}
@@ -114,7 +116,7 @@ const Form = () => {
               onValueChange={(value) => field.onChange(Number(value))} // Convert to number
               value={field.value?.toString()} // Ensure correct display
             >
-              <SelectTrigger className="w-[180px] mt-2">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Vyberte počet lidí" />
               </SelectTrigger>
               <SelectContent id="peopleCount">
@@ -128,22 +130,17 @@ const Form = () => {
             </Select>
           )}
         />
-        {errors.peopleCount && (
-          <p className="text-red-500">{errors.peopleCount.message}</p>
-        )}
 
-        <Label htmlFor="date">Datum</Label>
-        <Input
-          {...register("date")}
-          aria-invalid={errors.date ? "true" : "false"}
+        <InputWithLabel
+          name="date"
+          label="Datum"
+          error={errors.date}
           type="date"
-          id="date"
+          register={register}
           min={STARTDATE}
           max={ENDDATE}
         />
-        {errors.date && <p className="text-red-500">{errors.date.message}</p>}
 
-        <Label htmlFor="date">Čas</Label>
         <TimeInput
           register={register}
           date={watch("date")}
@@ -152,17 +149,13 @@ const Form = () => {
           setValue={setValue}
         />
 
-        <ReservationModal
-          getValues={getValues}
-          onConfirm={() => handleSubmit(onSubmitForm)()}
-          disabled={getValues() == {}}
-        />
-        {/* <Button
-          className={cn("mt-2", { "bg-red-500": isSubmitting })}
+        <Button
+          className={cn("mt-8 w-full", { "bg-red-500": isSubmitting })}
           type="submit"
         >
           Odeslat
-        </Button> */}
+        </Button>
+      
       </form>
     </>
   );

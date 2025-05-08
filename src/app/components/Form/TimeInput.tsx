@@ -6,6 +6,7 @@ import { getAllReservationsDates } from "../../_actions/reservationActions";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { ReservationSchema } from "@/lib/types/types";
+import { Label } from "@/components/ui/label";
 
 interface TimeInputProps {
   peopleCount: number;
@@ -97,8 +98,8 @@ export default function TimeInput({
   }, [date, fetchReservations]); // fetch reservations whenever the `date` prop changes
 
   return (
-    <section className={cn("mt-2", { hidden: date === "" })}>
-      <TimeInputHeading peopleCount={peopleCount} />
+    <section className={cn("mt-4", { hidden: date === "" })}>
+      <Label className="mb-2">Časový blok</Label>
       {error && <p className="text-red-500">{error.message}</p>}
       <div className="grid grid-flow-col grid-rows-6 gap-2 mb-2">
         {loading || date === "" ? (
@@ -153,8 +154,8 @@ interface TimeInputHeadingProps {
 function TimeInputHeading({ peopleCount }: TimeInputHeadingProps) {
   return (
     <>
-      {peopleCount === 0 && <H3>Vyberte X časových bloků:</H3>}
-      {peopleCount === 1 && <H3>Vyberte 1 časový blok:</H3>}
+      {peopleCount === 0 && <p>Vyberte X časových bloků:</p>}
+      {peopleCount === 1 && <Label>Vyberte 1 časový blok:</Label>}
       {peopleCount > 1 && <H3>Vyberte {peopleCount} časové bloky:</H3>}
     </>
   );
