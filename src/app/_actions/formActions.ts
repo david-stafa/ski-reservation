@@ -108,7 +108,7 @@ export async function createReservation(
       },
     });
 
-    revalidatePath("/reservation");
+    revalidatePath("/");
 
     return {
       success: true,
