@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/db/prisma";
+import { unstable_cache } from "next/cache";
 
 // input: date in format 2025-10-07
 export async function getAllReservationsDates(date: string) {
@@ -26,6 +27,15 @@ export async function getSumOfReservations() {
   return await prisma.reservation.count();
 }
 
+// TODO: Find out if this is the right way to use cache
+export const getCachedSumOfReservations = unstable_cache(
+  async () => await getSumOfReservations(),
+  ["reservations"], // key
+  {
+    tags: ["reservations"], // 💡 tag to revalidate
+  }
+);
+
 export async function getReservationById(id: string) {
   return await prisma.reservation.findUnique({
     where: {
@@ -49,3 +59,12 @@ export async function getAllReservations() {
     },
   });
 }
+
+// TODO: Find out if this is the right way to use cache
+export const getCachedAllReservations = unstable_cache(
+  async () => await getAllReservations(),
+  ["reservations"], // key
+  {
+    tags: ["reservations"], // 💡 tag to revalidate
+  }
+);
