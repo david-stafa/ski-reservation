@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Container from "../components/container";
-import { getSumOfReservations } from "./_actions/reservationActions";
+import { getCachedSumOfReservations } from "./_actions/reservationActions";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ const SKI_SETS_TOTAL = 200;
 
 export default async function Home() {
   // Fetch data from the server
-  const reservations = await getSumOfReservations();
+  const reservations = await getCachedSumOfReservations();
 
   return (
     <Container className="flex flex-col w-full h-screen items-start justify-center gap-8 relative">

@@ -1,10 +1,10 @@
-import { getAllReservations } from "@/app/_actions/reservationActions";
-import { DataTable } from "./data-table";
-import { columns } from "./columns";
+import { getCachedAllReservations } from "@/app/_actions/reservationActions";
 import Container from "@/components/container";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 
 const Reservations = async () => {
-  const reservations = await getAllReservations();
+  const reservations = await getCachedAllReservations();
 
   return (
     <Container>

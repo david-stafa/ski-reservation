@@ -2,8 +2,8 @@
 
 import { prisma } from "@/db/prisma";
 import { ReservationResult, ReservationSchema } from "@/lib/types/types";
-import { revalidatePath } from "next/cache";
 import { DateTime } from "luxon";
+import { revalidateTag } from "next/cache";
 
 export async function createReservation(
   prevState: unknown,
@@ -108,7 +108,7 @@ export async function createReservation(
       },
     });
 
-    revalidatePath("/");
+    revalidateTag("reservations");
 
     return {
       success: true,
