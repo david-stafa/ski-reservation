@@ -7,7 +7,7 @@ export default function ReservationLayout({
 }) {
   return (
     <Container>
-      <h1 className="text-center text-lg font-medium my-4">Rezervační formulář</h1>
+      {/* <h1 className="text-center text-lg font-medium my-4">Rezervační formulář</h1> */}
       {children}
     </Container>
   );

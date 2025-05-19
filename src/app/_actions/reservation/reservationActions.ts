@@ -68,3 +68,35 @@ export const getCachedAllReservations = unstable_cache(
     tags: ["reservations"], // 💡 tag to revalidate
   }
 );
+
+// check for already existing reservation
+export async function findConflictingReservations(
+  newStartDate: Date,
+  newEndDate: Date
+) {
+  return await prisma.reservation.findFirst({
+    where: {
+      AND: [
+        { startDate: { lt: newEndDate } },
+        { endDate: { gt: newStartDate } },
+      ],
+    },
+  });
+}
+
+// check for already existing reservation with the same email
+export async function checkConflictingEmail(email: string) {
+  return await prisma.reservation.findFirst({
+    where: {
+      email: email,
+    },
+  });
+}
+
+export async function findReservationByEmailAndLastName(email: string) {
+  return await prisma.reservation.findUnique({
+    where: {
+      email,
+    },
+  });
+}

@@ -1,4 +1,4 @@
-import { getCachedAllReservations } from "@/app/_actions/reservationActions";
+import { getCachedAllReservations } from "@/app/_actions/reservation/reservationActions";
 import Container from "@/components/container";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
