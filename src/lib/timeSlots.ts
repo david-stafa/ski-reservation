@@ -1,4 +1,6 @@
-export const TIMESLOTS = [
+type TimeString = `${number}:${number}:${number}`;
+
+export const TIMESLOTS: TimeString[] = [
   "15:00:00",
   "15:10:00",
   "15:20:00",

@@ -1,6 +1,9 @@
 "use client";
 
-import { createReservation } from "@/app/_actions/formActions";
+import {
+  createReservation,
+  updateReservation,
+} from "@/app/_actions/reservation/formActions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
@@ -20,6 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { InputWithLabel } from "./InputWithLabel";
 import TimeInput from "./TimeInput";
+import { DatePicker } from "./DatePicker";
 
 /* Type containing all form fields for reservation */
 export type ReservationFormValues = {
@@ -32,31 +36,46 @@ export type ReservationFormValues = {
   time: string;
 };
 
-const Form = () => {
+const Form = ({
+  reservationId,
+  formFields,
+}: {
+  reservationId?: string;
+  formFields?: ReservationFormValues | null;
+}) => {
   const {
     register,
     handleSubmit,
     control,
     setValue,
-    setError,
     getValues,
+    setError,
     watch,
     reset,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(ReservationSchema),
     defaultValues: {
-      email: "asd@ase.cy",
-      phone: "123 456 789",
-      date: "",
-      peopleCount: 1,
+      firstName: formFields?.firstName ?? "",
+      lastName: formFields?.lastName ?? "",
+      date: formFields?.date ?? "",
+      time: formFields?.time ?? "",
+      email: formFields?.email ?? "asd@ase.cy",
+      phone: formFields?.phone ?? "123 456 789",
+      peopleCount: formFields?.peopleCount ?? 1,
     },
     mode: "onBlur",
   });
 
   const onSubmitForm: SubmitHandler<ReservationSchema> = async (data) => {
-    const res = await createReservation(null, data);
+    let res;
+    if (reservationId) {
+      res = await updateReservation(null, data, reservationId);
+    } else {
+      res = await createReservation(null, data);
+    }
 
+    // Show error messages if response is not successful
     if (!res.success) {
       for (const [field, messages] of Object.entries(res.error)) {
         setError(field as keyof ReservationSchema | "root", {
@@ -131,15 +150,23 @@ const Form = () => {
           )}
         />
 
-        <InputWithLabel
+        <Label htmlFor="date" className="mt-4 mb-2">
+          Datum
+        </Label>
+        <Controller
           name="date"
-          label="Datum"
-          error={errors.date}
-          type="date"
-          register={register}
-          min={STARTDATE}
-          max={ENDDATE}
+          control={control}
+          render={({ field }) => (
+            <DatePicker
+              min={new Date(STARTDATE)}
+              max={new Date(ENDDATE)}
+              field={field}
+            />
+          )}
         />
+        {errors.date && (
+          <p className="text-red-500 italic text-sm">{errors.date.message}</p>
+        )}
 
         <TimeInput
           register={register}
@@ -147,6 +174,8 @@ const Form = () => {
           peopleCount={watch("peopleCount")}
           error={errors.time}
           setValue={setValue}
+          reservationTime={formFields?.time}
+          reservationPeopleCount={formFields?.peopleCount}
         />
 
         <Button
@@ -155,7 +184,6 @@ const Form = () => {
         >
           Odeslat
         </Button>
-      
       </form>
     </>
   );
