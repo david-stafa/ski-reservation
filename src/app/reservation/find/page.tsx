@@ -4,12 +4,14 @@ import { findReservationByEmailAndLastName } from "@/app/_actions/reservation/re
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Reservation } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 const FindReservation = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
   const [reservation, setReservation] = useState<Reservation>();
+  const router = useRouter()
 
   const handleFindReservation = async () => {
     const email = emailRef.current?.value.trim();
@@ -21,7 +23,11 @@ const FindReservation = () => {
 
     const result = await findReservationByEmailAndLastName(email);
 
+    console.log(result)
+
     if(!result) return;
+
+    router.push(`/reservation/${result.id}`)
 
     setReservation(result);
   };

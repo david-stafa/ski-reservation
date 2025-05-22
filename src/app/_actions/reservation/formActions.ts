@@ -12,8 +12,9 @@ import {
 import {
   checkConflictingEmail,
   findConflictingReservations,
+  setReservationTime,
+  unsetReservationTime,
 } from "./reservationActions";
-import { is } from "date-fns/locale";
 
 export async function createReservation(
   prevState: unknown,
@@ -175,10 +176,12 @@ export async function updateReservation(
     duration
   );
 
-  const isWithingOldReservationTime =
-    reservation.startDate <= newStartDate && reservation.endDate >= newEndDate;
-
-  if (!isWithingOldReservationTime) {
+  if (
+    reservation.startDate !== newStartDate &&
+    reservation.peopleCount !== data.peopleCount
+  ) {
+    // unset reservation time so it wont conflict and be avaiable for
+    unsetReservationTime(reservationId);
     // check for already existing reservation
     const conflictingReservations = await findConflictingReservations(
       newStartDate,
@@ -186,6 +189,12 @@ export async function updateReservation(
     );
 
     if (conflictingReservations) {
+      // set reservation time back to original
+      setReservationTime(
+        reservationId,
+        reservation.startDate,
+        reservation.endDate
+      );
       return {
         success: false,
         error: {

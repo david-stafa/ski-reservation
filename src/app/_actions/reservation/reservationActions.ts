@@ -100,3 +100,31 @@ export async function findReservationByEmailAndLastName(email: string) {
     },
   });
 }
+
+export async function unsetReservationTime(id: string) {
+  return await prisma.reservation.update({
+    where: {
+      id,
+    },
+    data: {
+      startDate: undefined,
+      endDate: undefined,
+    },
+  });
+}
+
+export async function setReservationTime(
+  id: string,
+  startDate: Date,
+  endDate: Date
+) {
+  return await prisma.reservation.update({
+    where: {
+      id,
+    },
+    data: {
+      startDate,
+      endDate,
+    },
+  });
+}
