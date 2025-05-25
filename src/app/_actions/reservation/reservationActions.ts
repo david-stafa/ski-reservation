@@ -72,13 +72,15 @@ export const getCachedAllReservations = unstable_cache(
 // check for already existing reservation
 export async function findConflictingReservations(
   newStartDate: Date,
-  newEndDate: Date
+  newEndDate: Date,
+  excludeReservationId?: string
 ) {
   return await prisma.reservation.findFirst({
     where: {
       AND: [
         { startDate: { lt: newEndDate } },
         { endDate: { gt: newStartDate } },
+        ...(excludeReservationId ? [{ id: { not: excludeReservationId } }] : []),
       ],
     },
   });
@@ -102,13 +104,18 @@ export async function findReservationByEmailAndLastName(email: string) {
 }
 
 export async function unsetReservationTime(id: string) {
+  // Default date to unset reservation time 
+  // This should be a date that is not used in the application
+  // to avoid conflicts with other reservations.
+  // This is temporary state -> will be overwritten by user input
+  const defaultDate = new Date("2000-01-01T00:00:00Z");
   return await prisma.reservation.update({
     where: {
       id,
     },
     data: {
-      startDate: undefined,
-      endDate: undefined,
+      startDate: defaultDate,
+      endDate: defaultDate,
     },
   });
 }

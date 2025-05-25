@@ -8,12 +8,11 @@ import {
   createStartAndEndDate,
   formatDateTime,
   isWithinOpeningHours,
+  isWithinReservationTime,
 } from "./helpers/helpers";
 import {
   checkConflictingEmail,
   findConflictingReservations,
-  setReservationTime,
-  unsetReservationTime,
 } from "./reservationActions";
 
 export async function createReservation(
@@ -176,25 +175,22 @@ export async function updateReservation(
     duration
   );
 
-  if (
-    reservation.startDate !== newStartDate &&
-    reservation.peopleCount !== data.peopleCount
-  ) {
-    // unset reservation time so it wont conflict and be avaiable for
-    unsetReservationTime(reservationId);
-    // check for already existing reservation
+  const isCheckConflictingReservationNeeded = !isWithinReservationTime(
+    newStartDate,
+    newEndDate,
+    reservation.startDate,
+    reservation.endDate
+  );
+
+  if (isCheckConflictingReservationNeeded) {
+    // Check for conflicting reservations, excluding the current reservation
     const conflictingReservations = await findConflictingReservations(
       newStartDate,
-      newEndDate
+      newEndDate,
+      reservationId
     );
 
     if (conflictingReservations) {
-      // set reservation time back to original
-      setReservationTime(
-        reservationId,
-        reservation.startDate,
-        reservation.endDate
-      );
       return {
         success: false,
         error: {
