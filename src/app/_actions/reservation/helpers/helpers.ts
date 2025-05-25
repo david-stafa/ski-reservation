@@ -38,3 +38,12 @@ export const isWithinOpeningHours = (date: Date, peopleCount: number) => {
     }
   }
 };
+
+export const isWithinReservationTime = (
+  newStartDate: Date,
+  newEndDate: Date,
+  actualStartDate: Date,
+  actualEndDate: Date
+): boolean => {
+  return (newStartDate >= actualStartDate && newEndDate <= actualEndDate);
+};
