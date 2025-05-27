@@ -59,5 +59,5 @@ export const ReservationSchema = z.object({
 export type ReservationSchema = z.infer<typeof ReservationSchema>;
 
 export type ReservationResult =
-  | { success: true; message: string; redirectUrl?: string }
+  | { success: true; message: string; redirectUrl: string}
   | { success: false; error: Record<string, string[]> };
