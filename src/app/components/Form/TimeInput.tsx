@@ -97,11 +97,15 @@ export default function TimeInput({
     }
   }, [date, fetchReservations]); // fetch reservations whenever the `date` prop changes
 
-  // reset selected time and time input value when people count changes
+  // Reset selected time and time input value when people count changes
   useEffect(() => {
-    setSelectedTime(undefined); // reset selected time when people count changes
-    setValue("time", ""); // reset the controlled input value
-  }, [peopleCount, setValue]);
+    // Only reset if we're not in edit mode (no reservationTime)
+    // or if we are in edit mode but the peopleCount has changed from the original
+    if (!reservationTime || peopleCount !== reservationPeopleCount) {
+      setSelectedTime(undefined);
+      setValue("time", "");
+    }
+  }, [peopleCount, setValue, reservationTime, reservationPeopleCount]);
 
   return (
     <section className={cn("mt-4", { hidden: date === "" })}>
