@@ -3,49 +3,83 @@
 import { findReservationByEmailAndLastName } from "@/app/_actions/reservation/reservationActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Reservation } from "@prisma/client";
+import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 const FindReservation = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
-  const [reservation, setReservation] = useState<Reservation>();
-  const router = useRouter()
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState<string>("");
+  const router = useRouter();
 
-  const handleFindReservation = async () => {
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const disabledState = {
+    disabled: isLoading || success.length > 0,
+    message: isLoading ? "Hledám..." : success ? "Rezervace byla nalezena" : "Hledat",
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     const email = emailRef.current?.value.trim();
     const lastName = lastNameRef.current?.value.trim();
 
-    if (!email || !lastName) return;
+    if (!email || !lastName) {
+      setError("Vyplňte všechna pole");
+      return;
+    }
 
-    console.log(email, lastName);
+    if (!validateEmail(email)) {
+      setError("Zadejte platný email");
+      return;
+    }
 
-    const result = await findReservationByEmailAndLastName(email);
+    try {
+      setIsLoading(true);
+      setError("");
+      const result = await findReservationByEmailAndLastName(email, lastName);
 
-    console.log(result)
+      if (!result) {
+        setError("Rezervace nebyla nalezena");
+        return;
+      }
 
-    if(!result) return;
-
-    router.push(`/reservation/${result.id}`)
-
-    setReservation(result);
+      setSuccess("Rezervace byla nalezena");
+      router.push(`/reservation/${result.id}`);
+    } catch {
+      setError("Došlo k chybě při hledání rezervace");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  console.log(reservation)
-
   return (
-    <div>
-      <Input placeholder="Zadejte email" ref={emailRef} />
-      <Input placeholder="Zadejte příjmení" ref={lastNameRef} />
-      <Button
-        variant="default"
-        className="ml-2"
-        onClick={handleFindReservation}
-      >
-        Najít rezervaci
+    <form className="max-w-xl mx-auto mt-10" onSubmit={handleSubmit}>
+      <h1 className="text-2xl font-bold mb-4">Najít rezervaci</h1>
+
+      {error && <p className="text-red-500 text-sm mb-1">{error}</p>}
+      {success.length > 0 && <p className="text-green-500 text-sm mb-1">{success}</p>}
+
+      <Label htmlFor="email">Email</Label>
+      <Input placeholder="Zadejte email" ref={emailRef} className="mb-2 mt-1" />
+
+      <Label htmlFor="lastName">Příjmení</Label>
+      <Input
+        placeholder="Zadejte příjmení"
+        ref={lastNameRef}
+        className="mb-4 mt-1"
+      />
+
+      <Button variant="default" disabled={disabledState.disabled} type="submit" color={success.length > 0 ? "green" : "black"}>
+        {disabledState.message}
       </Button>
-    </div>
+    </form>
   );
 };
 
