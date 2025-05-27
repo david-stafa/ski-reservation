@@ -24,6 +24,8 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { InputWithLabel } from "./InputWithLabel";
 import TimeInput from "./TimeInput";
 import { DatePicker } from "./DatePicker";
+import { SuccessModal } from "./SuccessModal";
+import { useState } from "react";
 
 /* Type containing all form fields for reservation */
 export type ReservationFormValues = {
@@ -43,6 +45,11 @@ const Form = ({
   reservationId?: string;
   formFields?: ReservationFormValues | null;
 }) => {
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    path: "",
+  });
+  
   const {
     register,
     handleSubmit,
@@ -69,25 +76,37 @@ const Form = ({
 
   const onSubmitForm: SubmitHandler<ReservationSchema> = async (data) => {
     let res;
-    if (reservationId) {
-      res = await updateReservation(null, data, reservationId);
-    } else {
-      res = await createReservation(null, data);
-    }
+    try {
+      if (reservationId) {
+        res = await updateReservation(null, data, reservationId);
+      } else {
+        res = await createReservation(null, data);
+      }
 
-    // Show error messages if response is not successful
-    if (!res.success) {
-      for (const [field, messages] of Object.entries(res.error)) {
-        setError(field as keyof ReservationSchema | "root", {
-          type: "server",
-          message: messages[0],
+      // Show error messages if response is not successful
+      if (!res.success) {
+        for (const [field, messages] of Object.entries(res.error)) {
+          setError(field as keyof ReservationSchema | "root", {
+            type: "server",
+            message: messages[0],
+          });
+        }
+        throw new Error("Could not create reservation");
+      }
+
+      if (res.success) {
+        reset();
+        setModalState({
+          isOpen: true,
+          path: res.redirectUrl,
         });
       }
-      throw new Error("Could not create reservation");
+    } catch (error) {
+      console.error("Form submission error:", error);
     }
-
-    if (res.success) reset();
   };
+
+  console.log(getValues());
 
   return (
     <>
@@ -179,12 +198,20 @@ const Form = ({
         />
 
         <Button
-          className={cn("mt-8 w-full", { "bg-red-500": isSubmitting })}
+          className={cn("mt-8 w-full")}
           type="submit"
+          disabled={isSubmitting}
         >
-          Odeslat
+          {isSubmitting ? "Odeslání..." : "Odeslat"}
         </Button>
       </form>
+
+      <SuccessModal 
+        isOpen={modalState.isOpen} 
+        onClose={() => setModalState({ isOpen: false, path: "" })} 
+        path={modalState.path}
+        isEdditing={!!reservationId}
+      />
     </>
   );
 };

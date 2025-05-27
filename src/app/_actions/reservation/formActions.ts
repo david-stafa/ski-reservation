@@ -85,7 +85,7 @@ export async function createReservation(
 
   // create new reservation
   try {
-    await prisma.reservation.create({
+    const { id: reservationId } = await prisma.reservation.create({
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -102,7 +102,7 @@ export async function createReservation(
     return {
       success: true,
       message: "Rezervace byla úspěšně vytvořena.",
-      redirectUrl: "/",
+      redirectUrl: `/reservation/${reservationId}`,
     };
   } catch (error: unknown) {
     // TODO - Find some usefull usage to this error value
@@ -228,7 +228,7 @@ export async function updateReservation(
 
   // update existing reservation
   try {
-    await prisma.reservation.update({
+    const { id: updatedReservationId } = await prisma.reservation.update({
       where: {
         id: reservationId,
       },
@@ -248,7 +248,7 @@ export async function updateReservation(
     return {
       success: true,
       message: "Rezervace byla úspěšně upravena.",
-      redirectUrl: "/",
+      redirectUrl: `/reservation/${updatedReservationId}`,
     };
   } catch (error: unknown) {
     console.log(error);
