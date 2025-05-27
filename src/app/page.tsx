@@ -13,7 +13,16 @@ export default async function Home() {
   return (
     // TODO: h-[100dvh] is not supported on older browsers - find some fallback or something
     <Container className="flex flex-col h-[100dvh] justify-center w-full gap-8 relative">
-      <Image src="/logo.png" alt="Ski Logo" width={170} height={170} />
+      <div className="w-[240px] h-[42px] relative">
+        <Image
+          src="/logo.png"
+          alt="Ski Logo"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="scale-down"
+          priority
+        />
+      </div>
       <h1 className="font-bold text-2xl">Rezervace celoročních setů</h1>
       <p className="text-zinc-600">
         Rezervujte si termín a dorazte si k nám vyzkoušet a zamluvit lyžařský
