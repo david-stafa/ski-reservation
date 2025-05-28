@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { CircleCheck } from "lucide-react";
 import { useRouter } from "next/navigation"
+import { useEffect } from "react";
 
 interface SuccessModalProps {
     isOpen: boolean;
@@ -12,6 +13,12 @@ interface SuccessModalProps {
 
 export const SuccessModal = ({ isOpen, onClose, path, isEdditing }: SuccessModalProps) => {
     const router = useRouter();
+    
+    useEffect(() => {
+        if (isOpen) {
+            router.prefetch(path);
+        }
+    }, [path, router, isOpen]);
 
     const handleClose = () => {
         onClose();
