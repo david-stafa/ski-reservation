@@ -49,7 +49,7 @@ const Form = ({
     isOpen: false,
     path: "",
   });
-  
+
   const {
     register,
     handleSubmit,
@@ -86,6 +86,10 @@ const Form = ({
       // Show error messages if response is not successful
       if (!res.success) {
         for (const [field, messages] of Object.entries(res.error)) {
+          setError("root", {
+            type: "server",
+            message: "Něco se pokazilo, zkuste to znovu později.",
+          });
           setError(field as keyof ReservationSchema | "root", {
             type: "server",
             message: messages[0],
@@ -206,9 +210,9 @@ const Form = ({
         </Button>
       </form>
 
-      <SuccessModal 
-        isOpen={modalState.isOpen} 
-        onClose={() => setModalState({ isOpen: false, path: "" })} 
+      <SuccessModal
+        isOpen={modalState.isOpen}
+        onClose={() => setModalState({ isOpen: false, path: "" })}
         path={modalState.path}
         isEdditing={!!reservationId}
       />

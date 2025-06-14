@@ -2,9 +2,12 @@ import { getReservationById } from "@/app/_actions/reservation/reservationAction
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { DeleteReservationButton } from "./components/DeleteReservationButton";
-import { format } from "date-fns";
 import { DateTime } from "luxon";
 import { cn } from "@/lib/utils";
+import { CalendarIcon, ClockIcon, MailIcon, UserIcon } from "lucide-react";
+import { PhoneIcon } from "lucide-react";
+import { UsersIcon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 type ReservationDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -15,7 +18,13 @@ const ReservationDetailPage = async ({
 }: ReservationDetailPageProps) => {
   const { id } = await params;
   const reservation = async () => {
+    // await new Promise((resolve) => setTimeout(resolve, 10000)); test loading
     const data = await getReservationById(id);
+
+    if (!data) {
+      return null;
+    }
+
     const formattedData = {
       ...data,
       startDate: DateTime.fromJSDate(data?.startDate, {
@@ -30,6 +39,7 @@ const ReservationDetailPage = async ({
     };
     return formattedData;
   };
+
   const reservationData = await reservation();
 
   if (!reservationData) {
@@ -44,43 +54,55 @@ const ReservationDetailPage = async ({
   }
 
   return (
-    <div className="max-w-lg mx-auto mt-12">
-      <h1 className="text-2xl font-bold mb-6 text-center text-primary">
+    <div className="max-w-3xl my-auto md:mt-12 md:p-6 bg-white rounded-lg md:shadow-md ">
+      <h1 className="text-2xl font-bold mb-4 text-center text-primary">
         Detail vaší rezervace
       </h1>
-      <div className="space-y-3 mb-8">
-        <DetailComponent className="text-lg font-semibold">
-          <span className="text-zinc-500">Datum rezervace:</span>{" "}
-          <span className="font-medium">{reservationData.startDate}</span>
-        </DetailComponent>
-        <DetailComponent className="text-lg font-semibold">
-          <span className="text-zinc-500">Čas rezervace:</span>{" "}
-          <span className="font-medium">
-            {reservationData.startTime} - {reservationData.endTime}
-          </span>
-        </DetailComponent>
-        <DetailComponent>
-          <span className="text-zinc-500">Jméno:</span>{" "}
-          <span className="font-medium">
-            {reservationData.firstName} {reservationData.lastName}
-          </span>
-        </DetailComponent>
-        <DetailComponent>
-          <span className="text-zinc-500">Email:</span>{" "}
-          <span className="font-medium">{reservationData.email}</span>
-        </DetailComponent>
-        <DetailComponent>
-          <span className="text-zinc-500">Telefon:</span>{" "}
-          <span className="font-medium">{reservationData.phone}</span>
-        </DetailComponent>
-        <DetailComponent>
-          <span className="text-zinc-500">Počet osob:</span>{" "}
-          <span className="font-medium">{reservationData.peopleCount}</span>
-        </DetailComponent>
+      <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-blue-700 mx-auto rounded-full mb-8" />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <DetailComponent
+          icon={<CalendarIcon className="w-5 h-5" />}
+          label="Datum rezervace:"
+          value={reservationData.startDate}
+        />
+
+        <DetailComponent
+          icon={<ClockIcon className="w-5 h-5" />}
+          label="Čas rezervace:"
+          value={`${reservationData.startTime} - ${reservationData.endTime}`}
+        />
+
+        <DetailComponent
+          icon={<UserIcon className="w-5 h-5" />}
+          label="Jméno:"
+          value={`${reservationData.firstName} ${reservationData.lastName}`}
+        />
+
+        <DetailComponent
+          icon={<MailIcon className="w-5 h-5" />}
+          label="Email:"
+          value={reservationData.email}
+        />
+
+        <DetailComponent
+          icon={<PhoneIcon className="w-5 h-5" />}
+          label="Telefon:"
+          value={reservationData.phone}
+        />
+
+        <DetailComponent
+          icon={<UsersIcon className="w-5 h-5" />}
+          label="Počet osob:"
+          value={reservationData.peopleCount}
+        />
       </div>
+      <Separator className="mb-8" />
       <div className="flex gap-4 justify-center">
         <Link href={`/reservation/${id}/edit`}>
-          <Button variant="default">Upravit rezervaci</Button>
+          <Button variant="default" >
+            Upravit rezervaci
+          </Button>
         </Link>
         <DeleteReservationButton id={id} />
       </div>
@@ -91,13 +113,29 @@ const ReservationDetailPage = async ({
 export default ReservationDetailPage;
 
 type DetailComponentProps = React.HTMLAttributes<HTMLParagraphElement> & {
-  children: React.ReactNode;
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
 };
 
-const DetailComponent = ({ children, className }: DetailComponentProps) => {
+const DetailComponent = ({
+  icon,
+  label,
+  value,
+  className,
+}: DetailComponentProps) => {
   return (
-    <p className={cn("mb-1 text-base flex items-center gap-2", className)}>
-      {children}
-    </p>
+    <div
+      className={cn(
+        "mb-1 flex items-center gap-2 bg-zinc-50 border border-zinc-200 rounded-md p-4",
+        className
+      )}
+    >
+      {icon}
+      <div className="ml-2 flex flex-col">
+        <span className="text-sm font-medium text-zinc-500">{label}</span>
+        <span className="text-base md:text-lg font-semibold">{value}</span>
+      </div>
+    </div>
   );
 };

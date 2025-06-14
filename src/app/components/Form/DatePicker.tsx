@@ -17,8 +17,8 @@ import { ReservationFormValues } from "./Form";
 import { ControllerRenderProps } from "react-hook-form";
 
 type DatePickerProps = {
-  min?: Date;
-  max?: Date;
+  min: Date;
+  max: Date;
   field: ControllerRenderProps<ReservationFormValues, "date">;
 };
 
@@ -50,9 +50,8 @@ export function DatePicker({ min, max, field }: DatePickerProps) {
           onSelect={(date) =>
             field.onChange(date ? format(date, "yyyy-MM-dd") : "")
           }
-          initialFocus
-          fromDate={min}
-          toDate={max}
+          startMonth={new Date(2025, 8)}
+          disabled={{ before: min, after: max }}
           locale={cs}
           weekStartsOn={1} // optional if you need Monday as first day
         />
