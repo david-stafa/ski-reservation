@@ -5,6 +5,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// TODO: add provider to env variables
 // Providers: sqlite: local development
 // Providers: postgresql: production
 datasource db {

@@ -14,6 +14,10 @@ import {
   checkConflictingEmail,
   findConflictingReservations,
 } from "./reservationActions";
+import { Resend } from "resend";
+import ReservationConfirmationEmail from "../../../../emails/TestMail";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function createReservation(
   prevState: unknown,
@@ -85,7 +89,7 @@ export async function createReservation(
 
   // create new reservation
   try {
-    const { id: reservationId } = await prisma.reservation.create({
+    const { id: reservationId, email: reservationEmail } = await prisma.reservation.create({
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -95,6 +99,23 @@ export async function createReservation(
         startDate: newStartDate,
         endDate: newEndDate,
       },
+    });
+
+    console.log(reservationEmail);
+
+    // TODO - Send email to reservation email
+    // TODO - Add new domain to resend
+    await resend.emails.send({
+      from: 'Ski Reservation <onboarding@resend.dev>',
+      to: 'david.stafa@gmail.com',
+      subject: 'Potvrzení rezervace',
+      react: ReservationConfirmationEmail({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        startDate: newStartDate,
+        endDate: newEndDate,
+        peopleCount: data.peopleCount
+      })
     });
 
     revalidateTag("reservations");

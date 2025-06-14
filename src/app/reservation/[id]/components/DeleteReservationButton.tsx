@@ -18,8 +18,10 @@ export function DeleteReservationButton({ id }: { id: string }) {
   };
 
 
+  // TODO: Add confirmation modal with confirmation button and cancel button
+
   return (
-    <Button variant="destructive" className="ml-2" onClick={handleDelete}>
+    <Button variant="destructive" onClick={handleDelete}>
       Smazat rezervaci
     </Button>
   );
