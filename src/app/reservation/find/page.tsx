@@ -1,6 +1,7 @@
 "use client";
 
 import { findReservationByEmailAndLastName } from "@/app/_actions/reservation/reservationActions";
+import HeadingUnderline from "@/components/headingUnderline";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,13 +62,14 @@ const FindReservation = () => {
 
   return (
     <form className="max-w-xl mx-auto mt-10" onSubmit={handleSubmit}>
-      <h1 className="text-2xl font-bold mb-4">Najít rezervaci</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Najít rezervaci</h1>
+      <HeadingUnderline />
 
       {error && <p className="text-red-500 text-sm mb-1">{error}</p>}
       {success.length > 0 && <p className="text-green-500 text-sm mb-1">{success}</p>}
 
       <Label htmlFor="email">Email</Label>
-      <Input placeholder="Zadejte email" ref={emailRef} className="mb-2 mt-1" />
+      <Input placeholder="Zadejte email" ref={emailRef} className="mb-4 mt-1" />
 
       <Label htmlFor="lastName">Příjmení</Label>
       <Input

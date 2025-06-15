@@ -114,7 +114,7 @@ const Form = ({
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmitForm)}>
+      <form onSubmit={handleSubmit(onSubmitForm)} className="max-w-xl mx-auto flex flex-col">
         <InputWithLabel
           name="firstName"
           label="Jméno"
@@ -202,7 +202,7 @@ const Form = ({
         />
 
         <Button
-          className={cn("mt-8 w-full")}
+          className={cn("mt-8 w-full max-w-3xs mx-auto")}
           type="submit"
           disabled={isSubmitting}
         >

@@ -12,7 +12,7 @@ export default async function Home() {
 
   return (
     // TODO: h-[100dvh] is not supported on older browsers - find some fallback or something
-    <Container className="flex flex-col h-[100dvh] justify-center w-full gap-8 relative">
+    <Container className="flex flex-col h-[100dvh] justify-center w-full gap-8 relative max-w-xl">
       <div className="w-[240px] h-[42px] relative">
         <Image
           src="/logo.png"

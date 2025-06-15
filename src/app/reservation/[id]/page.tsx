@@ -8,6 +8,8 @@ import { CalendarIcon, ClockIcon, MailIcon, UserIcon } from "lucide-react";
 import { PhoneIcon } from "lucide-react";
 import { UsersIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import HeadingUnderline from "@/components/headingUnderline";
+import Container from "@/components/container";
 
 type ReservationDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -54,11 +56,11 @@ const ReservationDetailPage = async ({
   }
 
   return (
-    <div className="max-w-3xl my-auto md:mt-12 md:p-6 bg-white rounded-lg md:shadow-md ">
+    <Container className="max-w-3xl md:mt-12 md:p-6 rounded-lg md:shadow-md">
       <h1 className="text-2xl font-bold mb-4 text-center text-primary">
         Detail vaší rezervace
       </h1>
-      <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-blue-700 mx-auto rounded-full mb-8" />
+      <HeadingUnderline />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <DetailComponent
@@ -106,7 +108,7 @@ const ReservationDetailPage = async ({
         </Link>
         <DeleteReservationButton id={id} />
       </div>
-    </div>
+    </Container>
   );
 };
 

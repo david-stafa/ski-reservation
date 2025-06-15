@@ -1,5 +1,7 @@
 import { getReservationById } from "@/app/_actions/reservation/reservationActions";
 import Form, { ReservationFormValues } from "@/app/components/Form/Form";
+import Container from "@/components/container";
+import HeadingUnderline from "@/components/headingUnderline";
 import { format } from "date-fns";
 
 type ReservationEditPageProps = {
@@ -26,14 +28,14 @@ const ReservationEditPage = async ({ params }: ReservationEditPageProps) => {
   };
 
   return (
-    <div className="max-w-3xl my-auto md:mt-12 md:p-6 bg-white rounded-lg md:shadow-md ">
-      <h1 className="text-2xl font-bold mb-4 text-center text-primary">
+    <Container className="max-w-3xl md:mt-12 md:p-6 rounded-lg md:shadow-md">
+      <h1 className="text-2xl font-bold mb-4 text-center">
         Upravit rezervaci
       </h1>
-      <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-blue-700 mx-auto rounded-full mb-8" />
+      <HeadingUnderline />
 
       <Form reservationId={id} formFields={formData} />
-    </div>
+    </Container>
   );
 };
 export default ReservationEditPage;
