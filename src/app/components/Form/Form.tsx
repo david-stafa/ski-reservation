@@ -114,7 +114,7 @@ const Form = ({
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmitForm)} className="max-w-xl mx-auto flex flex-col">
+      <form onSubmit={handleSubmit(onSubmitForm)} className="max-w-lg mx-auto flex flex-col">
         <InputWithLabel
           name="firstName"
           label="Jméno"
