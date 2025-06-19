@@ -4,6 +4,6 @@ export const config = {
     subject: 'Potvrzení rezervace',
     // In development, always send to your email for testing
     getToEmail: (userEmail: string) => 
-      process.env.EMAIL_ENV === 'production' ? userEmail : 'david.stafa@gmail.com'
+      process.env.NODE_ENV === 'production' ? userEmail : 'david.stafa@gmail.com'
   }
 };
