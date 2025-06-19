@@ -7,8 +7,9 @@ import {
   Preview,
   Section,
   Text,
-} from '@react-email/components';
-import * as React from 'react';
+  Hr,
+} from "@react-email/components";
+import * as React from "react";
 
 interface ReservationConfirmationEmailProps {
   firstName: string;
@@ -25,8 +26,20 @@ const ReservationConfirmationEmail = ({
   endDate,
   peopleCount,
 }: ReservationConfirmationEmailProps) => {
-  const formattedStartDate = new Date(startDate).toLocaleString('cs-CZ');
-  const formattedEndDate = new Date(endDate).toLocaleString('cs-CZ');
+  const formattedDate = new Date(startDate).toLocaleString("cs-CZ", {
+    weekday: "short",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+  const formattedEndTime = new Date(endDate).toLocaleString("cs-CZ", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const formattedStartTime = new Date(startDate).toLocaleString("cs-CZ", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <Html>
@@ -34,22 +47,41 @@ const ReservationConfirmationEmail = ({
       <Preview>Potvrzení vaší rezervace</Preview>
       <Body style={main}>
         <Container style={container}>
-          <Heading style={h1}>Potvrzení rezervace</Heading>
-          <Section style={section}>
-            <Text style={text}>
-              Vážený/á {firstName} {lastName},
+          <Section style={headerSection}>
+            <Heading style={h1}>✅ Rezervace vytvořena</Heading>
+            <Text style={subtitle}>
+              Vaše rezervace byla úspěšně vytvořena.
             </Text>
-            <Text style={text}>
-              děkujeme za vaši rezervaci. Zde jsou detaily vaší rezervace:
-            </Text>
-            <Text style={text}>
-              Datum a čas začátku: {formattedStartDate}
-            </Text>
-            <Text style={text}>
-              Datum a čas konce: {formattedEndDate}
-            </Text>
-            <Text style={text}>
-              Počet osob: {peopleCount}
+          </Section>
+          
+          <Section style={contentSection}>
+            <Text style={sectionTitle}>Detaily rezervace</Text>
+            <Hr style={divider} />
+            
+            <Section style={detailRow}>
+              <Text style={label}>Jméno:</Text>
+              <Text style={value}>{firstName} {lastName}</Text>
+            </Section>
+            
+            <Section style={detailRow}>
+              <Text style={label}>Datum:</Text>
+              <Text style={value}>{formattedDate}</Text>
+            </Section>
+            
+            <Section style={detailRow}>
+              <Text style={label}>Čas:</Text>
+              <Text style={value}>{formattedStartTime} - {formattedEndTime}</Text>
+            </Section>
+            
+            <Section style={detailRow}>
+              <Text style={label}>Počet osob:</Text>
+              <Text style={value}>{peopleCount}</Text>
+            </Section>
+          </Section>
+          
+          <Section style={footerSection}>
+            <Text style={footerText}>
+              Děkujeme za vaši rezervaci! V případě jakýchkoliv dotazů nás neváhejte kontaktovat.
             </Text>
           </Section>
         </Container>
@@ -59,35 +91,103 @@ const ReservationConfirmationEmail = ({
 };
 
 const main = {
-  backgroundColor: '#ffffff',
+  backgroundColor: "#f8fafc",
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+  margin: 0,
+  padding: 0,
 };
 
 const container = {
-  margin: '0 auto',
-  padding: '20px 0 48px',
-  maxWidth: '560px',
+  margin: "0 auto",
+  padding: "40px 20px",
+  maxWidth: "600px",
+  backgroundColor: "#ffffff",
+  borderRadius: "12px",
+  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
 };
 
-const section = {
-  padding: '24px',
-  backgroundColor: '#f6f9fc',
-  borderRadius: '4px',
+const headerSection = {
+  textAlign: "center" as const,
+  padding: "32px 24px 24px",
+  backgroundColor: "#3b82f6",
+  borderRadius: "12px 12px 0 0",
+  margin: "-40px -20px 0",
 };
 
 const h1 = {
-  color: '#333',
-  fontSize: '24px',
-  fontWeight: 'bold',
-  margin: '40px 0',
-  padding: '0',
+  color: "#ffffff",
+  fontSize: "28px",
+  fontWeight: "700",
+  margin: "0 0 8px 0",
+  padding: 0,
+  letterSpacing: "-0.025em",
 };
 
-const text = {
-  color: '#333',
-  fontSize: '16px',
-  margin: '24px 0',
+const subtitle = {
+  color: "#e0e7ff",
+  fontSize: "16px",
+  margin: "0",
+  fontWeight: "400",
+};
+
+const contentSection = {
+  padding: "32px 24px",
+  backgroundColor: "#ffffff",
+};
+
+const sectionTitle = {
+  color: "#1f2937",
+  fontSize: "20px",
+  fontWeight: "600",
+  margin: "0 0 16px 0",
+  letterSpacing: "-0.025em",
+};
+
+const divider = {
+  borderColor: "#e5e7eb",
+  borderWidth: "1px",
+  margin: "16px 0 24px 0",
+};
+
+const detailRow = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "12px 0",
+  borderBottom: "1px solid #f3f4f6",
+};
+
+const label = {
+  color: "#6b7280",
+  fontSize: "14px",
+  fontWeight: "500",
+  margin: 0,
+  flex: "0 0 30%",
+};
+
+const value = {
+  color: "#1f2937",
+  fontSize: "14px",
+  fontWeight: "600",
+  margin: 0,
+  flex: "0 0 70%",
+  textAlign: "left" as const,
+};
+
+const footerSection = {
+  padding: "24px",
+  backgroundColor: "#f9fafb",
+  borderRadius: "0 0 12px 12px",
+  margin: "0 -20px -40px",
+  textAlign: "center" as const,
+};
+
+const footerText = {
+  color: "#6b7280",
+  fontSize: "14px",
+  margin: 0,
+  lineHeight: "1.5",
 };
 
 export default ReservationConfirmationEmail;

@@ -24,9 +24,10 @@ type DatePickerProps = {
 
 export function DatePicker({ min, max, field }: DatePickerProps) {
   const parsedDate = field.value ? parseISO(field.value) : undefined;
+  const [open, setOpen] = React.useState(false)
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -47,9 +48,10 @@ export function DatePicker({ min, max, field }: DatePickerProps) {
         <Calendar
           mode="single"
           selected={parsedDate}
-          onSelect={(date) =>
+          onSelect={(date) => {
             field.onChange(date ? format(date, "yyyy-MM-dd") : "")
-          }
+            setOpen(false)
+          }}
           startMonth={new Date(2025, 8)}
           disabled={{ before: min, after: max }}
           locale={cs}

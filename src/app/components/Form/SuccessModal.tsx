@@ -33,9 +33,9 @@ export const SuccessModal = ({ isOpen, onClose, path, isEdditing }: SuccessModal
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
             <DialogContent className="">
-                <CircleCheck  color="green" size={70} className="mx-auto"/>
+                <CircleCheck  color="green" size={70} className="mx-auto my-2"/>
                 <DialogHeader>
-                    <DialogTitle className="text-center">{header.title}</DialogTitle>
+                    <DialogTitle className="text-center mb-4">{header.title}</DialogTitle>
                     <DialogDescription className="text-center">
                         {header.description}
                     </DialogDescription>

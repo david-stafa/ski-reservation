@@ -16,6 +16,7 @@ import {
 } from "./reservationActions";
 import { Resend } from "resend";
 import ReservationConfirmationEmail from "../../../../emails/TestMail";
+import { config } from "../../../lib/config";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -106,9 +107,9 @@ export async function createReservation(
     // TODO - Send email to reservation email
     // TODO - Add new domain to resend
     await resend.emails.send({
-      from: 'Ski Reservation <onboarding@resend.dev>',
-      to: 'david.stafa@gmail.com',
-      subject: 'Potvrzení rezervace',
+      from: config.email.from,
+      to: config.email.getToEmail(data.email),
+      subject: config.email.subject,
       react: ReservationConfirmationEmail({
         firstName: data.firstName,
         lastName: data.lastName,
