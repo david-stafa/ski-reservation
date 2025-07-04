@@ -111,7 +111,10 @@ const Form = ({
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmitForm)} className="max-w-lg mx-auto flex flex-col">
+      <form
+        onSubmit={handleSubmit(onSubmitForm)}
+        className="max-w-lg mx-auto flex flex-col"
+      >
         <InputWithLabel
           name="firstName"
           label="Jméno"
@@ -194,7 +197,11 @@ const Form = ({
           peopleCount={watch("peopleCount")}
           error={errors.time}
           setValue={setValue}
-          reservationTime={formFields?.time}
+          reservationTime={
+            watch("date") === formFields?.date && formFields?.time
+              ? formFields?.time
+              : undefined
+          }
           reservationPeopleCount={formFields?.peopleCount}
         />
 
