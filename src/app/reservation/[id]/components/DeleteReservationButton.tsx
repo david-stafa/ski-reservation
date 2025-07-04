@@ -42,22 +42,22 @@ export function DeleteReservationButton({ id }: { id: string }) {
       <DialogTrigger asChild>
         <Button variant="destructive">Smazat rezervaci</Button>
       </DialogTrigger>
-      <DialogContent className="text-center">
+      <DialogContent>
         <DialogHeader>
           <XCircleIcon className="size-15 mx-auto text-destructive " />
-          <DialogTitle className="text-lg font-semibold">
-            Jste si jisti?
-          </DialogTitle>
-          <DialogDescription className="text-sm text-zinc-500">
-            Opravdu chcete smazat rezervaci? Tato akce je nevratná.
-          </DialogDescription>
+          <div className="my-2">
+            <DialogTitle className="text-lg font-semibold text-center mb-1">
+              Smazat rezervaci
+            </DialogTitle>
+            <DialogDescription className="text-base text-zinc-500 text-center">
+              Opravdu chcete smazat rezervaci? Tato akce je nevratná.
+            </DialogDescription>
+          </div>
         </DialogHeader>
         {error && <p className="text-red-500 italic text-sm">{error}</p>}
         <DialogFooter className="flex flex-row !justify-center gap-2 mt-2">
           <DialogClose asChild>
-            <Button variant="outline" className="px-10">
-              Zrušit
-            </Button>
+            <Button variant="outline">Ne, vrátit se zpět.</Button>
           </DialogClose>
           <Button
             variant="destructive"
@@ -65,7 +65,7 @@ export function DeleteReservationButton({ id }: { id: string }) {
             onClick={handleDelete}
             disabled={isDeleting}
           >
-            Smazat rezervaci
+            Ano, smazat!
           </Button>
         </DialogFooter>
       </DialogContent>
