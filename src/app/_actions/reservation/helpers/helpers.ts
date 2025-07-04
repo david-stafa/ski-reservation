@@ -18,11 +18,13 @@ export const createStartAndEndDate = (date: DateTime, duration: number) => {
   return { newStartDate, newEndDate };
 };
 
+const LAST_HOUR_IN_UTC = 16; // in czech time it is 18:00
+
 // check if reservation time is within opening hours
 export const isWithinOpeningHours = (date: Date, peopleCount: number) => {
   // stop when peopleCount > 1 and time would exceed opening hours
-  if (date.getHours() >= 18 && date.getMinutes() >= 40) {
-    if (peopleCount === 2 && date.getMinutes() >= 50) {
+  if (date.getUTCHours() >= LAST_HOUR_IN_UTC && date.getUTCMinutes() >= 40) {
+    if (peopleCount === 2 && date.getUTCMinutes() >= 50) {
       return {
         time: [
           "Zvolte jiný čas. Pro dvě osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby.",
