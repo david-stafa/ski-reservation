@@ -40,6 +40,12 @@ export default function TimeInput({
 
   // on click store time value with useState and pass it to controlled input
   function handleTimeClick(time: string) {
+    // if the user clicks on the same time slot, clear the time input and selected time
+    if (time === selectedTime) {
+      setValue("time", "");
+      setSelectedTime(undefined);
+      return;
+    }
     setValue("time", time);
     setSelectedTime(time);
   }
