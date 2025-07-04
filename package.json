@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "lint:fix": "next lint --fix",
+    "check": "npm run type-check && npm run lint",
     "postinstall": "prisma generate && prisma db push",
     "email": "email dev"
   },
