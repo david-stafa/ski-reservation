@@ -4,11 +4,12 @@ import { TIMESLOTS } from "@/lib/timeSlots";
 import { ReservationSchema } from "@/lib/types/types";
 import { cn } from "@/lib/utils";
 import { DateTime } from "luxon";
-import { use, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
-import { getAllReservationsDates } from "../../_actions/reservation/reservationActions";
+
 import { SINGLE_RESERVATION_DURATION } from "@/lib/constants";
 import { isTimeSlotDisabled } from "./helpers/helpers";
+import { getAllReservationsDates } from "@/app/_actions/reservation/reservationActions";
 
 interface TimeInputProps {
   peopleCount: number;
@@ -161,6 +162,7 @@ function TimeInputs({
             onClick={() => handleTimeClick(time)}
             type="button"
             variant={selectedTime === time ? "default" : "secondary"}
+            // TODO: FIX reservationTime === time -> it disables the time slot that is two hour before the reservation time
             disabled={timeDisabled || reservationTime === time}
             className={cn(timeDisabled && "!opacity-20")}
           >

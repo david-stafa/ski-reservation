@@ -15,7 +15,7 @@ import {
   findConflictingReservations,
 } from "./reservationActions";
 import { Resend } from "resend";
-import ReservationConfirmationEmail from "../../../../emails/TestMail";
+import ReservationConfirmationEmail from "../../../../emails/templates/reservation-confirmation";
 import { config } from "../../../lib/config";
 
 const resend = new Resend(process.env.RESEND_API_KEY);

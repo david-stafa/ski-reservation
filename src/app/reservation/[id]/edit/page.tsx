@@ -1,7 +1,8 @@
 import { getReservationById } from "@/app/_actions/reservation/reservationActions";
-import Form, { ReservationFormValues } from "@/app/components/Form/Form";
+
 import Container from "@/components/container";
 import HeadingUnderline from "@/components/headingUnderline";
+import Form, { ReservationFormValues } from "@/components/reservationForm/Form";
 import { format } from "date-fns";
 
 type ReservationEditPageProps = {
@@ -29,9 +30,7 @@ const ReservationEditPage = async ({ params }: ReservationEditPageProps) => {
 
   return (
     <Container className="max-w-3xl md:mt-12 md:p-6 rounded-lg md:shadow-md">
-      <h1 className="text-2xl font-bold mb-4 text-center">
-        Upravit rezervaci
-      </h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Upravit rezervaci</h1>
       <HeadingUnderline />
 
       <Form reservationId={id} formFields={formData} />
