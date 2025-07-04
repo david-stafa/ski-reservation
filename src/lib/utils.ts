@@ -16,8 +16,6 @@ export function phoneNumFormat(telNum:string | undefined){
     formattedNum = telNum.split("");
     formattedNum.push(" ");
   }
-
-  console.log(formattedNum);
 }
 
 export function formatDateTime(date: Date) {

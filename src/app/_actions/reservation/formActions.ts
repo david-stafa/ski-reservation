@@ -90,7 +90,7 @@ export async function createReservation(
 
   // create new reservation
   try {
-    const { id: reservationId, email: reservationEmail } = await prisma.reservation.create({
+    const { id: reservationId} = await prisma.reservation.create({
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -101,8 +101,6 @@ export async function createReservation(
         endDate: newEndDate,
       },
     });
-
-    console.log(reservationEmail);
 
     // TODO - Send email to reservation email
     // TODO - Add new domain to resend

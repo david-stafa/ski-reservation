@@ -55,7 +55,6 @@ const Form = ({
     handleSubmit,
     control,
     setValue,
-    getValues,
     setError,
     watch,
     reset,
@@ -109,8 +108,6 @@ const Form = ({
       console.error("Form submission error:", error);
     }
   };
-
-  console.log(getValues());
 
   return (
     <>
