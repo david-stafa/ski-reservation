@@ -28,8 +28,8 @@ export const ReservationSchema = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^\d{3} \d{3} \d{3}$/, {
-      message: "Zadejte validní telefon ve formátu XXX XXX XXX",
+    .regex(/^(\d{3} \d{3} \d{3}|\d{9})$/, {
+      message: "Zadejte validní telefon ve formátu XXX XXX XXX nebo XXXXXXXXX",
     }),
   peopleCount: z.coerce.number({ message: "Vyberte počet osob." }).min(1),
   date: z
