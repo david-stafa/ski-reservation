@@ -172,11 +172,10 @@ function TimeInputs({
             onClick={() => handleTimeClick(time)}
             type="button"
             variant={selectedTime === time ? "default" : "secondary"}
-            // TODO: FIX reservationTime === time -> it disables the time slot that is two hour before the reservation time
             disabled={timeDisabled || isStartOfReservation}
             className={cn(
-              timeDisabled && isStartOfReservation && "!opacity-20",
-              isStartOfReservation && "border-2 border-blue-500"
+              timeDisabled && "!opacity-20",
+              isStartOfReservation && "border-2 border-blue-500 !opacity-50"
             )}
           >
             {time.slice(0, 5)}
