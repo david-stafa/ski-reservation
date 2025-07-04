@@ -4,6 +4,7 @@ import Container from "@/components/container";
 import HeadingUnderline from "@/components/headingUnderline";
 import Form, { ReservationFormValues } from "@/components/reservationForm/Form";
 import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 
 type ReservationEditPageProps = {
   params: Promise<{ id: string }>;
@@ -15,7 +16,7 @@ const ReservationEditPage = async ({ params }: ReservationEditPageProps) => {
   const reservationData = await getReservationById(id);
 
   if (!reservationData) {
-    return <div>Reservation not found</div>;
+    return <div>Rezervace nebyla nalezena</div>;
   }
 
   const formData: ReservationFormValues = {
@@ -25,7 +26,7 @@ const ReservationEditPage = async ({ params }: ReservationEditPageProps) => {
     peopleCount: reservationData.peopleCount,
     firstName: reservationData.firstName,
     lastName: reservationData.lastName,
-    time: format(reservationData.startDate, "HH:mm:ss"),
+    time: formatInTimeZone(reservationData.startDate, "Europe/Prague", "HH:mm:ss"),
   };
 
   return (

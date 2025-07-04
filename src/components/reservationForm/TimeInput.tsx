@@ -57,7 +57,9 @@ export default function TimeInput({
       const reservationsTimeArray: string[] = [];
 
       data.forEach((reservation) => {
-        const responseTime = DateTime.fromJSDate(reservation.startDate);
+        const responseTime = DateTime.fromJSDate(reservation.startDate, {
+          zone: "Europe/Prague",
+        });
 
         for (let index = 0; index < reservation.peopleCount; index++) {
           const reservationMinuites = responseTime.minute;
@@ -74,11 +76,11 @@ export default function TimeInput({
 
       // Remove already booked time slots from the list - so the user CAN select them when editing
       if (reservationTime && reservationPeopleCount) {
+        const formattedReservationTime = DateTime.fromFormat(
+          reservationTime,
+          "HH:mm:ss"
+        );
         for (let index = 0; index < reservationPeopleCount; index++) {
-          const formattedReservationTime = DateTime.fromFormat(
-            reservationTime,
-            "HH:mm:ss"
-          );
           const slot = formattedReservationTime
             .plus({
               minutes: SINGLE_RESERVATION_DURATION * index,
@@ -162,6 +164,8 @@ function TimeInputs({
           peopleCount
         );
 
+        const isStartOfReservation = reservationTime === time;
+
         return (
           <Button
             key={time}
@@ -169,8 +173,11 @@ function TimeInputs({
             type="button"
             variant={selectedTime === time ? "default" : "secondary"}
             // TODO: FIX reservationTime === time -> it disables the time slot that is two hour before the reservation time
-            disabled={timeDisabled || reservationTime === time}
-            className={cn(timeDisabled && "!opacity-20")}
+            disabled={timeDisabled || isStartOfReservation}
+            className={cn(
+              timeDisabled && isStartOfReservation && "!opacity-20",
+              isStartOfReservation && "border-2 border-blue-500"
+            )}
           >
             {time.slice(0, 5)}
           </Button>
