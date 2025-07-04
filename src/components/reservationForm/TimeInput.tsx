@@ -116,7 +116,7 @@ export default function TimeInput({
 
   return (
     <section className={cn("mt-4", { hidden: date === "" })}>
-      <Label className="mb-2">Časový blok</Label>
+      <Label className="mb-2">Začátek rezervace</Label>
       {error && <p className="text-red-500 italic text-sm">{error.message}</p>}
       <div className="grid grid-flow-col grid-rows-6 gap-2 mb-2">
         {loading || date === "" ? (
