@@ -10,7 +10,7 @@
     "type-check": "tsc --noEmit",
     "lint:fix": "next lint --fix",
     "check": "npm run type-check && npm run lint",
-    "postinstall": "prisma generate && prisma db push",
+    "postinstall": "prisma generate",
     "email": "email dev"
   },
   "dependencies": {
@@ -25,11 +25,13 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@react-email/components": "^0.0.42",
     "@tanstack/react-table": "^8.21.3",
+    "bcrypt": "^6.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.2.0",
     "framer-motion": "^12.6.3",
+    "jose": "^6.0.11",
     "lucide-react": "^0.483.0",
     "luxon": "^3.6.1",
     "next": "15.2.3",
@@ -46,6 +48,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^5.0.2",
     "@types/luxon": "^3.6.2",
     "@types/node": "^20",
     "@types/react": "^19",
