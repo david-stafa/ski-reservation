@@ -3,7 +3,6 @@ import "server-only";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import { decrypt } from "./session";
-import { redirect } from "next/navigation";
 import { prisma } from "@/db/prisma";
 
 export const verifySession = cache(async () => {
@@ -11,7 +10,7 @@ export const verifySession = cache(async () => {
   const session = await decrypt(cookie);
 
   if (!session?.userId) {
-    redirect("/login");
+    return null;
   }
 
   return { isAuth: true, userId: session.userId.toString() };
