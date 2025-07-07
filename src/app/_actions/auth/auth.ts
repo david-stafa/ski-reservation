@@ -70,7 +70,7 @@ export async function login(formData: LoginFormSchema) {
 
   if (!user) {
     return {
-      message: "Invalid email or password.",
+      message: "Neplatný email nebo heslo.",
     };
   }
 
@@ -78,7 +78,7 @@ export async function login(formData: LoginFormSchema) {
 
   if (!isPasswordValid) {
     return {
-      message: "Invalid email or password.",
+      message: "Neplatný email nebo heslo.",
     };
   }
 
