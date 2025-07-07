@@ -1,6 +1,6 @@
 import Container from "@/components/container";
 import HeadingUnderline from "@/components/headingUnderline";
-import { SignupForm } from "@/components/signupForm/signupForm";
+import { SignupForm } from "@/components/auth/signupForm/signupForm";
 
 const Register = () => {
   return (

@@ -6,8 +6,8 @@ import {
 } from "@/lib/types/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { InputWithLabel } from "../reservationForm/InputWithLabel";
-import { Button } from "../ui/button";
+import { InputWithLabel } from "../../reservationForm/InputWithLabel";
+import { Button } from "../../ui/button";
 import { cn } from "@/lib/utils";
 import { EyeIcon } from "lucide-react";
 import { useState } from "react";

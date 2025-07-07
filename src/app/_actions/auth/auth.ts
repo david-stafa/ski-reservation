@@ -1,6 +1,12 @@
+"use server";
+
 import { prisma } from "@/db/prisma";
-import { createSession } from "@/lib/session";
-import { SignupFormSchema } from "@/lib/types/definitions";
+import { createSession, deleteSession } from "@/lib/session";
+import {
+  loginFormSchema,
+  LoginFormSchema,
+  SignupFormSchema,
+} from "@/lib/types/definitions";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 
@@ -32,11 +38,56 @@ export async function signup(formData: FormData) {
 
   if (!user) {
     return {
-      message: 'An error occurred while creating your account.',
-    }
+      message: "An error occurred while creating your account.",
+    };
   }
 
-  await createSession(user.id)  
+  await createSession(user.id);
 
-  redirect('/admin/reservations')
+  redirect("/admin/reservations");
+}
+
+export async function login(formData: LoginFormSchema) {
+  const validatedFields = loginFormSchema.safeParse(formData);
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { email, password } = validatedFields.data;
+
+  if (!email || !password) {
+    return {
+      message: "Email and password are required.",
+    };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    return {
+      message: "Invalid email or password.",
+    };
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    return {
+      message: "Invalid email or password.",
+    };
+  }
+
+  await createSession(user.id);
+
+  redirect("/admin");
+}
+
+export async function logout() {
+  await deleteSession();
+  redirect("/");
 }
