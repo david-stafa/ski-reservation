@@ -14,6 +14,7 @@ export function LoginForm() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginFormSchema),
@@ -27,7 +28,10 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmitForm: SubmitHandler<LoginFormSchema> = async (data) => {
-    await login(data);
+    const response = await login(data);
+    if (response?.message) {
+      setError("root", { message: response.message });
+    }
   };
 
   return (
@@ -35,6 +39,9 @@ export function LoginForm() {
       onSubmit={handleSubmit(onSubmitForm)}
       className="max-w-lg mx-auto flex flex-col"
     >
+      {errors.root && (
+        <p className="text-red-500 text-base">{errors.root.message}</p>
+      )}
       <InputWithLabel
         register={register}
         name="email"
