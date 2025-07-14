@@ -10,7 +10,7 @@
     "type-check": "tsc --noEmit",
     "lint:fix": "next lint --fix",
     "check": "npm run type-check && npm run lint",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && prisma migrate deploy",
     "email": "email dev"
   },
   "dependencies": {
