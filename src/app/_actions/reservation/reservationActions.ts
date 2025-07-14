@@ -82,6 +82,7 @@ export async function getAllReservations() {
       peopleCount: true,
       id: true,
       createdAt: true,
+      updatedAt: true,
     },
   });
 }

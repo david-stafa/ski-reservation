@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { getColumnLabel } from "@/lib/enums";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,6 +44,7 @@ export function DataTable<TData, TValue>({
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
+    updatedAt: false,
   });
 
   const table = useReactTable({
@@ -71,10 +73,12 @@ export function DataTable<TData, TValue>({
         "email",
         "phone",
         "createdAt",
+        "updatedAt",
         "id",
       ],
       columnVisibility: {
         id: false,
+        updatedAt: false,
       },
       sorting: [
         {
@@ -97,7 +101,7 @@ export function DataTable<TData, TValue>({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns
+              Sloupce
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -114,7 +118,7 @@ export function DataTable<TData, TValue>({
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {getColumnLabel(column.id)}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -165,7 +169,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Žádné výsledky.
                 </TableCell>
               </TableRow>
             )}
@@ -179,7 +183,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          Předchozí
         </Button>
         <Button
           variant="outline"
@@ -187,7 +191,7 @@ export function DataTable<TData, TValue>({
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          Další
         </Button>
       </div>
     </div>

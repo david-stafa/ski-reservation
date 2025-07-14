@@ -14,22 +14,54 @@ import { type Reservation } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
+import Link from "next/link";
+import { DeleteReservationButton } from "@/app/reservation/[id]/components/DeleteReservationButton";
 
 export const columns: ColumnDef<Reservation>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    id: "actions",
+    header: "Akce",
+    cell: ({ row }) => {
+      const reservation = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Akce</DropdownMenuLabel>
+            {/* EDIT */}
+            <Link href={`/reservation/${reservation.id}/edit`}>
+              <DropdownMenuItem>Upravit rezervaci</DropdownMenuItem>
+            </Link>
+            {/* DETAIL */}
+            <Link href={`/reservation/${reservation.id}`}>
+              <DropdownMenuItem>Detail rezervace</DropdownMenuItem>
+            </Link>
+            <DropdownMenuSeparator />
+            {/* DELETE */}
+            <DropdownMenuItem asChild className="text-sm">
+              <DeleteReservationButton id={reservation.id} redirectUrl="/admin/reservations" unstyled />
+            </DropdownMenuItem>
+            {/* COPY ID */}
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(reservation.id)}
+            >
+              Zkopírovat ID rezervace
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
   {
-    accessorKey: "createdAt",
-    header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Vytvořeno" />;
-    },
-    cell: ({ row }) => {
-      const formatted = formatDateTime(new Date(row.getValue("createdAt")));
-      return <div className="text-left">{formatted}</div>;
-    },
-    sortingFn: "datetime",
+    accessorKey: "id",
+    header: "ID",
   },
   {
     accessorKey: "firstName",
@@ -79,32 +111,29 @@ export const columns: ColumnDef<Reservation>[] = [
     sortingFn: "datetime",
   },
   {
-    id: "actions",
-    header: "Akce",
-    cell: ({ row }) => {
-      const reservation = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Akce</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(reservation.id)}
-            >
-              Zkopírovat ID rezervace
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Upravit rezervaci</DropdownMenuItem>
-            <DropdownMenuItem>Detail rezervace</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Vytvořeno" />;
     },
+    cell: ({ row }) => {
+      const formatted = formatDateTime(new Date(row.getValue("createdAt")));
+      return <div className="text-left">{formatted}</div>;
+    },
+    sortingFn: "datetime",
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Aktualizováno" />;
+    },
+    cell: ({ row }) => {
+      const updatedAt = row.original.updatedAt;
+
+      if (!updatedAt) return "-";
+
+      const formatted = formatDateTime(new Date(row.getValue("updatedAt")));
+      return <div className="text-left">{formatted}</div>;
+    },
+    sortingFn: "datetime",
   },
 ];
