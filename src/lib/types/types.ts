@@ -21,16 +21,16 @@ export type PrevFormData =
   | undefined;
 
 export const ReservationSchema = z.object({
-  firstName: z.string().min(2, { message: "Jméno musí mít aspoň 2 znaky." }),
-  lastName: z.string().min(2, { message: "Příjmení musí mít aspoň 2 znaky." }),
-  email: z.string().email({ message: "Zadejte validní email." }),
+  firstName: z.string().min(2, { message: "Jméno musí mít aspoň 2 znaky." }).trim(),
+  lastName: z.string().min(2, { message: "Příjmení musí mít aspoň 2 znaky." }).trim(),
+  email: z.string().email({ message: "Zadejte validní email." }).trim(),
   // TODO finish phone error message and validation
   phone: z
     .string()
-    .trim()
     .regex(/^(\d{3} \d{3} \d{3}|\d{9})$/, {
       message: "Zadejte validní telefon ve formátu XXX XXX XXX nebo XXXXXXXXX",
-    }),
+    })
+    .trim(),
   peopleCount: z.coerce.number({ message: "Vyberte počet osob." }).min(1),
   date: z
     .string()

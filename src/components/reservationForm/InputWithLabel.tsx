@@ -1,24 +1,23 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FieldError, UseFormRegister } from "react-hook-form";
-import { ReservationFormValues } from "./Form";
+import { FieldError, UseFormRegister, FieldValues, Path } from "react-hook-form";
 
-type InputWithLabelProps = {
-  name: keyof ReservationFormValues;
+type InputWithLabelProps<T extends FieldValues> = {
+  name: Path<T>;
   label: string;
-  register: UseFormRegister<ReservationFormValues>;
+  register: UseFormRegister<T>;
   error: FieldError | undefined;
   type?: React.HTMLInputTypeAttribute;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-export const InputWithLabel = ({
+export const InputWithLabel = <T extends FieldValues>({
   name,
   label,
   register,
   error,
   type = "text",
   ...props
-}: InputWithLabelProps) => {
+}: InputWithLabelProps<T>) => {
   return (
     <>
       <Label className="mb-2 mt-4" htmlFor={name}>
