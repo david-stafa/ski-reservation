@@ -1,7 +1,8 @@
 "use server";
 
 import { prisma } from "@/db/prisma";
-import { unstable_cache } from "next/cache";
+import { DateTime } from "luxon";
+import { revalidatePath, unstable_cache } from "next/cache";
 
 // input: date in format 2025-10-07
 export async function getAllReservationsDates(date: string) {
@@ -81,6 +82,7 @@ export async function getAllReservations() {
       phone: true,
       peopleCount: true,
       id: true,
+      attended: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -128,3 +130,56 @@ export async function findReservationByEmailAndLastName(email: string, lastName:
     },
   });
 }
+
+export async function getReservationsByDate(date: string) {
+
+  const dateStart = DateTime.fromISO(date).startOf('day').toJSDate();
+  const dateEnd = DateTime.fromISO(date).endOf('day').toJSDate();
+
+  console.log("dateStart", dateStart);
+  console.log("dateEnd", dateEnd);
+
+  const reservations = await prisma.reservation.findMany({
+    where: {
+      startDate: {
+        gte: dateStart,
+        lte: dateEnd,
+      }
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      phone: true,
+      peopleCount: true,
+      startDate: true,
+      endDate: true,
+      attended: true,
+    },
+    orderBy: {
+      startDate: "asc",
+    }
+  })
+
+  return reservations;
+}
+
+export async function updateAttendance(
+  reservationId: string,
+  attended: boolean
+) {
+  try {
+    await prisma.reservation.update({
+      where: { id: reservationId },
+      data: { attended },
+    });
+
+    // Revalidate the current page to show updated data
+    revalidatePath("/admin/reservations/day-sheet");
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update attendance:", error);
+    return { success: false, error: "Failed to update attendance" };
+  }
+} 
