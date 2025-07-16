@@ -24,7 +24,33 @@ export async function getAllReservationsDates(date: string) {
 }
 
 export async function getSumOfReservations() {
-  return await prisma.reservation.count();
+  const reservations = await prisma.reservation.findMany({
+    select: {
+      startDate: true,
+    }
+  });
+
+  // Initialize all dates from STARTDATE to ENDDATE
+  const allDates = ['2025-09-15', '2025-09-16', '2025-09-17', '2025-09-18', '2025-09-19'];
+  
+  const groupedByDate = reservations.reduce((acc, reservation) => {
+    const dateKey = reservation.startDate.toISOString().split('T')[0];
+    if (!acc[dateKey]) {
+      acc[dateKey] = { _count: 0, startDate: new Date(dateKey) };
+    }
+    acc[dateKey]._count += 1;
+    acc._total += 1;
+    return acc;
+  }, { _total: 0 } as Record<string, { _count: number; startDate: Date }> & { _total: number });
+
+  // Add all dates with 0 count if they don't exist
+  allDates.forEach(date => {
+    if (!groupedByDate[date]) {
+      groupedByDate[date] = { _count: 0, startDate: new Date(date) };
+    }
+  });
+
+  return groupedByDate;
 }
 
 // TODO: Find out if this is the right way to use cache
