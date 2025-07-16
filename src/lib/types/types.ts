@@ -31,7 +31,7 @@ export const ReservationSchema = z.object({
       message: "Zadejte validní telefon ve formátu XXX XXX XXX nebo XXXXXXXXX",
     })
     .trim(),
-  peopleCount: z.coerce.number({ message: "Vyberte počet osob." }).min(1),
+  peopleCount: z.coerce.number({ message: "Vyberte počet osob." }).min(1).max(3),
   date: z
     .string()
     .refine((val) => new Date(val) >= new Date(STARTDATE), {

@@ -1,6 +1,9 @@
+import { TIMESLOTS } from "./timeSlots";
+
 export const STARTDATE = "2025-09-15";
-export const ENDDATE = "2025-09-21";
+export const ENDDATE = "2025-09-19";
 export const SINGLE_RESERVATION_DURATION = 10; // in minutes
+export const DAY_TIMESLOTS_COUNT = TIMESLOTS.length; // 24
 
 const RESTRICTED_TIMESLOT_FOR_2_PEOPLE = ["18:50:00"];
 const RESTRICTED_TIMESLOTS_FOR_3_PEOPLE = ["18:50:00", "18:40:00"];

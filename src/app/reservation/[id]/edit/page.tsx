@@ -36,7 +36,7 @@ const ReservationEditPage = async ({ params }: ReservationEditPageProps) => {
   };
 
   return (
-    <Container className="max-w-3xl p-0 md:p-6 rounded-lg md:shadow-md">
+    <Container className="max-w-2xl p-0 md:p-6 rounded-lg md:shadow-md md:mt-12">
       <div className="flex justify-center items-center relative">
         <Link
           href={`/reservation/${id}`}

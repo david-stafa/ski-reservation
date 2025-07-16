@@ -7,9 +7,13 @@ import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
-import { SINGLE_RESERVATION_DURATION } from "@/lib/constants";
+import {
+  DAY_TIMESLOTS_COUNT,
+  SINGLE_RESERVATION_DURATION,
+} from "@/lib/constants";
 import { isTimeSlotDisabled } from "./helpers/helpers";
 import { getAllReservationsDates } from "@/app/_actions/reservation/reservationActions";
+import { XIcon } from "lucide-react";
 
 interface TimeInputProps {
   peopleCount: number;
@@ -37,6 +41,9 @@ export default function TimeInput({
   const [timeOfReservations, setTimeOfReservations] = useState<Set<string>>();
   // loading state -> display skeleton if true
   const [loading, setLoading] = useState(true);
+  // calculate free timeslots count
+  const freeTimeslotsCount =
+    DAY_TIMESLOTS_COUNT - (timeOfReservations?.size || 0);
 
   // on click store time value with useState and pass it to controlled input
   function handleTimeClick(time: string) {
@@ -116,12 +123,49 @@ export default function TimeInput({
     }
   }, [peopleCount, setValue, reservationTime, reservationPeopleCount]);
 
+  if (date === "")
+    return (
+      <div className="mt-4">
+        <Label className="mb-2">Začátek rezervace</Label>
+        <div className="animate-pulse w-full h-10 bg-zinc-200 rounded-md text-sm" />
+        {error && (
+          <p className="text-red-500 italic text-sm">{error.message}</p>
+        )}
+      </div>
+    );
+
+  if (freeTimeslotsCount === 0) {
+    return (
+      <div className="flex justify-center items-center gap-2 px-3 py-6 mt-4 border border-red-500 rounded-md shadow-xs">
+        <XIcon className="w-5 h-5 text-red-500" />
+        <p className="text-red-500 text-sm text-center">
+          Všechny termíny jsou na tento den obsazeny.
+        </p>
+      </div>
+    );
+  }
+
+  if (freeTimeslotsCount < peopleCount) {
+    return (
+      <div className="flex justify-center items-center gap-2 px-3 py-6 mt-4 border border-red-500 rounded-md shadow-xs">
+        <XIcon className="w-5 h-5 text-red-500" />
+        <p className="text-red-500 text-sm text-center">
+          Pro daný počet lidí nejsou dostupné žádné termíny.
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <section className={cn("mt-4", { hidden: date === "" })}>
+    <section className={cn("mt-4 mb-2", { hidden: date === "" })}>
       <Label className="mb-2">Začátek rezervace</Label>
-      {error && <p className="text-red-500 italic text-sm">{error.message}</p>}
-      <div className="grid grid-flow-col grid-rows-6 gap-2 mb-2">
-        {loading || date === "" ? (
+      <div
+        className={cn(
+          "grid grid-flow-col grid-rows-6 gap-2 border border-zinc-200 p-3 rounded-md shadow-xs",
+          error && "border-red-500"
+        )}
+      >
+        {loading ? (
           <TimeInputsSkeleton />
         ) : (
           <TimeInputs
@@ -133,6 +177,7 @@ export default function TimeInput({
           />
         )}
       </div>
+      {error && <p className="text-red-500 italic text-sm">{error.message}</p>}
       <input {...register("time")} type="text" id="time" hidden readOnly />
     </section>
   );
