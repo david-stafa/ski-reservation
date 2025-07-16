@@ -19,7 +19,7 @@ export default function AvailabilityDisplay({
   reservations,
 }: AvailabilityDisplayProps) {
   return (
-    <div className="text-zinc-700 text-sm mt-10">
+    <div className="text-zinc-700 text-sm mt-5 md:mt-10">
       {/* Total Available */}
       <div className="mb-2">
         <p className="font-semibold text-base">
