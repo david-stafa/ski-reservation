@@ -99,6 +99,29 @@ async function main() {
     }
   }
 
+  for (let i = 0; i < AVAILABLE_TIMESLOTS.length - 2; i++) {
+    const firstName = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)]
+    const lastName = LAST_NAMES[Math.floor(Math.random() * LAST_NAMES.length)]
+    const timeSlot = AVAILABLE_TIMESLOTS[i]
+    
+    const reservationData = {
+      firstName,
+      lastName,
+      email: generateEmail(firstName, lastName, i),
+      phone: generatePhone(),
+      peopleCount: 1, // Only single person reservations
+      startDate: createDateTime("2025-09-17", timeSlot),
+      endDate: createDateTime("2025-09-17", END_TIMESLOTS[i]),
+    }
+
+    const reservation = await prisma.reservation.create({
+      data: reservationData,
+    })
+    
+    console.log(`✅ Created reservation for ${reservation.firstName} ${reservation.lastName} at ${timeSlot}`)
+    totalReservations++
+  }
+
   console.log(`🎉 Successfully seeded ${totalReservations} reservations across ${dates.length} days!`)
   console.log(`📊 Each day has ${AVAILABLE_TIMESLOTS.length} time slots filled`)
 }

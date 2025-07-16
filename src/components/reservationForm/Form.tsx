@@ -115,38 +115,6 @@ const Form = ({
         onSubmit={handleSubmit(onSubmitForm)}
         className="max-w-lg mx-auto flex flex-col"
       >
-        <InputWithLabel
-          name="firstName"
-          label="Jméno"
-          error={errors.firstName}
-          type="text"
-          register={register}
-        />
-
-        <InputWithLabel
-          name="lastName"
-          label="Příjmení"
-          error={errors.lastName}
-          type="text"
-          register={register}
-        />
-
-        <InputWithLabel
-          name="email"
-          label="Email"
-          error={errors.email}
-          type="email"
-          register={register}
-        />
-
-        <InputWithLabel
-          name="phone"
-          label="Telefon"
-          error={errors.phone}
-          type="string"
-          register={register}
-        />
-
         <Label htmlFor="peopleCount" className="mt-4 mb-2">
           Počet lidí
         </Label>
@@ -203,6 +171,38 @@ const Form = ({
               : undefined
           }
           reservationPeopleCount={formFields?.peopleCount}
+        />
+        
+        <InputWithLabel
+          name="firstName"
+          label="Jméno"
+          error={errors.firstName}
+          type="text"
+          register={register}
+        />
+
+        <InputWithLabel
+          name="lastName"
+          label="Příjmení"
+          error={errors.lastName}
+          type="text"
+          register={register}
+        />
+
+        <InputWithLabel
+          name="email"
+          label="Email"
+          error={errors.email}
+          type="email"
+          register={register}
+        />
+
+        <InputWithLabel
+          name="phone"
+          label="Telefon"
+          error={errors.phone}
+          type="string"
+          register={register}
         />
 
         <Button
