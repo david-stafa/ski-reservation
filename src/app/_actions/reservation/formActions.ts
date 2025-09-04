@@ -102,8 +102,6 @@ export async function createReservation(
       },
     });
 
-    // TODO - Send email to reservation email
-    // TODO - Add new domain to resend
     await resend.emails.send({
       from: config.email.from,
       to: config.email.getToEmail(data.email),
