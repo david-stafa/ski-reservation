@@ -1,6 +1,6 @@
 export const config = {
   email: {
-    from: 'Ski Reservation <mail.skiblazek.cz>',
+    from: 'Ski Blažek <rezervace@mail.skiblazek.cz>',
     subject: 'Potvrzení rezervace',
     // In development, always send to your email for testing
     getToEmail: (userEmail: string) => 
