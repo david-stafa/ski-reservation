@@ -46,7 +46,7 @@ export const columns: ColumnDef<Reservation>[] = [
             <DropdownMenuSeparator />
             {/* DELETE */}
             <DropdownMenuItem asChild className="text-sm">
-              <DeleteReservationButton id={reservation.id} redirectUrl="/admin/reservations" unstyled />
+              <DeleteReservationButton id={reservation.id} redirectUrl="/admin/reservations/table" unstyled />
             </DropdownMenuItem>
             {/* COPY ID */}
             <DropdownMenuItem
