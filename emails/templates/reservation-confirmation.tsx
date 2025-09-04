@@ -10,6 +10,7 @@ import {
   Hr,
 } from "@react-email/components";
 import * as React from "react";
+import { DateTime } from "luxon";
 
 interface ReservationConfirmationEmailProps {
   firstName: string;
@@ -26,17 +27,22 @@ const ReservationConfirmationEmail = ({
   endDate,
   peopleCount,
 }: ReservationConfirmationEmailProps) => {
-  const formattedDate = new Date(startDate).toLocaleString("cs-CZ", {
-    weekday: "short",
+  const zone = "Europe/Prague";
+  const locale = "cs-CZ";
+  const startDt = DateTime.fromJSDate(startDate).setZone(zone).setLocale(locale);
+  const endDt = DateTime.fromJSDate(endDate).setZone(zone).setLocale(locale);
+
+  const formattedDate = startDt.toLocaleString({
+    weekday: "long",
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
   });
-  const formattedEndTime = new Date(endDate).toLocaleString("cs-CZ", {
+  const formattedStartTime = startDt.toLocaleString({
     hour: "2-digit",
     minute: "2-digit",
   });
-  const formattedStartTime = new Date(startDate).toLocaleString("cs-CZ", {
+  const formattedEndTime = endDt.toLocaleString({
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -101,7 +107,7 @@ const main = {
 const container = {
   margin: "0 auto",
   padding: "40px 20px",
-  maxWidth: "600px",
+  // maxWidth: "600px",
   backgroundColor: "#ffffff",
   borderRadius: "12px",
   boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
