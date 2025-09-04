@@ -22,7 +22,7 @@ export default async function middleware(req: NextRequest) {
 
   // 3. Get the session cookie and decrypt it
   const sessionCookie = req.cookies.get("session")?.value;
-  let session: JWTPayload | undefined = undefined;
+  let session: JWTPayload | null = null;
 
   if (sessionCookie) {
     try {
