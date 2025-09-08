@@ -11,6 +11,7 @@ import {
 } from "@react-email/components";
 import * as React from "react";
 import { DateTime } from "luxon";
+import { SINGLE_RESERVATION_DURATION } from "@/lib/constants";
 
 interface ReservationConfirmationEmailProps {
   firstName: string;
@@ -24,13 +25,13 @@ const ReservationConfirmationEmail = ({
   firstName,
   lastName,
   startDate,
-  endDate,
   peopleCount,
 }: ReservationConfirmationEmailProps) => {
   const zone = "Europe/Prague";
   const locale = "cs-CZ";
-  const startDt = DateTime.fromJSDate(startDate).setZone(zone).setLocale(locale);
-  const endDt = DateTime.fromJSDate(endDate).setZone(zone).setLocale(locale);
+  const startDt = DateTime.fromJSDate(startDate)
+    .setZone(zone)
+    .setLocale(locale);
 
   const formattedDate = startDt.toLocaleString({
     weekday: "long",
@@ -39,10 +40,6 @@ const ReservationConfirmationEmail = ({
     year: "numeric",
   });
   const formattedStartTime = startDt.toLocaleString({
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const formattedEndTime = endDt.toLocaleString({
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -55,39 +52,47 @@ const ReservationConfirmationEmail = ({
         <Container style={container}>
           <Section style={headerSection}>
             <Heading style={h1}>✅ Rezervace vytvořena</Heading>
-            <Text style={subtitle}>
-              Vaše rezervace byla úspěšně vytvořena.
-            </Text>
+            <Text style={subtitle}>Vaše rezervace byla úspěšně vytvořena.</Text>
           </Section>
-          
+
           <Section style={contentSection}>
             <Text style={sectionTitle}>Detaily rezervace</Text>
             <Hr style={divider} />
-            
+
             <Section style={detailRow}>
               <Text style={label}>Jméno:</Text>
-              <Text style={value}>{firstName} {lastName}</Text>
+              <Text style={value}>
+                {firstName} {lastName}
+              </Text>
             </Section>
-            
+
             <Section style={detailRow}>
               <Text style={label}>Datum:</Text>
               <Text style={value}>{formattedDate}</Text>
             </Section>
-            
+
             <Section style={detailRow}>
-              <Text style={label}>Čas:</Text>
-              <Text style={value}>{formattedStartTime} - {formattedEndTime}</Text>
+              <Text style={label}>Začátek rezervace:</Text>
+              <Text style={value}>{formattedStartTime}</Text>
             </Section>
-            
+
+            <Section style={detailRow}>
+              <Text style={label}>Přibližná doba rezervace:</Text>
+              <Text style={value}>
+                {peopleCount * SINGLE_RESERVATION_DURATION} minut
+              </Text>
+            </Section>
+
             <Section style={detailRow}>
               <Text style={label}>Počet osob:</Text>
               <Text style={value}>{peopleCount}</Text>
             </Section>
           </Section>
-          
+
           <Section style={footerSection}>
             <Text style={footerText}>
-              Děkujeme za vaši rezervaci! V případě jakýchkoliv dotazů nás neváhejte kontaktovat.
+              Děkujeme za vaši rezervaci! V případě jakýchkoliv dotazů nás
+              neváhejte kontaktovat.
             </Text>
           </Section>
         </Container>
@@ -110,7 +115,8 @@ const container = {
   // maxWidth: "600px",
   backgroundColor: "#ffffff",
   borderRadius: "12px",
-  boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+  boxShadow:
+    "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
 };
 
 const headerSection = {

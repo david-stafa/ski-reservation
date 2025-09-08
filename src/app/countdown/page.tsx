@@ -1,4 +1,13 @@
+import { COUNTDOWN_END } from "@/lib/constants";
+import { DateTime } from "luxon";
+import { redirect } from "next/navigation";
+
 const Countdown = () => {
+  // redirect to home page if countdown end is reached
+  if (DateTime.local({zone: "Europe/Prague"}) >= COUNTDOWN_END) {
+    redirect("/");
+  }
+
   return (
     <div className="w-full h-[100dvh] flex flex-col items-center justify-center gap-4 p-2">
       <h1 className="text-xl font-semibold mb-4">
@@ -11,7 +20,8 @@ const Countdown = () => {
         </li>
         <li>
           Ve vámi vybraný den a hodinu se k nám dostavíte a vyzkoušíte si
-          lyžařský set
+          lyžařský set.
+          <span className="font-semibold">Prosíme, přijďte včas!</span>
         </li>
         <li>
           Do 14 dní se vám ozveme a vy si k nám půjdete vše vyzvednout a

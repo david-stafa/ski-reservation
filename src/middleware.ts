@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "@/lib/session";
 import { JWTPayload } from "jose";
 import { DateTime } from "luxon";
+import { COUNTDOWN_END } from "@/lib/constants";
 
 // 1. Specify protected and public routes
 const protectedRoutes = ["/admin"];
@@ -11,15 +12,30 @@ export default async function middleware(req: NextRequest) {
   // 2. Check if the current route is protected or public
   const path = req.nextUrl.pathname;
 
+  // Centralized countdown redirect prior to opening
+  const isProduction = process.env.NODE_ENV === "production";
+  const now = DateTime.local({zone: "Europe/Prague"});
+  const isBeforeOpen = now <= COUNTDOWN_END;
+  const isCountdownPage = path === "/countdown";
+  const isAdmin = path.startsWith("/admin");
+  const isLoginPage = path === "/login";
+
   if (
-    DateTime.local() <= DateTime.local(2025, 9, 26, 8, 0) &&
-    path !== "/countdown"
+    isProduction &&
+    isBeforeOpen &&
+    !isCountdownPage &&
+    !isAdmin &&
+    !isLoginPage
   ) {
     return NextResponse.redirect(new URL("/countdown", req.nextUrl));
   }
 
-  // Skip logging for Chrome DevTools and favicon requests
-  if (!path.includes(".well-known") && !path.includes("favicon")) {
+  // Dev-only logging; skip Chrome DevTools and favicon
+  if (
+    process.env.NODE_ENV !== "production" &&
+    !path.includes(".well-known") &&
+    !path.includes("favicon")
+  ) {
     console.log(`🔒 Middleware running for path: ${path}`);
   }
 
