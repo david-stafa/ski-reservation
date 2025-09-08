@@ -1,5 +1,5 @@
 import { RESTRICTED_TIMESLOTS } from "@/lib/constants";
-import { TIMESLOTS } from "@/lib/timeSlots";
+import { TIMESLOTS } from "@/lib/constants";
 
 export const isTimeSlotDisabled = (
   time: string,

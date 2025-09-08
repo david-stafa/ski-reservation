@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { TIMESLOTS } from "@/lib/timeSlots";
 import { ReservationSchema } from "@/lib/types/types";
 import { cn } from "@/lib/utils";
 import { DateTime } from "luxon";
@@ -10,6 +9,7 @@ import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import {
   DAY_TIMESLOTS_COUNT,
   SINGLE_RESERVATION_DURATION,
+  TIMESLOTS
 } from "@/lib/constants";
 import { isTimeSlotDisabled } from "./helpers/helpers";
 import { getAllReservationsDates } from "@/app/_actions/reservation/reservationActions";
@@ -161,7 +161,7 @@ export default function TimeInput({
       <Label className="mb-2">Začátek rezervace</Label>
       <div
         className={cn(
-          "grid grid-flow-col grid-rows-6 gap-2 border border-zinc-200 p-3 rounded-md shadow-xs",
+          "grid grid-flow-col grid-rows-4 gap-2 border border-zinc-200 p-3 rounded-md shadow-xs",
           error && "border-red-500"
         )}
       >

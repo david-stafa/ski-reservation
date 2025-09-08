@@ -23,15 +23,15 @@ const LAST_HOUR_IN_UTC = 16; // in czech time it is 18:00
 // check if reservation time is within opening hours
 export const isWithinOpeningHours = (date: Date, peopleCount: number) => {
   // stop when peopleCount > 1 and time would exceed opening hours
-  if (date.getUTCHours() >= LAST_HOUR_IN_UTC && date.getUTCMinutes() >= 40) {
-    if (peopleCount === 2 && date.getUTCMinutes() >= 50) {
+  if (date.getUTCHours() >= LAST_HOUR_IN_UTC && date.getUTCMinutes() >= 30) {
+    if (peopleCount === 2 && date.getUTCMinutes() >= 45) {
       return {
         time: [
           "Zvolte jiný čas. Pro dvě osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby.",
         ],
       };
     }
-    if (peopleCount === 3 && date.getMinutes() >= 40) {
+    if (peopleCount === 3 && date.getMinutes() >= 30) {
       return {
         time: [
           "Zvolte jiný čas. Pro tři osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby.",

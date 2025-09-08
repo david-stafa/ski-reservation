@@ -52,10 +52,11 @@ export function DatePicker({ min, max, field }: DatePickerProps) {
             field.onChange(date ? format(date, "yyyy-MM-dd") : "")
             setOpen(false)
           }}
-          startMonth={new Date(2025, 8)}
-          disabled={{ before: min, after: max }}
+          startMonth={new Date(min)}
+          disabled={[{ before: min }, { after: max }, { dayOfWeek: [0, 6] }]}
           locale={cs}
           weekStartsOn={1} // optional if you need Monday as first day
+          hideNavigation
         />
       </PopoverContent>
     </Popover>
