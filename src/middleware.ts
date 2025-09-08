@@ -12,33 +12,6 @@ export default async function middleware(req: NextRequest) {
   // 2. Check if the current route is protected or public
   const path = req.nextUrl.pathname;
 
-  // Centralized countdown redirect prior to opening
-  const isProduction = process.env.NODE_ENV === "production";
-  const now = DateTime.local({zone: "Europe/Prague"});
-  const isBeforeOpen = now <= COUNTDOWN_END;
-  const isCountdownPage = path === "/countdown";
-  const isAdmin = path.startsWith("/admin");
-  const isLoginPage = path === "/login";
-
-  if (
-    isProduction &&
-    isBeforeOpen &&
-    !isCountdownPage &&
-    !isAdmin &&
-    !isLoginPage
-  ) {
-    return NextResponse.redirect(new URL("/countdown", req.nextUrl));
-  }
-
-  // Dev-only logging; skip Chrome DevTools and favicon
-  if (
-    process.env.NODE_ENV !== "production" &&
-    !path.includes(".well-known") &&
-    !path.includes("favicon")
-  ) {
-    console.log(`🔒 Middleware running for path: ${path}`);
-  }
-
   const isProtectedRoute = protectedRoutes.some((route) =>
     path.startsWith(route)
   );
@@ -55,6 +28,28 @@ export default async function middleware(req: NextRequest) {
       // Session is invalid or expired, treat as unauthenticated
       console.log("Invalid session, treating as unauthenticated");
     }
+  }
+
+  // Countdown redirect logic
+  const isProduction = process.env.NODE_ENV === "production";
+  const now = DateTime.local({ zone: "Europe/Prague" });
+  const isBeforeOpen = now <= COUNTDOWN_END;
+  const isCountdownPage = path === "/countdown";
+  const isLoginPage = path === "/login";
+
+  //Redirect if:
+  // - only in production
+  // - it's before countdown end
+  // - not on countdown page and not on login page
+  // - not authenticated
+  if (
+    isProduction &&
+    isBeforeOpen &&
+    !isCountdownPage &&
+    !isLoginPage &&
+    !session?.userId
+  ) {
+    return NextResponse.redirect(new URL("/countdown", req.nextUrl));
   }
 
   // 4. Redirect to /login if the user is not authenticated and trying to access protected routes
