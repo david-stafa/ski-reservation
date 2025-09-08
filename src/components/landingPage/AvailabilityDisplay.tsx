@@ -8,11 +8,16 @@ const SKI_SETS_PER_DAY = 24;
 // const SKI_SETS_TOTAL = SKI_SETS_PER_DAY * 7;
 
 const DAYS_CONFIG = [
-  { key: "2025-09-15", label: "Pondělí" },
-  { key: "2025-09-16", label: "Úterý" },
-  { key: "2025-09-17", label: "Středa" },
-  { key: "2025-09-18", label: "Čtvrtek" },
-  { key: "2025-09-19", label: "Pátek" },
+  { key: "2025-10-13", label: "Pondělí" },
+  { key: "2025-10-14", label: "Úterý" },
+  { key: "2025-10-15", label: "Středa" },
+  { key: "2025-10-16", label: "Čtvrtek" },
+  { key: "2025-10-17", label: "Pátek" },
+  { key: "2025-10-20", label: "Pondělí" },
+  { key: "2025-10-21", label: "Úterý" },
+  { key: "2025-10-22", label: "Středa" },
+  { key: "2025-10-23", label: "Čtvrtek" },
+  { key: "2025-10-24", label: "Pátek" },
 ];
 
 export default function AvailabilityDisplay({
@@ -22,21 +27,24 @@ export default function AvailabilityDisplay({
     <div className="text-zinc-700 text-sm md:mt-10">
       {/* Total Available */}
       <div className="mb-2">
-        <p className="font-semibold text-base">
-          Dostupnost termínů 15. - 19. září
-        </p>
+        <p className="font-semibold text-base">Dostupnost termínů</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 mb-2 text-base font">
+        <p>1. - 17. října</p>
+        <p>20. - 24. října</p>
       </div>
 
       {/* Daily Breakdown */}
-      <div className="grid grid-cols-[auto_1fr] gap-x-4 xl:gap-x-8 gap-y-1">
+      <div className="grid grid-flow-col grid-rows-5 gap-1">
         {DAYS_CONFIG.map(({ key, label }) => {
           const available = SKI_SETS_PER_DAY - (reservations[key]?._count || 0);
           const isLow = available <= 5;
           const isFull = available === 0;
 
           return (
-            <div key={key} className="contents items-center gap-1">
-              <span className="text-zinc-600">{label}</span>
+            <div key={key} className="flex items-center gap-2">
+              <span className="text-zinc-600 min-w-14">{label}</span>
               <span
                 className={`rounded-full w-2 h-2 my-auto ${
                   isFull
@@ -65,7 +73,6 @@ export default function AvailabilityDisplay({
           <span className="text-xs">Volné termíny</span>
         </div>
       </section> */}
-
     </div>
   );
 }
