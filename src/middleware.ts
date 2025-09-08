@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "@/lib/session";
 import { JWTPayload } from "jose";
+import { DateTime } from "luxon";
 
 // 1. Specify protected and public routes
 const protectedRoutes = ["/admin"];
@@ -9,6 +10,13 @@ const protectedRoutes = ["/admin"];
 export default async function middleware(req: NextRequest) {
   // 2. Check if the current route is protected or public
   const path = req.nextUrl.pathname;
+
+  if (
+    DateTime.local() <= DateTime.local(2025, 9, 26, 8, 0) &&
+    path !== "/countdown"
+  ) {
+    return NextResponse.redirect(new URL("/countdown", req.nextUrl));
+  }
 
   // Skip logging for Chrome DevTools and favicon requests
   if (!path.includes(".well-known") && !path.includes("favicon")) {
