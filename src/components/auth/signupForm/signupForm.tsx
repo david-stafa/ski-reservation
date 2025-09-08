@@ -12,6 +12,9 @@ import { cn } from "@/lib/utils";
 import { EyeIcon } from "lucide-react";
 import { useState } from "react";
 
+// NOT USED COMPONENT - the registration is not needed in this project at the moment
+
+
 // TODO: fix password error -> should be an array of errors but its a string
 
 export function SignupForm() {

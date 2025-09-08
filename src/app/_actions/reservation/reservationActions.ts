@@ -136,9 +136,6 @@ export async function getReservationsByDate(date: string) {
   const dateStart = DateTime.fromISO(date).startOf('day').toJSDate();
   const dateEnd = DateTime.fromISO(date).endOf('day').toJSDate();
 
-  console.log("dateStart", dateStart);
-  console.log("dateEnd", dateEnd);
-
   const reservations = await prisma.reservation.findMany({
     where: {
       startDate: {

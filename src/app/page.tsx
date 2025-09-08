@@ -8,7 +8,6 @@ import Link from "next/link";
 export default async function Home() {
   // Fetch data from the server
   const reservations = await getSumOfReservations();
-  console.log("reservations", reservations);
 
   return (
     // TODO: h-[100dvh] is not supported on older browsers - find some fallback or something
