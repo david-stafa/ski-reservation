@@ -6,8 +6,7 @@ export default function ReservationLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Container className="min-h-screen">
-      {/* <h1 className="text-center text-lg font-medium my-4">Rezervační formulář</h1> */}
+    <Container className="min-h-screen flex justify-center items-center">
       {children}
     </Container>
   );

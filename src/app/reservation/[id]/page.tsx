@@ -4,12 +4,19 @@ import Link from "next/link";
 import { DeleteReservationButton } from "./components/DeleteReservationButton";
 import { DateTime } from "luxon";
 import { cn } from "@/lib/utils";
-import { CalendarIcon, ClockIcon, MailIcon, UserIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  ClockIcon,
+  MailIcon,
+  TimerIcon,
+  UserIcon,
+} from "lucide-react";
 import { PhoneIcon } from "lucide-react";
 import { UsersIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import HeadingUnderline from "@/components/headingUnderline";
 import Container from "@/components/container";
+import { SINGLE_RESERVATION_DURATION } from "@/lib/constants";
 
 type ReservationDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -56,7 +63,7 @@ const ReservationDetailPage = async ({
   }
 
   return (
-    <Container className="max-w-3xl md:mt-12 md:p-6 rounded-lg md:shadow-md">
+    <Container className="max-w-3xl p-5 rounded-lg md:shadow-md">
       <h1 className="text-2xl font-bold mb-4 text-center text-primary">
         Detail vaší rezervace
       </h1>
@@ -71,8 +78,8 @@ const ReservationDetailPage = async ({
 
         <DetailComponent
           icon={<ClockIcon className="w-5 h-5" />}
-          label="Čas rezervace:"
-          value={`${reservationData.startTime} - ${reservationData.endTime}`}
+          label="Začátek rezervace:"
+          value={`${reservationData.startTime}`}
         />
 
         <DetailComponent
@@ -98,13 +105,17 @@ const ReservationDetailPage = async ({
           label="Počet osob:"
           value={reservationData.peopleCount}
         />
+
+        <DetailComponent
+          icon={<TimerIcon className="w-5 h-5" />}
+          label="Přibližná doba rezervace:"
+          value={`${reservationData.peopleCount * SINGLE_RESERVATION_DURATION} minut`}
+        />
       </div>
       <Separator className="mb-8" />
       <div className="flex gap-4 justify-center">
         <Link href={`/reservation/${id}/edit`}>
-          <Button variant="default" >
-            Upravit rezervaci
-          </Button>
+          <Button variant="default">Upravit rezervaci</Button>
         </Link>
         <DeleteReservationButton id={id} />
       </div>

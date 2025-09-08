@@ -90,7 +90,7 @@ export async function createReservation(
 
   // create new reservation
   try {
-    const { id: reservationId} = await prisma.reservation.create({
+    const { id: reservationId } = await prisma.reservation.create({
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -111,8 +111,8 @@ export async function createReservation(
         lastName: data.lastName,
         startDate: newStartDate,
         endDate: newEndDate,
-        peopleCount: data.peopleCount
-      })
+        peopleCount: data.peopleCount,
+      }),
     });
 
     revalidateTag("reservations");
@@ -123,21 +123,7 @@ export async function createReservation(
       redirectUrl: `/reservation/${reservationId}`,
     };
   } catch (error: unknown) {
-    // TODO - Find some usefull usage to this error value
     console.log(error);
-    // I think this is not needet now. I check for overlaping reservation and unique email up in the code.
-    // if (error instanceof PrismaClientKnownRequestError) {
-    //   if (error.code === "P2002") {
-    //     return {
-    //       success: false,
-    //       error: {
-    //         code: "P2002",
-    //         general: "Rezervace již existuje nebo",
-    //       },
-    //     };
-    //   }
-    // }
-
     return {
       success: false,
       error: {

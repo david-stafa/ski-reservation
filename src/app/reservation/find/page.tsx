@@ -66,10 +66,13 @@ const FindReservation = () => {
   };
 
   return (
-    <Container className="max-w-2xl md:mt-12 md:p-8 border-zinc-200 border rounded-lg md:shadow-md">
-      <form className="max-w-lg mx-auto mb-1" onSubmit={handleSubmit}>
+    <Container className="max-w-2xl p-5">
+      <form
+        className="max-w-lg p-5 mx-auto border-zinc-200 border rounded-lg md:shadow-md"
+        onSubmit={handleSubmit}
+      >
         <h1 className="text-2xl font-bold mb-4 text-center">Najít rezervaci</h1>
-        <HeadingUnderline />  
+        <HeadingUnderline />
 
         {error && <p className="text-red-500 text-sm mb-1">{error}</p>}
         {success.length > 0 && (
