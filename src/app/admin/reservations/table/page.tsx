@@ -10,7 +10,7 @@ const Reservations = async () => {
   await getUser();
 
   return (
-    <Container>
+    <Container className="px-5">
       <div className="relative">
         <h1 className="text-2xl font-bold mb-4 text-center">
           Přehled rezervací

@@ -6,19 +6,7 @@ interface AvailabilityDisplayProps {
 
 const SKI_SETS_PER_DAY = 24;
 // const SKI_SETS_TOTAL = SKI_SETS_PER_DAY * 7;
-
-const DAYS_CONFIG = [
-  { key: "2025-10-13", label: "Pondělí" },
-  { key: "2025-10-14", label: "Úterý" },
-  { key: "2025-10-15", label: "Středa" },
-  { key: "2025-10-16", label: "Čtvrtek" },
-  { key: "2025-10-17", label: "Pátek" },
-  { key: "2025-10-20", label: "Pondělí" },
-  { key: "2025-10-21", label: "Úterý" },
-  { key: "2025-10-22", label: "Středa" },
-  { key: "2025-10-23", label: "Čtvrtek" },
-  { key: "2025-10-24", label: "Pátek" },
-];
+import { DAYS_CONFIG } from "@/lib/constants";
 
 export default function AvailabilityDisplay({
   reservations,

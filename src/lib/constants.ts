@@ -33,3 +33,21 @@ export const TIMESLOTS: TimeString[] = [
 ];
 
 export const DAY_TIMESLOTS_COUNT = TIMESLOTS.length; // 16
+
+// Landing/Admin: Days configuration with styling
+export const DAYS_CONFIG: Array<{
+  key: string;
+  label: string;
+  color: string; // Tailwind classes for bg/text that look good in UI
+}> = [
+  { key: "2025-10-13", label: "Pondělí", color: "bg-blue-50 text-blue-600" },
+  { key: "2025-10-14", label: "Úterý", color: "bg-green-50 text-green-600" },
+  { key: "2025-10-15", label: "Středa", color: "bg-yellow-50 text-yellow-600" },
+  { key: "2025-10-16", label: "Čtvrtek", color: "bg-purple-50 text-purple-600" },
+  { key: "2025-10-17", label: "Pátek", color: "bg-orange-50 text-orange-600" },
+  { key: "2025-10-20", label: "Pondělí", color: "bg-cyan-50 text-cyan-600" },
+  { key: "2025-10-21", label: "Úterý", color: "bg-pink-50 text-pink-600" },
+  { key: "2025-10-22", label: "Středa", color: "bg-lime-50 text-lime-600" },
+  { key: "2025-10-23", label: "Čtvrtek", color: "bg-amber-50 text-amber-600" },
+  { key: "2025-10-24", label: "Pátek", color: "bg-indigo-50 text-indigo-600" },
+];
