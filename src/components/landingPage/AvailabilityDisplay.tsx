@@ -19,7 +19,7 @@ export default function AvailabilityDisplay({
       </div>
 
       <div className="grid grid-cols-2 gap-2 mb-2 text-base font">
-        <p>1. - 17. října</p>
+        <p>13. - 17. října</p>
         <p>20. - 24. října</p>
       </div>
 

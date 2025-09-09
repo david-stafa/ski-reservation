@@ -13,7 +13,7 @@ const AdminPage = () => {
       <section className="mb-8">
         <h3 className="text-xl font-bold mb-4 text-left">Celoroční sety:</h3>
         <div className="grid grid-cols-2 gap-10 mb-2 text-base font-semibold">
-          <p>1. - 17. října</p>
+          <p>13. - 17. října</p>
           <p>20. - 24. října</p>
         </div>
         {/* Grid for days */}
