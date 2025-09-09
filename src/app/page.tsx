@@ -38,11 +38,11 @@ export default async function Home() {
             Vytvořit rezervaci
           </Button>
         </Link>
-        <Link href="/reservation/find">
+        {/* <Link href="/reservation/find">
           <Button variant="secondary" size="lg" className="w-full">
             Upravit rezervaci
           </Button>
-        </Link>
+        </Link> */}
       </div>
     </Container>
   );
