@@ -7,6 +7,7 @@ import {
   Preview,
   Section,
   Text,
+  Link,
   Hr,
 } from "@react-email/components";
 import * as React from "react";
@@ -19,6 +20,7 @@ interface ReservationConfirmationEmailProps {
   startDate: Date;
   endDate: Date;
   peopleCount: number;
+  reservationUrl: string;
 }
 
 const ReservationConfirmationEmail = ({
@@ -26,6 +28,7 @@ const ReservationConfirmationEmail = ({
   lastName,
   startDate,
   peopleCount,
+  reservationUrl,
 }: ReservationConfirmationEmailProps) => {
   const zone = "Europe/Prague";
   const locale = "cs-CZ";
@@ -86,6 +89,15 @@ const ReservationConfirmationEmail = ({
             <Section style={detailRow}>
               <Text style={label}>Počet osob:</Text>
               <Text style={value}>{peopleCount}</Text>
+            </Section>
+
+            <Section style={detailRow}>
+              <Text style={label}>Odkaz na upravení rezervace:</Text>
+              <Text style={value}>
+                <Link href={reservationUrl} style={link}>
+                  {reservationUrl}
+                </Link>
+              </Text>
             </Section>
           </Section>
 
@@ -185,6 +197,11 @@ const value = {
   margin: 0,
   flex: "0 0 70%",
   textAlign: "left" as const,
+};
+
+const link = {
+  color: "#3b82f6",
+  textDecoration: "underline",
 };
 
 const footerSection = {

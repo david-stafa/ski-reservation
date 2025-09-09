@@ -112,6 +112,7 @@ export async function createReservation(
         startDate: newStartDate,
         endDate: newEndDate,
         peopleCount: data.peopleCount,
+        reservationUrl: `rezervace.skiblazek.cz/reservation/${reservationId}`,
       }),
     });
 
