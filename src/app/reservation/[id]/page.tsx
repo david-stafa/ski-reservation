@@ -63,7 +63,7 @@ const ReservationDetailPage = async ({
   }
 
   return (
-    <Container className="max-w-3xl p-5 rounded-lg md:shadow-md">
+    <Container className="max-w-3xl p-5 md:m-5 rounded-lg md:shadow-md">
       <h1 className="text-2xl font-bold mb-4 text-center text-primary">
         Detail vaší rezervace
       </h1>
