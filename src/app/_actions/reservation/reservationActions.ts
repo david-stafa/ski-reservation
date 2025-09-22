@@ -28,24 +28,35 @@ export async function getSumOfReservations() {
   const reservations = await prisma.reservation.findMany({
     select: {
       startDate: true,
-    }
+    },
   });
 
   // Initialize all dates from STARTDATE to ENDDATE
-  const allDates = ['2025-09-15', '2025-09-16', '2025-09-17', '2025-09-18', '2025-09-19'];
-  
-  const groupedByDate = reservations.reduce((acc, reservation) => {
-    const dateKey = reservation.startDate.toISOString().split('T')[0];
-    if (!acc[dateKey]) {
-      acc[dateKey] = { _count: 0, startDate: new Date(dateKey) };
+  const allDates = [
+    "2025-09-15",
+    "2025-09-16",
+    "2025-09-17",
+    "2025-09-18",
+    "2025-09-19",
+  ];
+
+  const groupedByDate = reservations.reduce(
+    (acc, reservation) => {
+      const dateKey = reservation.startDate.toISOString().split("T")[0];
+      if (!acc[dateKey]) {
+        acc[dateKey] = { _count: 0, startDate: new Date(dateKey) };
+      }
+      acc[dateKey]._count += 1;
+      acc._total += 1;
+      return acc;
+    },
+    { _total: 0 } as Record<string, { _count: number; startDate: Date }> & {
+      _total: number;
     }
-    acc[dateKey]._count += 1;
-    acc._total += 1;
-    return acc;
-  }, { _total: 0 } as Record<string, { _count: number; startDate: Date }> & { _total: number });
+  );
 
   // Add all dates with 0 count if they don't exist
-  allDates.forEach(date => {
+  allDates.forEach((date) => {
     if (!groupedByDate[date]) {
       groupedByDate[date] = { _count: 0, startDate: new Date(date) };
     }
@@ -86,6 +97,11 @@ export async function getAllReservations() {
       createdAt: true,
       updatedAt: true,
     },
+    where: {
+      startDate: {
+        gte: DateTime.fromObject({ year: 2025, month: 10 }).toJSDate(),
+      },
+    },
   });
 }
 
@@ -122,7 +138,10 @@ export async function checkConflictingEmail(email: string) {
   });
 }
 
-export async function findReservationByEmailAndLastName(email: string, lastName: string) {
+export async function findReservationByEmailAndLastName(
+  email: string,
+  lastName: string
+) {
   return await prisma.reservation.findUnique({
     where: {
       email,
@@ -132,16 +151,15 @@ export async function findReservationByEmailAndLastName(email: string, lastName:
 }
 
 export async function getReservationsByDate(date: string) {
-
-  const dateStart = DateTime.fromISO(date).startOf('day').toJSDate();
-  const dateEnd = DateTime.fromISO(date).endOf('day').toJSDate();
+  const dateStart = DateTime.fromISO(date).startOf("day").toJSDate();
+  const dateEnd = DateTime.fromISO(date).endOf("day").toJSDate();
 
   const reservations = await prisma.reservation.findMany({
     where: {
       startDate: {
         gte: dateStart,
         lte: dateEnd,
-      }
+      },
     },
     select: {
       id: true,
@@ -155,8 +173,8 @@ export async function getReservationsByDate(date: string) {
     },
     orderBy: {
       startDate: "asc",
-    }
-  })
+    },
+  });
 
   return reservations;
 }
@@ -173,10 +191,10 @@ export async function updateAttendance(
 
     // Revalidate the current page to show updated data
     revalidatePath("/admin/reservations/day-sheet");
-    
+
     return { success: true };
   } catch (error) {
     console.error("Failed to update attendance:", error);
     return { success: false, error: "Failed to update attendance" };
   }
-} 
+}
