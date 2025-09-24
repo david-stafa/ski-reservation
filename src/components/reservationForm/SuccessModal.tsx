@@ -1,54 +1,75 @@
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { CircleCheck } from "lucide-react";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 interface SuccessModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    path: string;
-    isEdditing: boolean
+  isOpen: boolean;
+  onClose: () => void;
+  path: string;
+  isEdditing: boolean;
 }
 
-export const SuccessModal = ({ isOpen, onClose, path, isEdditing }: SuccessModalProps) => {
-    const router = useRouter();
-    
-    useEffect(() => {
-        if (isOpen) {
-            router.prefetch(path);
-        }
-    }, [path, router, isOpen]);
+export const SuccessModal = ({
+  isOpen,
+  onClose,
+  path,
+  isEdditing,
+}: SuccessModalProps) => {
+  const router = useRouter();
 
-    const handleClose = () => {
-        onClose();
-        router.push(path);
-    };
-
-    const header = {
-        title: isEdditing ? "Rezervace byla úspěšně upravena" : "Rezervace byla úspěšně vytvořena",
-        description: isEdditing ? "" : "Děkujeme za rezervaci. Na váš email jsme zaslali potvrzení."
+  useEffect(() => {
+    if (isOpen) {
+      router.prefetch(path);
     }
+  }, [path, router, isOpen]);
 
-    return (
-        <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="">
-                <CircleCheck  color="green" size={70} className="mx-auto my-2"/>
-                <DialogHeader>
-                    <DialogTitle className="text-center mb-4">{header.title}</DialogTitle>
-                    <DialogDescription className="text-center">
-                        {header.description}
-                    </DialogDescription>
-                    <DialogDescription className="text-center">
-                        Těšíme se na vás!
-                    </DialogDescription>
-                </DialogHeader>
-                <DialogFooter className="mt-2">
-                    <Button onClick={handleClose}>
-                        Zavřít
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
-}
+  const handleClose = () => {
+    onClose();
+    router.push(path);
+  };
+
+  const header = {
+    title: isEdditing
+      ? "Rezervace byla úspěšně upravena"
+      : "Rezervace byla úspěšně vytvořena",
+    description: isEdditing ? (
+      ""
+    ) : (
+      <>
+        <p>Právě jsme vám zaslali email s potvrzením rezervace.</p>
+        <p className="mt-2">
+          V emailu zároveň naleznete odkaz na <span className="underline">upravení rezervace.</span>
+        </p>
+      </>
+    ),
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="">
+        <CircleCheck color="green" size={70} className="mx-auto my-2" />
+        <DialogHeader>
+          <DialogTitle className="text-center mb-4">{header.title}</DialogTitle>
+          <DialogDescription className="text-center">
+            {header.description}
+          </DialogDescription>
+          <DialogDescription className="text-center font-semibold mt-2">
+            Těšíme se na vás!
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button onClick={handleClose}>Zavřít</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
