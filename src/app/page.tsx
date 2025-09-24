@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button";
-import Container from "../components/container";
 import AvailabilityDisplay from "@/components/landingPage/AvailabilityDisplay";
-import { getSumOfReservations } from "./_actions/reservation/reservationActions";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import Container from "../components/container";
+import { getCachedSumOfReservations } from "./_actions/reservation/reservationActions";
 
 export default async function Home() {
   // Fetch data from the server
-  const reservations = await getSumOfReservations();
+  const reservations = await getCachedSumOfReservations();
 
   return (
     // TODO: h-[100dvh] is not supported on older browsers - find some fallback or something
