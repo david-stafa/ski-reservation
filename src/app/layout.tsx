@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SKI - rezervační formulář",
+  title: "Ski Blažek - rezervační formulář",
   description: "Rezervace celoročních setů na sezónu 2025/2026",
 };
 
