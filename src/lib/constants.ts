@@ -3,6 +3,8 @@ import { DateTime } from "luxon";
 export const STARTDATE = "2025-10-13";
 export const ENDDATE = "2025-10-24";
 export const SINGLE_RESERVATION_DURATION = 15; // in minutes
+export const SKI_SETS_PER_DAY = 16;
+export const SKI_SETS_LIMIT = 120;
 // Countdown end instant for opening; explicit timezone to avoid edge/local ambiguity
 export const COUNTDOWN_END = DateTime.fromObject({ year: 2025, month: 9, day: 26, hour: 8 }, { zone: "Europe/Prague" })
 

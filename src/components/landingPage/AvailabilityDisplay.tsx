@@ -4,9 +4,8 @@ interface AvailabilityDisplayProps {
   };
 }
 
-const SKI_SETS_PER_DAY = 24;
 // const SKI_SETS_TOTAL = SKI_SETS_PER_DAY * 7;
-import { DAYS_CONFIG } from "@/lib/constants";
+import { DAYS_CONFIG, SKI_SETS_PER_DAY } from "@/lib/constants";
 
 export default function AvailabilityDisplay({
   reservations,
