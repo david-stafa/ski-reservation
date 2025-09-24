@@ -167,7 +167,7 @@ const Form = ({
           setValue={setValue}
           reservationTime={
             watch("date") === formFields?.date && formFields?.time
-              ? formFields?.time
+              ? formFields?.time as `${number}:${number}:${number}`
               : undefined
           }
           reservationPeopleCount={formFields?.peopleCount}

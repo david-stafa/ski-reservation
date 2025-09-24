@@ -9,9 +9,12 @@ import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import {
   DAY_TIMESLOTS_COUNT,
   SINGLE_RESERVATION_DURATION,
-  TIMESLOTS
+  TIMESLOTS,
 } from "@/lib/constants";
-import { isTimeSlotDisabled } from "./helpers/helpers";
+import {
+  isTimeSlotDisabled,
+  isTimeSlotDisabledForEdit,
+} from "./helpers/helpers";
 import { getAllReservationsDates } from "@/app/_actions/reservation/reservationActions";
 import { XIcon } from "lucide-react";
 
@@ -22,7 +25,7 @@ interface TimeInputProps {
   register: UseFormRegister<ReservationSchema>;
   setValue: UseFormSetValue<ReservationSchema>;
   error: FieldError | undefined;
-  reservationTime?: string;
+  reservationTime?: `${number}:${number}:${number}`;
   reservationPeopleCount?: number;
 }
 
@@ -36,7 +39,9 @@ export default function TimeInput({
   reservationPeopleCount,
 }: TimeInputProps) {
   // store selected time by user
-  const [selectedTime, setSelectedTime] = useState<string>();
+  const [selectedTime, setSelectedTime] = useState<string | undefined>(
+    reservationTime
+  );
   // store fetched reservations dates from DB
   const [timeOfReservations, setTimeOfReservations] = useState<Set<string>>();
   // loading state -> display skeleton if true
@@ -101,7 +106,6 @@ export default function TimeInput({
     } catch (error) {
       console.error("Error fetching reservations:", error);
     } finally {
-      setSelectedTime(undefined); // clear selected time
       setLoading(false); // hide skeleton UI
     }
   }, [date, reservationPeopleCount, reservationTime]);
@@ -118,10 +122,27 @@ export default function TimeInput({
     // Only reset if we're not in edit mode (no reservationTime)
     // or if we are in edit mode but the peopleCount has changed from the original
     if (!reservationTime || peopleCount !== reservationPeopleCount) {
-      setSelectedTime(undefined);
-      setValue("time", "");
+      // and only reset if the time slot is disabled -> meaning user can book this time becouse no other consecutive slots are booked
+      const isTimeSlotDisabeled = isTimeSlotDisabledForEdit(
+        reservationTime!,
+        timeOfReservations,
+        peopleCount
+      );
+      if (isTimeSlotDisabeled) {
+        setSelectedTime(undefined);
+        setValue("time", "");
+      } else {
+        setSelectedTime(reservationTime!);
+        setValue("time", reservationTime!);
+      }
     }
-  }, [peopleCount, setValue, reservationTime, reservationPeopleCount]);
+  }, [
+    peopleCount,
+    setValue,
+    reservationTime,
+    reservationPeopleCount,
+    timeOfReservations,
+  ]);
 
   if (date === "")
     return (
@@ -174,6 +195,7 @@ export default function TimeInput({
             selectedTime={selectedTime}
             peopleCount={peopleCount}
             reservationTime={reservationTime}
+            reservationPeopleCount={reservationPeopleCount}
           />
         )}
       </div>
@@ -190,6 +212,7 @@ interface TimeInputsProps {
   selectedTime: string | undefined;
   peopleCount: number;
   reservationTime?: string;
+  reservationPeopleCount?: number;
 }
 
 function TimeInputs({
@@ -217,10 +240,10 @@ function TimeInputs({
             onClick={() => handleTimeClick(time)}
             type="button"
             variant={selectedTime === time ? "default" : "secondary"}
-            disabled={timeDisabled || isStartOfReservation}
+            disabled={timeDisabled}
             className={cn(
               timeDisabled && "!opacity-20",
-              isStartOfReservation && "border-2 border-blue-500 !opacity-50"
+              isStartOfReservation && "border-2 border-blue-500"
             )}
           >
             {time.slice(0, 5)}
