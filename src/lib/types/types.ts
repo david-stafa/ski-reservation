@@ -33,7 +33,7 @@ export const ReservationSchema = z.object({
     .trim(),
   peopleCount: z.coerce.number({ message: "Vyberte počet osob." }).min(1).max(3),
   date: z
-    .string()
+    .string({ message: "Vyberte datum." })
     .refine((val) => new Date(val) >= new Date(STARTDATE), {
       message: `Datum musí být nejdříve ${new Date(
         STARTDATE
@@ -45,8 +45,8 @@ export const ReservationSchema = z.object({
       ).toLocaleDateString("cs-CZ", { month: "long", day: "numeric", year: "numeric" })}.`,
     }),
   time: z
-    .string()
-    .time("Vyberte čas rezervace.")
+    .string({ message: "Vyberte čas rezervace." })
+    .time({ message: "Vyberte čas rezervace." })
     .refine(
       (val) =>
         Number(val.split(":")[0]) >= 15 && Number(val.split(":")[0]) <= 19,
