@@ -45,10 +45,10 @@ export const SuccessModal = ({
       ""
     ) : (
       <>
-        <p>Právě jsme vám zaslali email s potvrzením rezervace.</p>
-        <p className="mt-2">
+        <span className="block">Právě jsme vám zaslali email s potvrzením rezervace.</span>
+        <span className="mt-2 block">
           V emailu zároveň naleznete odkaz na <span className="underline">upravení rezervace.</span>
-        </p>
+        </span>
       </>
     ),
   };
