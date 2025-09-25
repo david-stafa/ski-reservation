@@ -148,7 +148,9 @@ export default function TimeInput({
     return (
       <div className="mt-4">
         <Label className="mb-2">Začátek rezervace</Label>
-        <div className="animate-pulse w-full h-10 bg-zinc-200 rounded-md text-sm" />
+        <div className="animate-pulse w-full h-10 bg-zinc-200 rounded-md text-sm flex items-center justify-center text-zinc-500">
+          Nejprve zvolte datum
+        </div>
         {error && (
           <p className="text-red-500 italic text-sm">{error.message}</p>
         )}
