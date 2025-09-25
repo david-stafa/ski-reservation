@@ -3,25 +3,83 @@
 import { prisma } from "@/db/prisma";
 import { DateTime } from "luxon";
 import { revalidatePath, unstable_cache } from "next/cache";
+import * as Sentry from "@sentry/nextjs";
 
 // input: date in format 2025-10-07
 export async function getAllReservationsDates(date: string) {
-  const startOfTheDay = `${date}T00:00:00Z`;
-  const endOfTheDay = `${date}T23:59:59Z`;
+  try {
+    // Input validation
+    if (!date || typeof date !== "string") {
+      const error = new Error("Invalid date parameter");
+      Sentry.captureException(error, {
+        tags: { function: "getAllReservationsDates", errorType: "validation" },
+        extra: { date, dateType: typeof date },
+      });
+      throw error;
+    }
 
-  return await prisma.reservation.findMany({
-    where: {
-      startDate: {
-        gte: startOfTheDay,
-        lte: endOfTheDay,
+    // Use Luxon for better date handling
+    const dateObj = DateTime.fromISO(date);
+
+    if (!dateObj.isValid) {
+      const error = new Error(
+        `Invalid date: ${date}. ${dateObj.invalidReason}`
+      );
+      Sentry.captureException(error, {
+        tags: {
+          function: "getAllReservationsDates",
+          errorType: "date_parsing",
+        },
+        extra: { date, invalidReason: dateObj.invalidReason },
+      });
+      throw error;
+    }
+
+    const startOfTheDay = dateObj.startOf("day").toISO();
+    const endOfTheDay = dateObj.endOf("day").toISO();
+
+    if (!startOfTheDay || !endOfTheDay) {
+      const error = new Error(`Failed to create date range for: ${date}`);
+      Sentry.captureException(error, {
+        tags: {
+          function: "getAllReservationsDates",
+          errorType: "date_range_creation",
+        },
+        extra: { date },
+      });
+      throw error;
+    }
+
+    const reservations = await prisma.reservation.findMany({
+      where: {
+        startDate: {
+          gte: startOfTheDay,
+          lte: endOfTheDay,
+        },
       },
-    },
-    select: {
-      startDate: true,
-      endDate: true,
-      peopleCount: true,
-    },
-  });
+      select: { startDate: true, endDate: true, peopleCount: true },
+    });
+
+    return reservations;
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: {
+        function: "getAllReservationsDates",
+        operation: "database_query",
+      },
+      extra: {
+        date,
+        timestamp: new Date().toISOString(),
+      },
+    });
+
+    Sentry.logger.error("Failed to retrieve reservation dates", {
+      date,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+
+    throw error;
+  }
 }
 
 export async function getSumOfReservations() {
@@ -45,7 +103,6 @@ export async function getSumOfReservations() {
     { _total: 0 } as Record<string, { _count: number; startDate: Date }> & {
       _total: number;
     }
-    
   );
 
   return groupedByDate;
@@ -61,11 +118,47 @@ export const getCachedSumOfReservations = unstable_cache(
 );
 
 export async function getReservationById(id: string) {
-  return await prisma.reservation.findUnique({
-    where: {
-      id: id,
-    },
-  });
+  try {
+    // Input validation
+    if (!id || typeof id !== "string") {
+      const error = new Error("Invalid reservation ID parameter");
+      Sentry.captureException(error, {
+        tags: { function: "getReservationById", errorType: "validation" },
+        extra: { id, idType: typeof id },
+      });
+      throw error;
+    }
+
+    const reservation = await prisma.reservation.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!reservation) {
+      // This could indicate:
+      // - Broken links in emails
+      // - Security issues (someone trying random IDs)
+      // - Data corruption
+      Sentry.logger.warn(
+        "Reservation not found - possible security issue or broken link",
+        {
+          reservationId: id,
+          timestamp: new Date().toISOString(),
+          userAgent: "server-side", // You could add user context here if available
+        }
+      );
+    }
+
+    return reservation;
+  } catch (error) {
+    Sentry.logger.error("Failed to retrieve reservation by ID", {
+      id,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+
+    throw error;
+  }
 }
 
 export async function getAllReservations() {
@@ -106,22 +199,39 @@ export async function findConflictingReservations(
   newEndDate: Date,
   excludeReservationId?: string
 ) {
-  return await prisma.reservation.findFirst({
-    where: {
-      startDate: { lt: newEndDate },
-      endDate: { gt: newStartDate },
-      ...(excludeReservationId && { id: { not: excludeReservationId } }),
-    },
-  });
+  try {
+    return await prisma.reservation.findFirst({
+      where: {
+        startDate: { lt: newEndDate },
+        endDate: { gt: newStartDate },
+        ...(excludeReservationId && { id: { not: excludeReservationId } }),
+      },
+    });
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: {
+        function: "findConflictingReservations",
+        errorType: "database_query",
+      },
+      extra: { newStartDate, newEndDate, excludeReservationId },
+    });
+  }
 }
 
 // check for already existing reservation with the same email
 export async function checkConflictingEmail(email: string) {
-  return await prisma.reservation.findFirst({
-    where: {
-      email: email,
-    },
-  });
+  try {
+    return await prisma.reservation.findFirst({
+      where: {
+        email: email,
+      },
+    });
+  } catch (error) {
+    Sentry.captureException(error, {
+      tags: { function: "checkConflictingEmail", errorType: "database_query" },
+      extra: { email },
+    });
+  }
 }
 
 export async function findReservationByEmailAndLastName(

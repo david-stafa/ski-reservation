@@ -9,6 +9,7 @@ import {
 } from "@/lib/types/definitions";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import * as Sentry from "@sentry/nextjs";
 
 export async function signup(formData: FormData) {
   // Validate form fields
@@ -84,6 +85,8 @@ export async function login(formData: LoginFormSchema) {
 
   await createSession(user.id);
 
+  Sentry.logger.info(`User logged in. email:${user.email}`)
+  
   redirect("/admin");
 }
 

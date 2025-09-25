@@ -17,6 +17,7 @@ import {
 import { Resend } from "resend";
 import ReservationConfirmationEmail from "../../../../emails/templates/reservation-confirmation";
 import { config } from "../../../lib/config";
+import * as Sentry from "@sentry/nextjs";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -90,7 +91,7 @@ export async function createReservation(
 
   // create new reservation
   try {
-    const { id: reservationId } = await prisma.reservation.create({
+    const reservation = await prisma.reservation.create({
       data: {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -99,6 +100,17 @@ export async function createReservation(
         peopleCount: data.peopleCount,
         startDate: newStartDate,
         endDate: newEndDate,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        peopleCount: true,
+        startDate: true,
+        endDate: true,
+        createdAt: true,
       },
     });
 
@@ -112,19 +124,22 @@ export async function createReservation(
         startDate: newStartDate,
         endDate: newEndDate,
         peopleCount: data.peopleCount,
-        reservationUrl: `rezervace.skiblazek.cz/reservation/${reservationId}`,
+        reservationUrl: `rezervace.skiblazek.cz/reservation/${reservation.id}`,
       }),
     });
 
     revalidateTag("reservations");
-
+    
+    Sentry.logger.info(`Reservation created. ${JSON.stringify(reservation)}`);
+    
     return {
       success: true,
       message: "Rezervace byla úspěšně vytvořena.",
-      redirectUrl: `/reservation/${reservationId}`,
+      redirectUrl: `/reservation/${reservation.id}`,
     };
   } catch (error: unknown) {
     console.log(error);
+    Sentry.logger.error(`Reservation creation failed. ${JSON.stringify(error)}`);
     return {
       success: false,
       error: {
@@ -248,6 +263,7 @@ export async function updateReservation(
       },
     });
 
+    Sentry.logger.info(`Reservation updated. ${JSON.stringify(updatedReservationId)}`);
     revalidateTag("reservations");
 
     return {
@@ -257,6 +273,7 @@ export async function updateReservation(
     };
   } catch (error: unknown) {
     console.log(error);
+    Sentry.logger.error(`Reservation update failed. ${JSON.stringify(error)}`);
     return {
       success: false,
       error: {
@@ -268,12 +285,15 @@ export async function updateReservation(
 
 export async function deleteReservation(reservationId: string) {
   try {
-    await prisma.reservation.delete({
+    const deletedReservation = await prisma.reservation.delete({
       where: {
         id: reservationId,
       },
     });
+
     revalidateTag("reservations");
+    
+    Sentry.logger.info(`Reservation deleted. ${JSON.stringify(deletedReservation)}`);
     return {
       success: true,
       message: "Rezervace byla úspěšně smazána.",
@@ -281,6 +301,7 @@ export async function deleteReservation(reservationId: string) {
     };
   } catch (error: unknown) {
     console.log(error);
+    Sentry.logger.error(`Reservation deletion failed. ${JSON.stringify(error)}`);
     return {
       success: false,
       error: {
