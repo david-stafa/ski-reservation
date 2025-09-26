@@ -116,7 +116,7 @@ const Form = ({
         className="max-w-lg mx-auto flex flex-col"
       >
         <Label htmlFor="peopleCount" className="mt-4 mb-2">
-          Počet lidí
+          Počet osob (pro které chcete zarezervovat lyžařský set)
         </Label>
         <Controller
           name="peopleCount"
