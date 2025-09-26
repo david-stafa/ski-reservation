@@ -1,10 +1,12 @@
+export const dynamic = "force-dynamic";
+
 import { COUNTDOWN_END } from "@/lib/constants";
 import { DateTime } from "luxon";
 import { redirect } from "next/navigation";
 
 const Countdown = () => {
   // redirect to home page if countdown end is reached
-  if (DateTime.local({zone: "Europe/Prague"}) >= COUNTDOWN_END) {
+  if (DateTime.now().setZone("Europe/Prague") >= COUNTDOWN_END) {
     redirect("/");
   }
 
