@@ -116,7 +116,7 @@ const Form = ({
         className="max-w-lg mx-auto flex flex-col"
       >
         <Label htmlFor="peopleCount" className="mt-4 mb-2">
-          Počet osob (pro které chcete zarezervovat lyžařský set)
+          Počet osob (lyžařských setů)
         </Label>
         <Controller
           name="peopleCount"
@@ -127,7 +127,7 @@ const Form = ({
               value={field.value?.toString()} // Ensure correct display
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Vyberte počet lidí" />
+                <SelectValue placeholder="Vyberte počet osob" />
               </SelectTrigger>
               <SelectContent id="peopleCount">
                 <SelectGroup>
