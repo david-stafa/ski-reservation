@@ -248,7 +248,7 @@ export async function updateReservation(
 
   // update existing reservation
   try {
-    const { id: updatedReservationId } = await prisma.reservation.update({
+    const updatedReservation = await prisma.reservation.update({
       where: {
         id: reservationId,
       },
@@ -263,13 +263,13 @@ export async function updateReservation(
       },
     });
 
-    Sentry.logger.info(`Reservation updated. ${JSON.stringify(updatedReservationId)}`);
+    Sentry.logger.info(`Reservation updated. ${JSON.stringify(updatedReservation)}`);
     revalidateTag("reservations");
 
     return {
       success: true,
       message: "Rezervace byla úspěšně upravena.",
-      redirectUrl: `/reservation/${updatedReservationId}`,
+      redirectUrl: `/reservation/${updatedReservation.id}`,
     };
   } catch (error: unknown) {
     console.log(error);
