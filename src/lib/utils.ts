@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -34,4 +35,8 @@ export function formatPhone(phone: string) {
     return `${match[1]} ${match[2]} ${match[3]}`;
   }
   return phone;
+}
+
+export function now(){
+  return DateTime.now().setZone("Europe/Prague");
 }

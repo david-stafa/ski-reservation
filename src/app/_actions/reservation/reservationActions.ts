@@ -4,6 +4,7 @@ import { prisma } from "@/db/prisma";
 import { DateTime } from "luxon";
 import { revalidatePath, unstable_cache } from "next/cache";
 import * as Sentry from "@sentry/nextjs";
+import { SEASONAL_STARTDATE } from "@/lib/constants";
 
 // input: date in format 2025-10-07
 export async function getAllReservationsDates(date: string) {
@@ -294,3 +295,56 @@ export async function updateAttendance(
     return { success: false, error: "Failed to update attendance" };
   }
 }
+
+
+/**
+ * Retrieves reservations for the current and next week, grouped by date.
+ * If the current date is before the season start date, it returns reservations
+ * starting from the week containing the season start date.
+ * 
+ * @returns Object with reservations grouped by date and total count
+ */
+export const getReservationsByThisAndNextWeek = async () => {
+  const isBefore = DateTime.now() < SEASONAL_STARTDATE;
+
+  const startOfAWeek = isBefore
+    ? SEASONAL_STARTDATE.startOf("week")
+    : DateTime.now().startOf("week");
+
+  const endOfNextWeek = startOfAWeek.endOf("week").plus({ weeks: 1 });
+
+  const reservations = await prisma.reservation.findMany({
+    where: {
+      startDate: { gte: startOfAWeek.toJSDate(), lte: endOfNextWeek.toJSDate() },
+    },
+    select: {
+      startDate: true,
+      peopleCount: true,
+    },
+  });
+
+  const groupedByDate = reservations.reduce(
+    (acc, reservation) => {
+      const dateKey = reservation.startDate.toISOString().split("T")[0];
+      if (!acc[dateKey]) {
+        acc[dateKey] = { _count: 0, startDate: new Date(dateKey) };
+      }
+      acc[dateKey]._count += reservation.peopleCount;
+      acc._total += reservation.peopleCount;
+      return acc;
+    },
+    { _total: 0 } as Record<string, { _count: number; startDate: Date }> & {
+      _total: number;
+    }
+  );
+
+  return groupedByDate;
+};
+
+export const getCachedReservationsByThisAndNextWeek = unstable_cache(
+  async () => await getReservationsByThisAndNextWeek(),
+  ["reservations"], // key
+  {
+    tags: ["reservations"], // 💡 tag to revalidate
+  }
+);
