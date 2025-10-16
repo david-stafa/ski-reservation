@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ENDDATE, STARTDATE } from "@/lib/constants";
+import { SEASONAL_ENDDATE, SEASONAL_STARTDATE } from "@/lib/constants";
 import { ReservationSchema } from "@/lib/types/types";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -149,8 +149,8 @@ const Form = ({
           control={control}
           render={({ field }) => (
             <DatePicker
-              min={new Date(STARTDATE)}
-              max={new Date(ENDDATE)}
+              min={SEASONAL_STARTDATE.toJSDate()}
+              max={SEASONAL_ENDDATE.toJSDate()}
               field={field}
             />
           )}

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { ENDDATE, STARTDATE } from "../constants";
+import { SEASONAL_ENDDATE, SEASONAL_STARTDATE } from "../constants";
+import { DateTime } from "luxon";
 
 export type ErrorType =
   | {
@@ -21,8 +22,14 @@ export type PrevFormData =
   | undefined;
 
 export const ReservationSchema = z.object({
-  firstName: z.string().min(2, { message: "Jméno musí mít aspoň 2 znaky." }).trim(),
-  lastName: z.string().min(2, { message: "Příjmení musí mít aspoň 2 znaky." }).trim(),
+  firstName: z
+    .string()
+    .min(2, { message: "Jméno musí mít aspoň 2 znaky." })
+    .trim(),
+  lastName: z
+    .string()
+    .min(2, { message: "Příjmení musí mít aspoň 2 znaky." })
+    .trim(),
   email: z.string().email({ message: "Zadejte validní email." }).trim(),
   // TODO finish phone error message and validation
   phone: z
@@ -31,19 +38,26 @@ export const ReservationSchema = z.object({
       message: "Zadejte validní telefon ve formátu XXX XXX XXX nebo XXXXXXXXX",
     })
     .trim(),
-  peopleCount: z.coerce.number({ message: "Vyberte počet osob." }).min(1).max(3),
+  peopleCount: z.coerce
+    .number({ message: "Vyberte počet osob." })
+    .min(1)
+    .max(3),
   date: z
     .string({ message: "Vyberte datum." })
-    .refine((val) => new Date(val) >= new Date(STARTDATE), {
-      message: `Datum musí být nejdříve ${new Date(
-        STARTDATE
-      ).toLocaleDateString("cs-CZ", { month: "long", day: "numeric", year: "numeric" })}.`,
-    })
-    .refine((val) => new Date(val) <= new Date(ENDDATE), {
-      message: `Datum musí být nejpozději ${new Date(
-        ENDDATE
-      ).toLocaleDateString("cs-CZ", { month: "long", day: "numeric", year: "numeric" })}.`,
-    }),
+    .refine(
+      (val) =>
+        DateTime.fromISO(val, { zone: "Europe/Prague" }) >= SEASONAL_STARTDATE,
+      {
+        message: `Datum musí být nejdříve ${SEASONAL_STARTDATE.toFormat("dd.MM.yyyy")}.`,
+      }
+    )
+    .refine(
+      (val) =>
+        DateTime.fromISO(val, { zone: "Europe/Prague" }) <= SEASONAL_ENDDATE,
+      {
+        message: `Datum musí být nejpozději ${SEASONAL_ENDDATE.toFormat("dd.MM.yyyy")}.`,
+      }
+    ),
   time: z
     .string({ message: "Vyberte čas rezervace." })
     .time({ message: "Vyberte čas rezervace." })
@@ -59,5 +73,5 @@ export const ReservationSchema = z.object({
 export type ReservationSchema = z.infer<typeof ReservationSchema>;
 
 export type ReservationResult =
-  | { success: true; message: string; redirectUrl: string}
+  | { success: true; message: string; redirectUrl: string }
   | { success: false; error: Record<string, string[]> };
