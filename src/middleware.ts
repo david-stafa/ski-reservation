@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "@/lib/session";
 import { JWTPayload } from "jose";
 import { DateTime } from "luxon";
-import { COUNTDOWN_END } from "@/lib/constants";
+import { SEASONAL_COUNTDOWN_END } from "@/lib/constants";
 
 // 1. Specify protected and public routes
 const protectedRoutes = ["/admin"];
@@ -33,7 +33,7 @@ export default async function middleware(req: NextRequest) {
   // Countdown redirect logic
   const isProduction = process.env.NODE_ENV === "production";
   const now = DateTime.local({ zone: "Europe/Prague" });
-  const isBeforeOpen = now <= COUNTDOWN_END;
+  const isBeforeOpen = now <= SEASONAL_COUNTDOWN_END;
   const isCountdownPage = path === "/countdown";
   const isLoginPage = path === "/login";
 

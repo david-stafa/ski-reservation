@@ -8,20 +8,21 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { NOW, SEASONAL_COUNTDOWN_END } from "@/lib/constants";
 
 const SeasonalSetsInfo = () => {
-  const isBefore = false;
+  const isBeforeStart = NOW <= SEASONAL_COUNTDOWN_END;
   const isSoldOut = false;
 
   // Return before the opening date
-  if (isBefore) {
+  if (isBeforeStart) {
     return (
       <div>
         <Heading />
         <div className="flex items-center gap-2">
           <ClockIcon className="size-4 text-black" />
           <p className="text-base text-zinc-600">
-            Rezervace celoročních setů spustíme v TERMÍNU
+            Rezervace celoročních setů spustíme <span className="font-bold">{SEASONAL_COUNTDOWN_END.toFormat("dd.MM.yyyy")}</span>
           </p>
         </div>
       </div>

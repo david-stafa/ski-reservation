@@ -5,11 +5,10 @@ import { DateTime } from "luxon";
  */
 
 // Countdown end instant for opening; explicit timezone to avoid edge/local ambiguity
-export const COUNTDOWN_END = DateTime.fromObject(
+export const SEASONAL_COUNTDOWN_END = DateTime.fromObject(
   { year: 2025, month: 9, day: 26, hour: 8 },
   { zone: "Europe/Prague" }
 );
-
 export const SEASONAL_STARTDATE = DateTime.fromISO("2025-10-13", { zone: "Europe/Prague" }); // first day that people can make a reservation
 export const SEASONAL_ENDDATE = DateTime.fromISO("2025-10-24", { zone: "Europe/Prague" }); // last day that people can make a reservation
 export const SINGLE_RESERVATION_DURATION = 15; // in minutes
@@ -66,5 +65,13 @@ export const DAYS_CONFIG: Array<{
   { key: "2025-10-24", label: "Pátek", color: "bg-indigo-50 text-indigo-600" },
 ];
 
-export const NOW = DateTime.local({ zone: "Europe/Prague" });
+export const NOW = DateTime.now().setZone("Europe/Prague");
 export const START_OF_THE_WEEK = NOW.startOf("week");
+
+/**  
+ * STANDARD RESERVATION CONFIGURATION
+ *
+*/
+
+export const STANDARD_COUNTDOWN_END = DateTime.fromObject({year: 2025, month: 10, day: 18, hour: 8}, {zone: "Europe/Prague"});
+export const STANDARD_STARTDATE = DateTime.fromISO("2025-10-20", { zone: "Europe/Prague" }); // first day that people can make a reservation

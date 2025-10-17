@@ -1,17 +1,32 @@
-import { SKI_SETS_PER_DAY, START_OF_THE_WEEK, SEASONAL_STARTDATE } from "@/lib/constants";
+import {
+  SKI_SETS_PER_DAY,
+  START_OF_THE_WEEK,
+  SEASONAL_STARTDATE,
+  NOW,
+  STANDARD_STARTDATE,
+} from "@/lib/constants";
 import { getCachedReservationsByThisAndNextWeek } from "@/app/_actions/reservation/reservationActions";
 import { DateTime } from "luxon";
 
+
+const SKIPPED_DAYS = NOW >= STANDARD_STARTDATE ? [5, 6, 12, 13] : [3, 6, 10, 13]; // skipped days in the availability display
+
 export default async function AvailabilityDisplay() {
+  // Do not display the availability display before the first day that people can reserve
+  /**
+   * Logic:
+   * Seasonal reservations takes two weeks - week before the opening and first week after the opening
+   * Standart reservations start the consecutive week and last the remaining season 
+   */
+  const isBeforeStart = NOW <= SEASONAL_STARTDATE;
+  if (isBeforeStart) return null;
 
-  // Do not display the availability display before the reservation started
-  const isBefore = false;
-  if (isBefore) return null;
-
-  const currentWeek = isBefore ? SEASONAL_STARTDATE.startOf("week") : DateTime.now().startOf("week");
+  const currentWeek = isBeforeStart
+    ? SEASONAL_STARTDATE.startOf("week")
+    : DateTime.now().startOf("week");
   const nextWeek = currentWeek.plus({ weeks: 1 });
 
-  const reservations = await getCachedReservationsByThisAndNextWeek()
+  const reservations = await getCachedReservationsByThisAndNextWeek();
 
   return (
     <div className="text-zinc-600 text-sm">
@@ -21,14 +36,20 @@ export default async function AvailabilityDisplay() {
       </div>
 
       <div className="grid grid-cols-2 mb-1 text-base font-semibold">
-        <p>{currentWeek.toFormat("dd.")} - {currentWeek.endOf("week").minus({ days: 2 }).toFormat("dd.")}</p>
-        <p>{nextWeek.toFormat("dd.")} - {nextWeek.endOf("week").minus({ days: 2 }).toFormat("dd.")}</p>
+        <p>
+          {currentWeek.toFormat("dd.")} -{" "}
+          {currentWeek.endOf("week").toFormat("dd.")}
+        </p>
+        <p>
+          {nextWeek.toFormat("dd.")} -{" "}
+          {nextWeek.endOf("week").toFormat("dd.")}
+        </p>
       </div>
 
       {/* Daily Breakdown */}
       <div className="grid grid-flow-col grid-rows-5 gap-1">
         {Array.from({ length: 14 }).map((_, index) => {
-          if (index === 5 || index === 6 || index === 12 || index === 13) {
+          if (SKIPPED_DAYS.includes(index)) {
             return null;
           }
 
@@ -39,7 +60,8 @@ export default async function AvailabilityDisplay() {
             .setLocale("cs")
             .toFormat("EEEE");
 
-          const available = SKI_SETS_PER_DAY - (reservations?.[key]?._count || 0);
+          const available =
+            SKI_SETS_PER_DAY - (reservations?.[key]?._count || 0);
           const isLow = available <= 5;
           const isFull = available === 0;
 

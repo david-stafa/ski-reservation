@@ -2,18 +2,19 @@ import { CheckIcon, ClockIcon, InfoIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { NOW, STANDARD_COUNTDOWN_END } from "@/lib/constants";
 
 const StandartReservationInfo = () => {
-  const isBefore = false;
+  const isBeforeStart = NOW <= STANDARD_COUNTDOWN_END;
 
-  if (isBefore) {
+  if (isBeforeStart) {
     return (
       <div>
         <Heading />
         <div className="flex items-center gap-2">
           <ClockIcon className="size-4 text-black" />
           <p className="text-base text-zinc-600">
-            Rezervace standardní výpůjčky spustíme v TERMÍNU
+            Rezervace standardní výpůjčky spustíme <span className="font-bold">{STANDARD_COUNTDOWN_END.toFormat("dd.MM.yyyy")}</span>
           </p>
         </div>
       </div>
