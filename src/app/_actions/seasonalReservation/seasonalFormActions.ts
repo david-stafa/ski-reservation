@@ -1,32 +1,30 @@
 "use server";
 
 import { prisma } from "@/db/prisma";
-import {
-  ReservationResult,
-  ReservationSchema,
-} from "@/lib/types/reservationTypes";
 import { revalidateTag } from "next/cache";
+import * as Sentry from "@sentry/nextjs";
 import {
   calculateDuration,
   createStartAndEndDate,
   formatDateTime,
   isWithinOpeningHours,
   isWithinReservationTime,
-} from "./helpers/helpers";
-import { findConflictingReservations } from "./reservationActions";
+} from "../helpers/reservationHelpers";
+
 import { Resend } from "resend";
 import ReservationConfirmationEmail from "../../../../emails/templates/reservation-confirmation";
 import { config } from "../../../lib/config";
-import * as Sentry from "@sentry/nextjs";
+import { findConflictingSeasonalReservations } from "./seasonalReservationActions";
+import { SeasonalReservationResult, SeasonalReservationSchema } from "@/lib/types/seasonalReservationTypes";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function createReservation(
+export async function createSeasonalReservation(
   prevState: unknown,
-  formData: ReservationSchema
-): Promise<ReservationResult> {
+  formData: SeasonalReservationSchema
+): Promise<SeasonalReservationResult> {
   // parsing reservation form inputs with zod
-  const result = ReservationSchema.safeParse(formData);
+  const result = SeasonalReservationSchema.safeParse(formData);
 
   // return field error when validation fails
   if (result.success === false) {
@@ -51,12 +49,12 @@ export async function createReservation(
   );
 
   // check for already existing reservation
-  const conflictingReservations = await findConflictingReservations(
+  const conflictingSeasonalReservations = await findConflictingSeasonalReservations(
     newStartDate,
     newEndDate
   );
 
-  if (conflictingReservations) {
+  if (conflictingSeasonalReservations) {
     return {
       success: false,
       error: {
@@ -140,13 +138,13 @@ export async function createReservation(
   }
 }
 
-export async function updateReservation(
+export async function updateSeasonalReservation(
   prevState: unknown,
-  formData: ReservationSchema,
+  formData: SeasonalReservationSchema,
   reservationId: string
-): Promise<ReservationResult> {
+): Promise<SeasonalReservationResult> {
   // parsing reservation form inputs with zod
-  const result = ReservationSchema.safeParse(formData);
+  const result = SeasonalReservationSchema.safeParse(formData);
 
   // return field error when validation fails
   if (result.success === false) {
@@ -195,13 +193,13 @@ export async function updateReservation(
 
   if (isCheckConflictingReservationNeeded) {
     // Check for conflicting reservations, excluding the current reservation
-    const conflictingReservations = await findConflictingReservations(
+    const conflictingSeasonalReservations = await findConflictingSeasonalReservations(
       newStartDate,
       newEndDate,
       reservationId
     );
 
-    if (conflictingReservations) {
+    if (conflictingSeasonalReservations) {
       return {
         success: false,
         error: {
@@ -262,11 +260,12 @@ export async function updateReservation(
   }
 }
 
-export async function deleteReservation(reservationId: string) {
+export async function deleteSeasonalReservation(reservationId: string): Promise<SeasonalReservationResult> {
   try {
     const deletedReservation = await prisma.reservation.delete({
       where: {
         id: reservationId,
+        isSeasonal: true,
       },
     });
 
@@ -278,6 +277,7 @@ export async function deleteReservation(reservationId: string) {
     return {
       success: true,
       message: "Rezervace byla úspěšně smazána.",
+      reservationId: deletedReservation.id,
     };
   } catch (error: unknown) {
     console.log(error);

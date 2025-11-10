@@ -6,18 +6,13 @@ import { DateTime } from "luxon";
 import { useCallback, useEffect, useState } from "react";
 import { FieldError, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
-import {
-  SINGLE_RESERVATION_DURATION,
-  STANDARD_TIME_SLOTS,
-  TIMESLOTS,
-  WeekDay,
-} from "@/lib/constants";
+import { getAllReservationsDates } from "@/app/_actions/reservation/reservationActions";
+import { SINGLE_RESERVATION_DURATION, TIMESLOTS } from "@/lib/constants";
+import { XIcon } from "lucide-react";
 import {
   isTimeSlotDisabled,
   isTimeSlotDisabledForEdit,
 } from "./helpers/helpers";
-import { getAllReservationsDates } from "@/app/_actions/reservation/reservationActions";
-import { XIcon } from "lucide-react";
 
 interface TimeInputProps {
   peopleCount: number;
@@ -30,7 +25,7 @@ interface TimeInputProps {
   reservationPeopleCount?: number;
 }
 
-export default function TimeInput({
+export default function SeasonalTimeInput({
   peopleCount,
   date,
   register,
@@ -47,6 +42,8 @@ export default function TimeInput({
   const [timeOfReservations, setTimeOfReservations] = useState<Set<string>>();
   // loading state -> display skeleton if true
   const [loading, setLoading] = useState(true);
+  // calculate free timeslots count
+  const freeTimeslotsCount = TIMESLOTS.length - (timeOfReservations?.size || 0);
 
   // on click store time value with useState and pass it to controlled input
   function handleTimeClick(time: string) {
@@ -120,9 +117,6 @@ export default function TimeInput({
 
   // Preserve selected time and time input value when people count or date changes and the time slot is not disabled
   useEffect(() => {
-    // Only proceed if date is valid and selectedTime exists
-    if (!date || !selectedTime) return;
-
     // Only reset if we're not in edit mode (no reservationTime)
     // or if we are in edit mode but the peopleCount has changed from the original
     if (!reservationTime || peopleCount !== reservationPeopleCount) {
@@ -130,23 +124,17 @@ export default function TimeInput({
       const isTimeSlotDisabeled = isTimeSlotDisabledForEdit(
         selectedTime as `${number}:${number}:${number}`,
         timeOfReservations,
-        peopleCount,
-        DateTime.fromISO(date).weekday
+        peopleCount
       );
       if (isTimeSlotDisabeled) {
         setSelectedTime(undefined);
         setValue("time", "");
+      } else {
+        setSelectedTime(selectedTime);
+        setValue("time", selectedTime || "");
       }
     }
-  }, [
-    peopleCount,
-    date,
-    reservationTime,
-    reservationPeopleCount,
-    selectedTime,
-    timeOfReservations,
-    setValue,
-  ]);
+  }, [peopleCount, date, reservationTime, reservationPeopleCount, selectedTime, timeOfReservations, setValue]);
 
   if (date === "")
     return (
@@ -160,11 +148,6 @@ export default function TimeInput({
         )}
       </div>
     );
-
-  // calculate free timeslots count
-  const freeTimeslotsCount =
-    STANDARD_TIME_SLOTS[DateTime.fromISO(date).weekday as WeekDay].length -
-    (timeOfReservations?.size || 0);
 
   if (freeTimeslotsCount === 0) {
     return (
@@ -207,7 +190,6 @@ export default function TimeInput({
             peopleCount={peopleCount}
             reservationTime={reservationTime}
             reservationPeopleCount={reservationPeopleCount}
-            dayOfWeek={DateTime.fromISO(date).weekday}
           />
         )}
       </div>
@@ -225,7 +207,6 @@ interface TimeInputsProps {
   peopleCount: number;
   reservationTime?: string;
   reservationPeopleCount?: number;
-  dayOfWeek: WeekDay;
 }
 
 function TimeInputs({
@@ -234,18 +215,15 @@ function TimeInputs({
   selectedTime,
   peopleCount,
   reservationTime,
-  dayOfWeek,
 }: TimeInputsProps) {
-  const timeSlots = STANDARD_TIME_SLOTS[dayOfWeek];
   return (
     <>
-      {timeSlots.map((time, timeIndex) => {
+      {TIMESLOTS.map((time, timeIndex) => {
         const timeDisabled = isTimeSlotDisabled(
           time,
           timeIndex,
           timesFromDB,
-          peopleCount,
-          dayOfWeek
+          peopleCount
         );
 
         const isStartOfReservation = reservationTime === time;

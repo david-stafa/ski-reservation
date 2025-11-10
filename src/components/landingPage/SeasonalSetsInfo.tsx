@@ -8,9 +8,10 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { NOW, SEASONAL_COUNTDOWN_END } from "@/lib/constants";
+import { NOW, SEASONAL_COUNTDOWN_END, SEASONAL_ENDDATE, SKI_SETS_LIMIT } from "@/lib/constants";
+import { getCachedSumOfSeasonalReservations } from "@/app/_actions/seasonalReservation/seasonalReservationActions";
 
-const SeasonalSetsInfo = () => {
+const SeasonalSetsInfo = async () => {
   const isBeforeStart = NOW <= SEASONAL_COUNTDOWN_END;
   const isSoldOut = false;
 
@@ -22,7 +23,10 @@ const SeasonalSetsInfo = () => {
         <div className="flex items-center gap-2">
           <ClockIcon className="size-4 text-black" />
           <p className="text-base text-zinc-600">
-            Rezervace celoročních setů spustíme <span className="font-bold">{SEASONAL_COUNTDOWN_END.toFormat("dd.MM.yyyy")}</span>
+            Rezervace celoročních setů spustíme{" "}
+            <span className="font-bold">
+              {SEASONAL_COUNTDOWN_END.toFormat("dd.MM.yyyy")}
+            </span>
           </p>
         </div>
       </div>
@@ -44,6 +48,22 @@ const SeasonalSetsInfo = () => {
     );
   }
 
+  if (NOW >= SEASONAL_ENDDATE) {
+    return (
+      <div>
+        <Heading />
+        <div className="flex items-center gap-2">
+          <XIcon className="size-4 text-red-600" />
+          <p className="text-base text-zinc-600">
+            Rezervace celoročních setů je na tuto sezónu ukončena.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const reservations = await getCachedSumOfSeasonalReservations();
+
   // Return if the seasonal sets are available
   return (
     <div>
@@ -58,11 +78,19 @@ const SeasonalSetsInfo = () => {
       <div className="flex items-center gap-2 mt-1">
         <Tally5Icon className="size-4 text-black" />
         <p className="text-base text-zinc-600">
-          Zbývá <span className="font-semibold">-1000</span> celoročních setů.
+          Zbývá{" "}
+          <span className="font-semibold">
+            {SKI_SETS_LIMIT - reservations._total}
+          </span>{" "}
+          celoročních setů.
         </p>
       </div>
-      <Link href="/reservation" className="w-full">
-        <Button variant="default" size="lg" className="w-full mb-2 mt-5 md:max-w-80">
+      <Link href="/seasonal-reservation" className="w-full">
+        <Button
+          variant="default"
+          size="lg"
+          className="w-full mb-2 mt-5 md:max-w-80"
+        >
           Rezervovat CELOROČNÍ SET
         </Button>
       </Link>

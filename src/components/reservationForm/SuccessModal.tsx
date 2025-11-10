@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import { CircleCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -62,7 +63,7 @@ export const SuccessModal = ({
           <DialogDescription className="text-center">
             {header.description}
           </DialogDescription>
-          <DialogDescription className="text-center font-semibold mt-2">
+          <DialogDescription className={cn("text-center font-semibold mt-2", isEdditing && "-mt-2 mb-2")}>
             Těšíme se na vás!
           </DialogDescription>
         </DialogHeader>

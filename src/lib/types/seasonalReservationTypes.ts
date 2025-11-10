@@ -21,7 +21,7 @@ export type PrevFormData =
     }
   | undefined;
 
-export const ReservationSchema = z.object({
+export const SeasonalReservationSchema = z.object({
   firstName: z
     .string()
     .min(2, { message: "Jméno musí mít aspoň 2 znaky." })
@@ -68,10 +68,13 @@ export const ReservationSchema = z.object({
         message: "Čas rezervace musí být mezi 15:00 a 19:00",
       }
     ),
+  isSeasonal: z.boolean().default(false),
 });
 
-export type ReservationSchema = z.infer<typeof ReservationSchema>;
+export type SeasonalReservationSchema = z.infer<
+  typeof SeasonalReservationSchema
+>;
 
-export type ReservationResult =
-  | { success: true; message: string; redirectUrl: string }
+export type SeasonalReservationResult =
+  | { success: true; message: string; reservationId: string }
   | { success: false; error: Record<string, string[]> };

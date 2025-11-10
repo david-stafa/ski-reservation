@@ -1,85 +1,41 @@
 import {
-  SKI_SETS_PER_DAY,
-  START_OF_THE_WEEK,
-  SEASONAL_STARTDATE,
   NOW,
+  SEASONAL_STARTDATE,
+  STANDARD_ENDDATE,
   STANDARD_STARTDATE,
 } from "@/lib/constants";
-import { getCachedReservationsByThisAndNextWeek } from "@/app/_actions/reservation/reservationActions";
-import { DateTime } from "luxon";
-
-
-const SKIPPED_DAYS = NOW >= STANDARD_STARTDATE ? [5, 6, 12, 13] : [3, 6, 10, 13]; // skipped days in the availability display
+import SeasonalAvailabilityWeekly from "./SeasonalAvailabilityWeekly";
+import StandardAvailabilityWeekly from "./StandardAvailabilityWeekly";
 
 export default async function AvailabilityDisplay() {
-  // Do not display the availability display before the first day that people can reserve
-  /**
-   * Logic:
-   * Seasonal reservations takes two weeks - week before the opening and first week after the opening
-   * Standart reservations start the consecutive week and last the remaining season 
-   */
-  const isBeforeStart = NOW <= SEASONAL_STARTDATE;
-  if (isBeforeStart) return null;
-
-  const currentWeek = isBeforeStart
-    ? SEASONAL_STARTDATE.startOf("week")
-    : DateTime.now().startOf("week");
-  const nextWeek = currentWeek.plus({ weeks: 1 });
-
-  const reservations = await getCachedReservationsByThisAndNextWeek();
-
   return (
-    <div className="text-zinc-600 text-sm">
-      {/* Total Available */}
-      <div className="mb-2">
-        <p className="text-lg font-bold text-black">Dostupnost termínů</p>
-      </div>
+    <div>
+      <h2 className="text-xl font-bold mb-2">Dostupnost rezervací</h2>
+      <div className="flex gap-20">
+        {/* Seasonal reservation availability */}
+        {NOW < SEASONAL_STARTDATE.plus({ weeks: 1 }) && (
+          <>
+            <SeasonalAvailabilityWeekly week={0} />
+            <SeasonalAvailabilityWeekly week={1} />
+          </>
+        )}
 
-      <div className="grid grid-cols-2 mb-1 text-base font-semibold">
-        <p>
-          {currentWeek.toFormat("dd.")} -{" "}
-          {currentWeek.endOf("week").toFormat("dd.")}
-        </p>
-        <p>
-          {nextWeek.toFormat("dd.")} -{" "}
-          {nextWeek.endOf("week").toFormat("dd.")}
-        </p>
-      </div>
+        {/* Second week of seasonal reservation availability and first week of standard reservation availability */}
+        {NOW >= SEASONAL_STARTDATE.plus({ weeks: 1 }) &&
+          NOW < STANDARD_STARTDATE && (
+            <>
+              <SeasonalAvailabilityWeekly week={1} />
+              <StandardAvailabilityWeekly dayInWeek={NOW.plus({ weeks: 1 })} />
+            </>
+          )}
 
-      {/* Daily Breakdown */}
-      <div className="grid grid-flow-col grid-rows-5 gap-1">
-        {Array.from({ length: 14 }).map((_, index) => {
-          if (SKIPPED_DAYS.includes(index)) {
-            return null;
-          }
-
-          const key = START_OF_THE_WEEK.plus({ days: index }).toFormat(
-            "yyyy-MM-dd"
-          );
-          const label = START_OF_THE_WEEK.plus({ days: index })
-            .setLocale("cs")
-            .toFormat("EEEE");
-
-          const available =
-            SKI_SETS_PER_DAY - (reservations?.[key]?._count || 0);
-          const isLow = available <= 5;
-          const isFull = available === 0;
-
-          return (
-            <div key={key} className="flex items-center gap-2">
-              <span className="text-zinc-600 min-w-14">{label}</span>
-              <span
-                className={`rounded-full w-2 h-2 my-auto ${
-                  isFull
-                    ? "bg-red-600"
-                    : isLow
-                      ? "bg-yellow-600"
-                      : "bg-green-600"
-                }`}
-              />
-            </div>
-          );
-        })}
+        {/* Standard reservation availability */}
+        {NOW >= STANDARD_STARTDATE && NOW <= STANDARD_ENDDATE && (
+          <>
+            <StandardAvailabilityWeekly dayInWeek={NOW} />
+            <StandardAvailabilityWeekly dayInWeek={NOW.plus({ weeks: 1 })} />
+          </>
+        )}
       </div>
     </div>
   );

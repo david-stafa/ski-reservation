@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteReservation } from "@/app/_actions/reservation/formActions";
+import { deleteSeasonalReservation } from "@/app/_actions/seasonalReservation/seasonalFormActions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,15 +16,7 @@ import { XCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export function DeleteReservationButton({
-  id,
-  unstyled = false,
-  redirectUrl = "/",
-}: {
-  id: string;
-  unstyled?: boolean;
-  redirectUrl?: string;
-}) {
+export function DeleteSeasonalReservationButton({ id, unstyled = false, redirectUrl = "/" }: { id: string, unstyled?: boolean, redirectUrl?: string }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -34,7 +26,7 @@ export function DeleteReservationButton({
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      await deleteReservation(id);
+      await deleteSeasonalReservation(id);
       router.push(redirectUrl);
     } catch {
       setError(
@@ -48,13 +40,7 @@ export function DeleteReservationButton({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        {unstyled ? (
-          <button className="text-red-500 hover:!text-red-500 text-sm px-2 py-1 hover:bg-zinc-100 w-full rounded-sm leading-6 text-left">
-            Smazat rezervaci
-          </button>
-        ) : (
-          <Button variant="destructive">Smazat rezervaci</Button>
-        )}
+        {unstyled ?  <button className="text-red-500 hover:!text-red-500 text-sm px-2 py-1 hover:bg-zinc-100 w-full rounded-sm leading-6 text-left">Smazat rezervaci</button> : <Button variant="destructive">Smazat rezervaci</Button>}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -1,8 +1,8 @@
-import { getReservationById } from "@/app/_actions/reservation/reservationActions";
-
+import { getSeasonalReservationById } from "@/app/_actions/seasonalReservation/seasonalReservationActions";
 import Container from "@/components/container";
 import HeadingUnderline from "@/components/headingUnderline";
-import Form, { ReservationFormValues } from "@/components/reservationForm/ReservationForm";
+import { ReservationFormValues } from "@/components/reservationForm/ReservationForm";
+import SeasonalReservationForm from "@/components/reservationForm/seasonalReservationForm/SeasonalReservationForm";
 import { format } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 import { ArrowLeft } from "lucide-react";
@@ -15,7 +15,7 @@ type ReservationEditPageProps = {
 const ReservationEditPage = async ({ params }: ReservationEditPageProps) => {
   const { id } = await params;
 
-  const reservationData = await getReservationById(id);
+  const reservationData = await getSeasonalReservationById(id);
 
   if (!reservationData) {
     return <div>Rezervace nebyla nalezena</div>;
@@ -33,7 +33,7 @@ const ReservationEditPage = async ({ params }: ReservationEditPageProps) => {
       "Europe/Prague",
       "HH:mm:ss"
     ),
-    isSeasonal: false,
+    isSeasonal: true,
   };
 
   return (
@@ -52,7 +52,7 @@ const ReservationEditPage = async ({ params }: ReservationEditPageProps) => {
       </div>
       <HeadingUnderline />
 
-      <Form reservationId={id} formFields={formData} />
+      <SeasonalReservationForm reservationId={id} formFields={formData} />
     </Container>
   );
 };

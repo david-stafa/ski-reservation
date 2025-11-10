@@ -12,10 +12,11 @@ import {
 import { formatDateTime, formatPhone } from "@/lib/utils";
 import { type Reservation } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { CheckCircleIcon, MoreHorizontal, XCircleIcon } from "lucide-react";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 import Link from "next/link";
 import { DeleteReservationButton } from "@/app/reservation/[id]/components/DeleteReservationButton";
+import { DeleteSeasonalReservationButton } from "@/app/seasonal-reservation/[id]/components/DeleteSeasonalReservationButton";
 
 export const columns: ColumnDef<Reservation>[] = [
   {
@@ -46,7 +47,19 @@ export const columns: ColumnDef<Reservation>[] = [
             <DropdownMenuSeparator />
             {/* DELETE */}
             <DropdownMenuItem asChild className="text-sm">
-              <DeleteReservationButton id={reservation.id} redirectUrl="/admin/reservations/table" unstyled />
+              {reservation.isSeasonal ? (
+                <DeleteSeasonalReservationButton
+                  id={reservation.id}
+                  redirectUrl="/admin/reservations/table"
+                  unstyled
+                />
+              ) : (
+                <DeleteReservationButton
+                  id={reservation.id}
+                  redirectUrl="/admin/reservations/table"
+                  unstyled
+                />
+              )}
             </DropdownMenuItem>
             {/* COPY ID */}
             <DropdownMenuItem
@@ -135,5 +148,23 @@ export const columns: ColumnDef<Reservation>[] = [
       return <div className="text-left">{formatted}</div>;
     },
     sortingFn: "datetime",
+  },
+  {
+    accessorKey: "isSeasonal",
+    header: ({ column }) => {
+      return <DataTableColumnHeader column={column} title="Je sezónní" />;
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="text-center">
+          {row.original.isSeasonal ? (
+            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+          ) : (
+            <XCircleIcon className="h-4 w-4 text-red-500" />
+          )}
+        </div>
+      );
+    },
+    sortingFn: "basic",
   },
 ];

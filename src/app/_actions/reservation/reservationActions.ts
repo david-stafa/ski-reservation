@@ -1,10 +1,10 @@
 "use server";
 
 import { prisma } from "@/db/prisma";
+import * as Sentry from "@sentry/nextjs";
 import { DateTime } from "luxon";
 import { revalidatePath, unstable_cache } from "next/cache";
-import * as Sentry from "@sentry/nextjs";
-import { SEASONAL_STARTDATE } from "@/lib/constants";
+
 
 // input: date in format 2025-10-07
 export async function getAllReservationsDates(date: string) {
@@ -85,6 +85,9 @@ export async function getAllReservationsDates(date: string) {
 
 export async function getSumOfReservations() {
   const reservations = await prisma.reservation.findMany({
+    where: {
+      isSeasonal: false,
+    },
     select: {
       startDate: true,
       peopleCount: true,
@@ -133,6 +136,7 @@ export async function getReservationById(id: string) {
     const reservation = await prisma.reservation.findUnique({
       where: {
         id: id,
+        isSeasonal: false,
       },
     });
 
@@ -176,6 +180,7 @@ export async function getAllReservations() {
       attended: true,
       createdAt: true,
       updatedAt: true,
+      isSeasonal: true,
     },
     where: {
       startDate: {
@@ -235,18 +240,6 @@ export async function checkConflictingEmail(email: string) {
   }
 }
 
-export async function findReservationByEmailAndLastName(
-  email: string,
-  lastName: string
-) {
-  return await prisma.reservation.findUnique({
-    where: {
-      email,
-      lastName,
-    },
-  });
-}
-
 export async function getReservationsByDate(date: string) {
   const dateStart = DateTime.fromISO(date).startOf("day").toJSDate();
   const dateEnd = DateTime.fromISO(date).endOf("day").toJSDate();
@@ -296,26 +289,22 @@ export async function updateAttendance(
   }
 }
 
-
 /**
- * Retrieves reservations for the current and next week, grouped by date.
- * If the current date is before the season start date, it returns reservations
- * starting from the week containing the season start date.
- * 
+ * Retrieves reservations for the week containing the given date, grouped by date.
+ * @param dayInWeek - The date to get reservations for
  * @returns Object with reservations grouped by date and total count
  */
-export const getReservationsByThisAndNextWeek = async () => {
-  const isBefore = DateTime.now() < SEASONAL_STARTDATE;
-
-  const startOfAWeek = isBefore
-    ? SEASONAL_STARTDATE.startOf("week")
-    : DateTime.now().startOf("week");
-
-  const endOfNextWeek = startOfAWeek.endOf("week").plus({ weeks: 1 });
+export const getReservationsByWeek = async (
+  dayInWeek: DateTime
+): Promise<
+  Record<string, { _count: number; startDate: Date }> & { _total: number }
+> => {
+  const startOfAWeek = dayInWeek.startOf("week");
+  const endOfAWeek = startOfAWeek.endOf("week");
 
   const reservations = await prisma.reservation.findMany({
     where: {
-      startDate: { gte: startOfAWeek.toJSDate(), lte: endOfNextWeek.toJSDate() },
+      startDate: { gte: startOfAWeek.toJSDate(), lte: endOfAWeek.toJSDate() },
     },
     select: {
       startDate: true,
@@ -341,8 +330,8 @@ export const getReservationsByThisAndNextWeek = async () => {
   return groupedByDate;
 };
 
-export const getCachedReservationsByThisAndNextWeek = unstable_cache(
-  async () => await getReservationsByThisAndNextWeek(),
+export const getCachedReservationsByWeek = unstable_cache(
+  async (dayInWeek: DateTime) => await getReservationsByWeek(dayInWeek),
   ["reservations"], // key
   {
     tags: ["reservations"], // 💡 tag to revalidate
