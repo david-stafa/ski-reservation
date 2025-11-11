@@ -133,7 +133,7 @@ export const STANDARD_TIME_SLOTS: Record<WeekDay, TimeString[]> = {
 
 export const STANDARD_HOLIDAYS: {from: DateTime, to: DateTime}[] = [
   {from: DateTime.fromISO("2025-11-17", { zone: "Europe/Prague" }), to: DateTime.fromISO("2025-11-17", { zone: "Europe/Prague" })}, // Den boje za svobodu a demokracii a Mezinárodní den studentstva
-  {from: DateTime.fromISO("2025-12-24", { zone: "Europe/Prague" }), to: DateTime.fromISO("2025-12-26", { zone: "Europe/Prague" })}, // Vánoce
+  {from: DateTime.fromISO("2025-12-24", { zone: "Europe/Prague" }), to: DateTime.fromISO("2025-12-27", { zone: "Europe/Prague" })}, // Vánoce
   {from: DateTime.fromISO("2026-01-01", { zone: "Europe/Prague" }), to: DateTime.fromISO("2026-01-01", { zone: "Europe/Prague" })}, // Nový rok
 ]
 
