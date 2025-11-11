@@ -5,6 +5,7 @@ import {
   SEASONAL_ENDDATE,
   SEASONAL_SKI_SETS_LIMIT,
 } from "@/lib/constants";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   CheckIcon,
   ClockIcon,
@@ -14,7 +15,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const SeasonalSetsInfo = async () => {
   const { _total } = await getCachedSumOfSeasonalReservations();
@@ -109,18 +109,21 @@ const Heading = () => {
   return (
     <div className="flex items-center gap-2 mb-1">
       <h2 className="text-lg font-bold">Rezervace celoročního setu</h2>
-      <Tooltip>
-        <TooltipTrigger>
+      <Popover>
+        <PopoverTrigger>
           <InfoIcon className="size-4 text-black cursor-pointer" />
-        </TooltipTrigger>
-        <TooltipContent className="">
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          className="bg-black/95 text-white p-2 rounded-md mt-1"
+        >
           <p className="text-sm font-semibold">Co je to celoroční set?</p>
           <p className="text-sm">
             - Celoroční set zahrnuje lyžařské vybavení pro jednu osobu na celou
             zimní sezónu.
           </p>
-        </TooltipContent>
-      </Tooltip>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };
