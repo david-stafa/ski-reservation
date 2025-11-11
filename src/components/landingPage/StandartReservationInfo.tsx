@@ -1,9 +1,9 @@
 import { NOW, STANDARD_COUNTDOWN_END } from "@/lib/constants";
-  import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-  } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { CheckIcon, ClockIcon, InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -62,8 +62,9 @@ const Heading = () => {
           <InfoIcon className="size-4 text-black cursor-pointer" />
         </PopoverTrigger>
         <PopoverContent
+          side="bottom"
           align="start"
-          className="bg-black/95 text-white p-2 rounded-md mt-1"
+          className="bg-zinc-900 text-white p-3 rounded-lg mt-1 shadow-lg border border-zinc-700/50 backdrop-blur-sm"
         >
           <p className="text-sm font-semibold">Co je to standardní výpůjčka?</p>
           <p className="text-sm">
