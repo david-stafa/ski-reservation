@@ -12,7 +12,7 @@ const OffSeasonLP = () => {
           alt="Ski Logo"
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="scale-down"
+          objectFit="contain"
           priority
         />
       </div>

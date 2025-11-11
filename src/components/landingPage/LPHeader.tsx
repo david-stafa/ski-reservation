@@ -8,8 +8,8 @@ const LPHeader = () => {
           src="/logo.png"
           alt="Ski Logo"
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="scale-down"
+          sizes="(max-width: 768px) 200px, 240px"
+          className="object-contain"
           priority
         />
       </div>
