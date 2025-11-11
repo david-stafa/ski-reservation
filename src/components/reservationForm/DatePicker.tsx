@@ -13,18 +13,37 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ReservationFormValues } from "./Form";
+import { ReservationFormValues } from "./ReservationForm";
 import { ControllerRenderProps } from "react-hook-form";
+import { DateTime } from "luxon";
 
 type DatePickerProps = {
   min: Date;
   max: Date;
+  disabledDays: number[];
   field: ControllerRenderProps<ReservationFormValues, "date">;
+  hideNavigation: boolean;
+  holidays: {from: DateTime, to: DateTime}[];
+  whenToDisableFriday?: DateTime;
 };
 
-export function DatePicker({ min, max, field }: DatePickerProps) {
+export function DatePicker({
+  min,
+  max,
+  disabledDays,
+  hideNavigation,
+  field,
+  holidays,
+  whenToDisableFriday,
+}: DatePickerProps) {
   const parsedDate = field.value ? parseISO(field.value) : undefined;
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
+
+  const startMonth =
+    DateTime.now().setZone("Europe/Prague").startOf("month") <
+    DateTime.fromJSDate(min).startOf("month")
+      ? min
+      : DateTime.now().setZone("Europe/Prague").startOf("month").toJSDate();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -49,14 +68,32 @@ export function DatePicker({ min, max, field }: DatePickerProps) {
           mode="single"
           selected={parsedDate}
           onSelect={(date) => {
-            field.onChange(date ? format(date, "yyyy-MM-dd") : "")
-            setOpen(false)
+            field.onChange(date ? format(date, "yyyy-MM-dd") : "");
+            setOpen(false);
           }}
-          startMonth={new Date(min)}
-          disabled={[{ before: min }, { after: max }, { dayOfWeek: [0, 6] }]}
+          startMonth={startMonth}
+          disabled={[
+            { before: min },
+            { after: max },
+            { dayOfWeek: disabledDays },
+            {
+              before: DateTime.now()
+                .setZone("Europe/Prague")
+                .startOf("day")
+                .toJSDate(),
+            },
+            (date: Date) => {
+              return !!whenToDisableFriday && date >= whenToDisableFriday.toJSDate() && date.getDay() === 5;
+            },
+            ...(holidays?.map((holiday) => ({
+              from: holiday.from.toJSDate(),
+              to: holiday.to.toJSDate(),
+            }))),
+          ]}
           locale={cs}
           weekStartsOn={1} // optional if you need Monday as first day
-          hideNavigation
+          hideNavigation={hideNavigation}
+          showOutsideDays={false}
         />
       </PopoverContent>
     </Popover>

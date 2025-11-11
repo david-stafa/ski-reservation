@@ -72,6 +72,7 @@ export function DataTable<TData, TValue>({
         "peopleCount",
         "email",
         "phone",
+        "isSeasonal",
         "createdAt",
         "updatedAt",
         "id",

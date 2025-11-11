@@ -9,6 +9,7 @@ export enum ColumnVisibility {
   CREATED_AT = "createdAt",
   UPDATED_AT = "updatedAt",
   ID = "id",
+  IS_SEASONAL = "isSeasonal",
 }
 
 export const ColumnLabels: Record<ColumnVisibility, string> = {
@@ -22,6 +23,7 @@ export const ColumnLabels: Record<ColumnVisibility, string> = {
   [ColumnVisibility.CREATED_AT]: "Vytvořeno",
   [ColumnVisibility.UPDATED_AT]: "Aktualizováno",
   [ColumnVisibility.ID]: "ID",
+  [ColumnVisibility.IS_SEASONAL]: "Je sezónní",
 };
 
 export const getColumnLabel = (columnId: string): string => {

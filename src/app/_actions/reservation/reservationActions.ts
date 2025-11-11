@@ -1,9 +1,10 @@
 "use server";
 
 import { prisma } from "@/db/prisma";
+import * as Sentry from "@sentry/nextjs";
 import { DateTime } from "luxon";
 import { revalidatePath, unstable_cache } from "next/cache";
-import * as Sentry from "@sentry/nextjs";
+
 
 // input: date in format 2025-10-07
 export async function getAllReservationsDates(date: string) {
@@ -84,6 +85,9 @@ export async function getAllReservationsDates(date: string) {
 
 export async function getSumOfReservations() {
   const reservations = await prisma.reservation.findMany({
+    where: {
+      isSeasonal: false,
+    },
     select: {
       startDate: true,
       peopleCount: true,
@@ -132,6 +136,7 @@ export async function getReservationById(id: string) {
     const reservation = await prisma.reservation.findUnique({
       where: {
         id: id,
+        isSeasonal: false,
       },
     });
 
@@ -175,6 +180,7 @@ export async function getAllReservations() {
       attended: true,
       createdAt: true,
       updatedAt: true,
+      isSeasonal: true,
     },
     where: {
       startDate: {
@@ -234,18 +240,6 @@ export async function checkConflictingEmail(email: string) {
   }
 }
 
-export async function findReservationByEmailAndLastName(
-  email: string,
-  lastName: string
-) {
-  return await prisma.reservation.findUnique({
-    where: {
-      email,
-      lastName,
-    },
-  });
-}
-
 export async function getReservationsByDate(date: string) {
   const dateStart = DateTime.fromISO(date).startOf("day").toJSDate();
   const dateEnd = DateTime.fromISO(date).endOf("day").toJSDate();
@@ -294,3 +288,52 @@ export async function updateAttendance(
     return { success: false, error: "Failed to update attendance" };
   }
 }
+
+/**
+ * Retrieves reservations for the week containing the given date, grouped by date.
+ * @param dayInWeek - The date to get reservations for
+ * @returns Object with reservations grouped by date and total count
+ */
+export const getReservationsByWeek = async (
+  dayInWeek: DateTime
+): Promise<
+  Record<string, { _count: number; startDate: Date }> & { _total: number }
+> => {
+  const startOfAWeek = dayInWeek.startOf("week");
+  const endOfAWeek = startOfAWeek.endOf("week");
+
+  const reservations = await prisma.reservation.findMany({
+    where: {
+      startDate: { gte: startOfAWeek.toJSDate(), lte: endOfAWeek.toJSDate() },
+    },
+    select: {
+      startDate: true,
+      peopleCount: true,
+    },
+  });
+
+  const groupedByDate = reservations.reduce(
+    (acc, reservation) => {
+      const dateKey = reservation.startDate.toISOString().split("T")[0];
+      if (!acc[dateKey]) {
+        acc[dateKey] = { _count: 0, startDate: new Date(dateKey) };
+      }
+      acc[dateKey]._count += reservation.peopleCount;
+      acc._total += reservation.peopleCount;
+      return acc;
+    },
+    { _total: 0 } as Record<string, { _count: number; startDate: Date }> & {
+      _total: number;
+    }
+  );
+
+  return groupedByDate;
+};
+
+export const getCachedReservationsByWeek = unstable_cache(
+  async (dayInWeek: DateTime) => await getReservationsByWeek(dayInWeek),
+  ["reservations"], // key
+  {
+    tags: ["reservations"], // 💡 tag to revalidate
+  }
+);

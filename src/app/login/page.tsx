@@ -12,7 +12,7 @@ export default async function Login() {
   }
 
   return (
-    <Container className="max-w-2xl md:mt-12 md:p-12 border-zinc-200 md:border rounded-lg md:shadow-md">
+    <Container className="max-w-2xl md:mt-12 p-5 md:p-12 border-zinc-200 md:border rounded-lg md:shadow-md">
       <h1 className="text-2xl font-bold mb-4 text-center">Přihlášení</h1>
       <HeadingUnderline />
       <LoginForm />

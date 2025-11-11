@@ -1,4 +1,4 @@
-import { getReservationById } from "@/app/_actions/reservation/reservationActions";
+import { getSeasonalReservationById } from "@/app/_actions/seasonalReservation/seasonalReservationActions";
 import Container from "@/components/container";
 import HeadingUnderline from "@/components/headingUnderline";
 import { Button } from "@/components/ui/button";
@@ -16,19 +16,18 @@ import {
 } from "lucide-react";
 import { DateTime } from "luxon";
 import Link from "next/link";
-import { DeleteReservationButton } from "./components/DeleteReservationButton";
+import { DeleteSeasonalReservationButton } from "./components/DeleteSeasonalReservationButton";
 
 type ReservationDetailPageProps = {
   params: Promise<{ id: string }>;
 };
 
-const ReservationDetailPage = async ({
+const SeasonalReservationDetailPage = async ({
   params,
 }: ReservationDetailPageProps) => {
   const { id } = await params;
   const reservation = async () => {
-    // await new Promise((resolve) => setTimeout(resolve, 10000)); test loading
-    const data = await getReservationById(id);
+    const data = await getSeasonalReservationById(id);
 
     if (!data) {
       return null;
@@ -114,16 +113,16 @@ const ReservationDetailPage = async ({
       </div>
       <Separator className="mb-8" />
       <div className="flex gap-4 justify-center">
-        <Link href={`/reservation/${id}/edit`}>
+        <Link href={`/seasonal-reservation/${id}/edit`}>
           <Button variant="default">Upravit rezervaci</Button>
         </Link>
-        <DeleteReservationButton id={id} />
+        <DeleteSeasonalReservationButton id={id} />
       </div>
     </Container>
   );
 };
 
-export default ReservationDetailPage;
+export default SeasonalReservationDetailPage;
 
 type DetailComponentProps = React.HTMLAttributes<HTMLParagraphElement> & {
   icon: React.ReactNode;

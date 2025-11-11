@@ -16,16 +16,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ENDDATE, STARTDATE } from "@/lib/constants";
-import { ReservationSchema } from "@/lib/types/types";
+import {
+  STANDARD_ENDDATE,
+  STANDARD_HOLIDAYS,
+  STANDARD_STARTDATE,
+  STANDARD_WHEN_TO_DISABLE_FRIDAY,
+} from "@/lib/constants";
+import { ReservationSchema } from "@/lib/types/reservationTypes";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { InputWithLabel } from "./InputWithLabel";
-import TimeInput from "./TimeInput";
-import { DatePicker } from "./DatePicker";
-import { SuccessModal } from "./SuccessModal";
 import { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { DatePicker } from "./DatePicker";
+import { InputWithLabel } from "./InputWithLabel";
+import { SuccessModal } from "./SuccessModal";
+import TimeInput from "./TimeInput";
 
 /* Type containing all form fields for reservation */
 export type ReservationFormValues = {
@@ -36,6 +41,7 @@ export type ReservationFormValues = {
   firstName: string;
   lastName: string;
   time: string;
+  isSeasonal: boolean;
 };
 
 const Form = ({
@@ -47,7 +53,7 @@ const Form = ({
 }) => {
   const [modalState, setModalState] = useState({
     isOpen: false,
-    path: "",
+    reservationId: "",
   });
 
   const {
@@ -69,6 +75,7 @@ const Form = ({
       email: formFields?.email ?? "",
       phone: formFields?.phone ?? "",
       peopleCount: formFields?.peopleCount ?? 1,
+      isSeasonal: false,
     },
     mode: "onBlur",
   });
@@ -101,7 +108,7 @@ const Form = ({
         reset();
         setModalState({
           isOpen: true,
-          path: res.redirectUrl,
+          reservationId: res.reservationId,
         });
       }
     } catch (error) {
@@ -149,9 +156,13 @@ const Form = ({
           control={control}
           render={({ field }) => (
             <DatePicker
-              min={new Date(STARTDATE)}
-              max={new Date(ENDDATE)}
+              min={STANDARD_STARTDATE.toJSDate()}
+              max={STANDARD_ENDDATE.toJSDate()}
+              disabledDays={[0, 4]}
+              hideNavigation={false}
               field={field}
+              holidays={STANDARD_HOLIDAYS}
+              whenToDisableFriday={STANDARD_WHEN_TO_DISABLE_FRIDAY}
             />
           )}
         />
@@ -167,12 +178,12 @@ const Form = ({
           setValue={setValue}
           reservationTime={
             watch("date") === formFields?.date && formFields?.time
-              ? formFields?.time as `${number}:${number}:${number}`
+              ? (formFields?.time as `${number}:${number}:${number}`)
               : undefined
           }
           reservationPeopleCount={formFields?.peopleCount}
         />
-        
+
         <InputWithLabel
           name="firstName"
           label="Jméno"
@@ -216,8 +227,8 @@ const Form = ({
 
       <SuccessModal
         isOpen={modalState.isOpen}
-        onClose={() => setModalState({ isOpen: false, path: "" })}
-        path={modalState.path}
+        onClose={() => setModalState({ isOpen: false, reservationId: "" })}
+        path={`/reservation/${modalState.reservationId}`}
         isEdditing={!!reservationId}
       />
     </>
