@@ -3,13 +3,13 @@ import Image from "next/image";
 const LPHeader = () => {
   return (
     <>
-      <div className="w-[200px] md:w-[240px] h-[36px] md:h-[42px] relative">
+      <div className="w-[200px] md:w-[240px] h-[36px] md:h-[42px]">
         <Image
           src="/logo.png"
           alt="Ski Logo"
-          fill
-          sizes="(max-width: 768px) 200px, 240px"
-          className="object-contain"
+          width={240}
+          height={42}
+          className="object-contain w-full h-full"
           priority
         />
       </div>

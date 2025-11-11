@@ -6,13 +6,13 @@ import { Link2Icon } from "lucide-react";
 const OffSeasonLP = () => {
   return (
     <>
-      <div className="w-[200px] md:w-[240px] h-[36px] md:h-[42px] relative">
+      <div className="w-[200px] md:w-[240px] h-[36px] md:h-[42px]">
         <Image
           src="/logo.png"
           alt="Ski Logo"
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          objectFit="contain"
+          width={240}
+          height={42}
+          className="object-contain w-full h-full"
           priority
         />
       </div>
