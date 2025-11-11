@@ -16,7 +16,7 @@ export const SEASONAL_ENDDATE = DateTime.fromISO("2025-10-24", {
   zone: "Europe/Prague",
 }); // last day that people can make a reservation
 export const SINGLE_RESERVATION_DURATION = 15; // in minutes
-export const SKI_SETS_LIMIT = 120; // total number of ski sets that can be reserved
+export const SEASONAL_SKI_SETS_LIMIT = 120; // total number of ski sets that can be reserved
 
 type TimeString = `${number}:${number}:${number}`;
 export const TIMESLOTS: TimeString[] = [

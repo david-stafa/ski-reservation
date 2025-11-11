@@ -1,3 +1,10 @@
+import { getCachedSumOfSeasonalReservations } from "@/app/_actions/seasonalReservation/seasonalReservationActions";
+import {
+  NOW,
+  SEASONAL_COUNTDOWN_END,
+  SEASONAL_ENDDATE,
+  SEASONAL_SKI_SETS_LIMIT,
+} from "@/lib/constants";
 import {
   CheckIcon,
   ClockIcon,
@@ -5,15 +12,15 @@ import {
   Tally5Icon,
   XIcon,
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { Button } from "../ui/button";
 import Link from "next/link";
-import { NOW, SEASONAL_COUNTDOWN_END, SEASONAL_ENDDATE, SKI_SETS_LIMIT } from "@/lib/constants";
-import { getCachedSumOfSeasonalReservations } from "@/app/_actions/seasonalReservation/seasonalReservationActions";
+import { Button } from "../ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 const SeasonalSetsInfo = async () => {
+  const { _total } = await getCachedSumOfSeasonalReservations();
+
   const isBeforeStart = NOW <= SEASONAL_COUNTDOWN_END;
-  const isSoldOut = false;
+  const isSoldOut = _total >= SEASONAL_SKI_SETS_LIMIT;
 
   // Return before the opening date
   if (isBeforeStart) {
@@ -62,8 +69,6 @@ const SeasonalSetsInfo = async () => {
     );
   }
 
-  const reservations = await getCachedSumOfSeasonalReservations();
-
   // Return if the seasonal sets are available
   return (
     <div>
@@ -80,7 +85,7 @@ const SeasonalSetsInfo = async () => {
         <p className="text-base text-zinc-600">
           Zbývá{" "}
           <span className="font-semibold">
-            {SKI_SETS_LIMIT - reservations._total}
+            {SEASONAL_SKI_SETS_LIMIT - _total}
           </span>{" "}
           celoročních setů.
         </p>
