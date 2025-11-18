@@ -1,4 +1,4 @@
-import { NOW, STANDARD_COUNTDOWN_END } from "@/lib/constants";
+import { STANDARD_COUNTDOWN_END } from "@/lib/constants";
 import {
   Popover,
   PopoverContent,
@@ -7,9 +7,11 @@ import {
 import { CheckIcon, ClockIcon, InfoIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { NOW } from "@/lib/utils";
 
 const StandartReservationInfo = () => {
-  const isBeforeStart = NOW <= STANDARD_COUNTDOWN_END;
+  const now = NOW();
+  const isBeforeStart = now <= STANDARD_COUNTDOWN_END;
 
   if (isBeforeStart) {
     return (

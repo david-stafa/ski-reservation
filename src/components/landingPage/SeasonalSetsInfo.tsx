@@ -1,6 +1,5 @@
 import { getCachedSumOfSeasonalReservations } from "@/app/_actions/seasonalReservation/seasonalReservationActions";
 import {
-  NOW,
   SEASONAL_COUNTDOWN_END,
   SEASONAL_ENDDATE,
   SEASONAL_SKI_SETS_LIMIT,
@@ -15,11 +14,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { NOW } from "@/lib/utils";
 
 const SeasonalSetsInfo = async () => {
   const { _total } = await getCachedSumOfSeasonalReservations();
+  const now = NOW();
 
-  const isBeforeStart = NOW <= SEASONAL_COUNTDOWN_END;
+  const isBeforeStart = now <= SEASONAL_COUNTDOWN_END;
   const isSoldOut = _total >= SEASONAL_SKI_SETS_LIMIT;
 
   // Return before the opening date
@@ -55,7 +56,7 @@ const SeasonalSetsInfo = async () => {
     );
   }
 
-  if (NOW >= SEASONAL_ENDDATE) {
+  if (now >= SEASONAL_ENDDATE) {
     return (
       <div>
         <Heading />

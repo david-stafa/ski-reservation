@@ -3,9 +3,11 @@ import HeadingUnderline from "@/components/headingUnderline";
 import { ReservationsTableLink } from "./components/ReservationsTableLink";
 import { SeasonalReservationsDaily } from "./components/SeasonalReservationsDaily";
 import { StandardReservationsWeekly } from "./components/StandardReservationsWeekly";
-import { NOW, SEASONAL_ENDDATE } from "@/lib/constants";
+import { SEASONAL_ENDDATE } from "@/lib/constants";
+import { NOW } from "@/lib/utils";
 
 const AdminPage = () => {
+  const now = NOW();
   return (
     <Container className="px-5">
       <div className="relative">
@@ -15,7 +17,7 @@ const AdminPage = () => {
 
       <StandardReservationsWeekly />
 
-      {NOW <= SEASONAL_ENDDATE && <SeasonalReservationsDaily />}
+      {now <= SEASONAL_ENDDATE && <SeasonalReservationsDaily />}
 
       <ReservationsTableLink />
     </Container>

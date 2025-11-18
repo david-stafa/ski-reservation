@@ -1,19 +1,20 @@
 import {
-  NOW,
   SEASONAL_STARTDATE,
   STANDARD_ENDDATE,
   STANDARD_STARTDATE,
 } from "@/lib/constants";
+import { NOW } from "@/lib/utils";
 import SeasonalAvailabilityWeekly from "./SeasonalAvailabilityWeekly";
 import StandardAvailabilityWeekly from "./StandardAvailabilityWeekly";
 
 export default async function AvailabilityDisplay() {
+  const now = NOW();
   return (
     <div>
       <h2 className="text-xl font-bold mb-2">Dostupnost rezervací</h2>
       <div className="flex gap-20">
         {/* Seasonal reservation availability */}
-        {NOW < SEASONAL_STARTDATE.plus({ weeks: 1 }) && (
+        {now < SEASONAL_STARTDATE.plus({ weeks: 1 }) && (
           <>
             <SeasonalAvailabilityWeekly week={0} />
             <SeasonalAvailabilityWeekly week={1} />
@@ -21,19 +22,19 @@ export default async function AvailabilityDisplay() {
         )}
 
         {/* Second week of seasonal reservation availability and first week of standard reservation availability */}
-        {NOW >= SEASONAL_STARTDATE.plus({ weeks: 1 }) &&
-          NOW < STANDARD_STARTDATE && (
+        {now >= SEASONAL_STARTDATE.plus({ weeks: 1 }) &&
+          now < STANDARD_STARTDATE && (
             <>
               <SeasonalAvailabilityWeekly week={1} />
-              <StandardAvailabilityWeekly dayInWeek={NOW.plus({ weeks: 1 })} />
+              <StandardAvailabilityWeekly dayInWeek={now.plus({ weeks: 1 })} />
             </>
           )}
 
         {/* Standard reservation availability */}
-        {NOW >= STANDARD_STARTDATE && NOW <= STANDARD_ENDDATE && (
+        {now >= STANDARD_STARTDATE && now <= STANDARD_ENDDATE && (
           <>
-            <StandardAvailabilityWeekly dayInWeek={NOW} />
-            <StandardAvailabilityWeekly dayInWeek={NOW.plus({ weeks: 1 })} />
+            <StandardAvailabilityWeekly dayInWeek={now} />
+            <StandardAvailabilityWeekly dayInWeek={now.plus({ weeks: 1 })} />
           </>
         )}
       </div>

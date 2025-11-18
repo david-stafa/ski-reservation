@@ -4,8 +4,8 @@ import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
 import { DateTime } from "luxon";
 import Link from "next/link";
-import { getColorByIndex } from "@/lib/utils";
-import { NOW, STANDARD_ENDDATE, WeekDay } from "@/lib/constants";
+import { getColorByIndex, NOW } from "@/lib/utils";
+import { STANDARD_ENDDATE, WeekDay } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 
 const capitalizeFirstLetter = (text: string) =>
@@ -14,9 +14,11 @@ const capitalizeFirstLetter = (text: string) =>
 const excludedDays = [WeekDay.SUNDAY, WeekDay.THURSDAY];
 
 export const StandardReservationsWeekly = () => {
-  const [currentWeek, setCurrentWeek] = useState<DateTime>(DateTime.now());
+  const now = NOW();
+  const [currentWeek, setCurrentWeek] = useState<DateTime>(now);
   const startOfWeek = currentWeek.startOf("week");
   const endOfWeek = startOfWeek.endOf("week");
+
 
   const handlePreviousWeek = () =>
     setCurrentWeek((prev) => prev.minus({ weeks: 1 }));
@@ -35,7 +37,7 @@ export const StandardReservationsWeekly = () => {
         <Button
           variant="ghost"
           onClick={handlePreviousWeek}
-          disabled={startOfWeek.minus({ weeks: 1 }) < NOW.startOf("week")}
+          disabled={startOfWeek.minus({ weeks: 1 }) < now}
         >
           <ArrowLeftIcon className="size-7 cursor-pointer bg-blue-600 rounded-full text-white p-0.5" />
         </Button>

@@ -37,7 +37,7 @@ export function formatPhone(phone: string) {
   return phone;
 }
 
-export function now(){
+export function NOW(){
   return DateTime.now().setZone("Europe/Prague");
 }
 

@@ -65,9 +65,6 @@ export const DAYS_CONFIG: Array<{
   { key: "2025-10-24", label: "Pátek", color: "bg-indigo-50 text-indigo-600" },
 ];
 
-export const NOW = DateTime.now().setZone("Europe/Prague");
-export const START_OF_THE_WEEK = NOW.startOf("week");
-
 /**
  * STANDARD RESERVATION CONFIGURATION
  *
