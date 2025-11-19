@@ -4,7 +4,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import { useState } from "react";
 import { DateTime } from "luxon";
 import Link from "next/link";
-import { getColorByIndex, NOW } from "@/lib/utils";
+import { cn, COLOR_CLASSES, NOW } from "@/lib/utils";
 import { STANDARD_ENDDATE, WeekDay } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 
@@ -18,7 +18,6 @@ export const StandardReservationsWeekly = () => {
   const [currentWeek, setCurrentWeek] = useState<DateTime>(now);
   const startOfWeek = currentWeek.startOf("week");
   const endOfWeek = startOfWeek.endOf("week");
-
 
   const handlePreviousWeek = () =>
     setCurrentWeek((prev) => prev.minus({ weeks: 1 }));
@@ -37,7 +36,7 @@ export const StandardReservationsWeekly = () => {
         <Button
           variant="ghost"
           onClick={handlePreviousWeek}
-          disabled={startOfWeek.minus({ weeks: 1 }) < now}
+          disabled={startOfWeek.minus({ weeks: 1 }) < now.startOf("week")}
         >
           <ArrowLeftIcon className="size-7 cursor-pointer bg-blue-600 rounded-full text-white p-0.5" />
         </Button>
@@ -60,13 +59,18 @@ export const StandardReservationsWeekly = () => {
           const dayName = capitalizeFirstLetter(
             date.setLocale("cs").toFormat("EEEE")
           );
-          const color = getColorByIndex(index);
+          const colorClasses =
+            COLOR_CLASSES[index as keyof typeof COLOR_CLASSES];
+          const isToday = date.day === now.day;
 
           return (
             <Link
               href={`/admin/reservations/day-sheet?date=${dateKey}`}
               key={dateKey}
-              className={`md:text-lg ${color} font-semibold px-4 rounded-lg md:py-8 py-4 hover:opacity-80 transition-opacity`}
+              className={cn(
+                `md:text-lg ${colorClasses.bg} ${colorClasses.text} font-semibold px-4 rounded-lg md:py-8 py-4 hover:opacity-80 transition-opacity`,
+                isToday && `border-2 ${colorClasses.border}`
+              )}
             >
               {dayName}
             </Link>
