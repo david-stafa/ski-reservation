@@ -41,8 +41,8 @@ export const StandardReservationsWeekly = () => {
           <ArrowLeftIcon className="size-7 cursor-pointer bg-blue-600 rounded-full text-white p-0.5" />
         </Button>
         <span className="text-lg font-semibold flex-grow text-center">
-          {startOfWeek.toFormat("dd.MM.yyyy")} -{" "}
-          {endOfWeek.toFormat("dd.MM.yyyy")}
+          {startOfWeek.toFormat("d.M")} -{" "}
+          {endOfWeek.toFormat("d.M")}
         </span>
         <Button
           variant="ghost"
@@ -72,7 +72,7 @@ export const StandardReservationsWeekly = () => {
                 isToday && `border-2 ${colorClasses.border}`
               )}
             >
-              {dayName}
+              {dayName} {date.toFormat("d.")}
             </Link>
           );
         })}
