@@ -3,6 +3,10 @@ import Container from "@/components/container";
 import AttendanceButtons from "@/components/admin/AttendanceButtons";
 import { DateTime } from "luxon";
 import { cn } from "@/lib/utils";
+import { handleDaySheet } from "../../utils/handleDaySheet";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 
 export default async function DaySheet({
   searchParams,
@@ -12,19 +16,32 @@ export default async function DaySheet({
 }) {
   const { date } = await searchParams;
   const reservations = await getReservationsByDate(date);
+  const { nextDay, previousDay } = handleDaySheet(date);
 
   return (
     <Container className="p-5">
-      <h1 className="text-2xl font-bold mb-8">
-        {DateTime.fromISO(date, { zone: "Europe/Prague" })
-          .setLocale("cs")
-          .toFormat("cccc")
-          .toUpperCase()}
-        ,{" "}
-        {DateTime.fromISO(date, { zone: "Europe/Prague" })
-          .setLocale("cs")
-          .toFormat("dd.M.")}
-      </h1>
+      <div className="flex items-center justify-between md:justify-start gap-4 w-full mb-8">
+        <Link href={`/admin/reservations/day-sheet?date=${previousDay}`} className="cursor-pointer">
+          <Button variant="ghost">
+            <ArrowLeftIcon className="size-7 cursor-pointer bg-blue-600 rounded-full text-white p-0.5" />
+          </Button>
+        </Link>
+        <h1 className="text-2xl font-bold">
+          {DateTime.fromISO(date, { zone: "Europe/Prague" })
+            .setLocale("cs")
+            .toFormat("cccc")
+            .toUpperCase()}
+          ,{" "}
+          {DateTime.fromISO(date, { zone: "Europe/Prague" })
+            .setLocale("cs")
+            .toFormat("dd.M.")}
+        </h1>
+        <Link href={`/admin/reservations/day-sheet?date=${nextDay}`} className="cursor-pointer">
+          <Button variant="ghost">
+            <ArrowRightIcon className="size-7 cursor-pointer bg-blue-600 rounded-full text-white p-0.5" />
+          </Button>
+        </Link>
+      </div>
 
       {/* Mobile cards (visible on small screens) */}
       <div className="md:hidden space-y-3">
