@@ -6,6 +6,9 @@ import { STANDARD_ENDDATE } from "@/lib/constants";
 import { NOW } from "@/lib/utils";
 import Container from "../components/container";
 
+// Revalidate page every hour to update availability display and week rollover
+export const revalidate = 3600;
+
 export default async function Home() {
   const now = NOW();
   if (now >= STANDARD_ENDDATE) {
