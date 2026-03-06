@@ -134,6 +134,8 @@ export const STANDARD_HOLIDAYS: {from: DateTime, to: DateTime}[] = [
   {from: DateTime.fromISO("2025-12-24", { zone: "Europe/Prague" }), to: DateTime.fromISO("2025-12-28", { zone: "Europe/Prague" })}, // Vánoce
   {from: DateTime.fromISO("2025-12-31", { zone: "Europe/Prague" }), to: DateTime.fromISO("2026-01-01", { zone: "Europe/Prague" })}, // Nový rok
   {from: DateTime.fromISO("2026-02-09", { zone: "Europe/Prague" }), to: DateTime.fromISO("2026-02-09", { zone: "Europe/Prague" })}, // Pondělí 9.2.
+  {from: DateTime.fromISO("2026-03-09", { zone: "Europe/Prague" }), to: DateTime.fromISO("2026-03-11", { zone: "Europe/Prague" })}, // 9 - 12. 3.
+  {from: DateTime.fromISO("2026-03-17", { zone: "Europe/Prague" }), to: DateTime.fromISO("2026-03-18", { zone: "Europe/Prague" })}, // 16. - 17. 3.
 ]
 
 export const STANDARD_WHEN_TO_DISABLE_FRIDAY = DateTime.fromISO('2026-01-01', { zone: "Europe/Prague" });
