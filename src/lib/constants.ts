@@ -76,7 +76,7 @@ export const STANDARD_COUNTDOWN_END = DateTime.fromObject(
 export const STANDARD_STARTDATE = DateTime.fromISO("2025-10-27", {
   zone: "Europe/Prague",
 }); // first day that people can make a reservation
-export const STANDARD_ENDDATE = DateTime.fromISO("2026-03-20", {
+export const STANDARD_ENDDATE = DateTime.fromISO("2026-03-17", {
   zone: "Europe/Prague",
 }); // last day that people can make a reservation
 
