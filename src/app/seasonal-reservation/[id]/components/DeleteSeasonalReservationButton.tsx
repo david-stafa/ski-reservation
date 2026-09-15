@@ -16,8 +16,20 @@ import { XCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export function DeleteSeasonalReservationButton({ id, unstyled = false, redirectUrl = "/" }: { id: string, unstyled?: boolean, redirectUrl?: string }) {
+export function DeleteSeasonalReservationButton({
+  id,
+  unstyled = false,
+  redirectUrl = "/",
+  label,
+}: {
+  id: string;
+  unstyled?: boolean;
+  redirectUrl?: string;
+  /** Names the reservation in the confirmation, so it is clear what is being deleted. */
+  label?: string;
+}) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -26,7 +38,18 @@ export function DeleteSeasonalReservationButton({ id, unstyled = false, redirect
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      await deleteSeasonalReservation(id);
+      setError("");
+
+      // the action reports failure in its result rather than by throwing
+      const result = await deleteSeasonalReservation(id);
+      if (!result.success) {
+        setError(
+          "Nastala chyba při mazání rezervace. Prosím zkuste to znovu později."
+        );
+        return;
+      }
+
+      setIsOpen(false);
       router.push(redirectUrl);
     } catch {
       setError(
@@ -38,7 +61,7 @@ export function DeleteSeasonalReservationButton({ id, unstyled = false, redirect
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {unstyled ?  <button className="text-red-500 hover:!text-red-500 text-sm px-2 py-1 hover:bg-zinc-100 w-full rounded-sm leading-6 text-left">Smazat rezervaci</button> : <Button variant="destructive">Smazat rezervaci</Button>}
       </DialogTrigger>
@@ -50,7 +73,8 @@ export function DeleteSeasonalReservationButton({ id, unstyled = false, redirect
               Smazat rezervaci
             </DialogTitle>
             <DialogDescription className="text-base text-zinc-500 text-center">
-              Opravdu chcete smazat rezervaci? Tato akce je nevratná.
+              Opravdu chcete smazat rezervaci
+              {label ? ` — ${label}` : ""}? Tato akce je nevratná.
             </DialogDescription>
           </div>
         </DialogHeader>

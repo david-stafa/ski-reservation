@@ -24,6 +24,7 @@ export const columns: ColumnDef<Reservation>[] = [
     header: "Akce",
     cell: ({ row }) => {
       const reservation = row.original;
+      const label = `${reservation.firstName} ${reservation.lastName}, ${formatDateTime(reservation.startDate)}`;
 
       return (
         <DropdownMenu>
@@ -51,12 +52,14 @@ export const columns: ColumnDef<Reservation>[] = [
                 <DeleteSeasonalReservationButton
                   id={reservation.id}
                   redirectUrl="/admin/reservations/table"
+                  label={label}
                   unstyled
                 />
               ) : (
                 <DeleteReservationButton
                   id={reservation.id}
                   redirectUrl="/admin/reservations/table"
+                  label={label}
                   unstyled
                 />
               )}

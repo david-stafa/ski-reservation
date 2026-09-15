@@ -18,7 +18,11 @@ const Reservations = async () => {
       </div>
       <HeadingUnderline />
       <div className="container mx-auto pb-10">
-        <DataTable columns={columns} data={reservations} />
+        <DataTable
+          columns={columns}
+          data={reservations}
+          getRowId={(reservation) => reservation.id}
+        />
       </div>
     </Container>
   );
