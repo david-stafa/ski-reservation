@@ -18,26 +18,49 @@ export const createStartAndEndDate = (date: DateTime, duration: number) => {
   return { newStartDate, newEndDate };
 };
 
-const LAST_HOUR_IN_UTC = 16; // in czech time it is 18:00
+const PEOPLE_COUNT_LABEL: Record<number, string> = {
+  2: "dvě osoby",
+  3: "tři osoby",
+};
 
-// check if reservation time is within opening hours
-export const isWithinOpeningHours = (date: Date, peopleCount: number) => {
-  // stop when peopleCount > 1 and time would exceed opening hours
-  if (date.getUTCHours() >= LAST_HOUR_IN_UTC && date.getUTCMinutes() >= 30) {
-    if (peopleCount === 2 && date.getUTCMinutes() >= 45) {
-      return {
-        time: [
-          "Zvolte jiný čas. Pro dvě osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby.",
-        ],
-      };
-    }
-    if (peopleCount === 3 && date.getMinutes() >= 30) {
-      return {
-        time: [
-          "Zvolte jiný čas. Pro tři osoby nelze zarezezervovat časový blok těsně před koncem otvírací doby.",
-        ],
-      };
-    }
+/**
+ * Checks that the whole reservation fits inside the opening hours of that day.
+ *
+ * Closing time is derived from the last available time slot of the day, so it
+ * follows the configured opening hours and stays correct across DST changes
+ * (a hardcoded UTC hour would be off by one during the winter half of the season).
+ *
+ * @param date - reservation start as stored (UTC)
+ * @param peopleCount - number of people; each one takes SINGLE_RESERVATION_DURATION minutes
+ * @param timeSlots - the time slots available on that day ("HH:mm:ss")
+ */
+export const isWithinOpeningHours = (
+  date: Date,
+  peopleCount: number,
+  timeSlots: readonly string[]
+): Record<string, string[]> | undefined => {
+  const start = DateTime.fromJSDate(date).setZone("Europe/Prague");
+  const lastTimeSlot = timeSlots[timeSlots.length - 1];
+
+  if (!lastTimeSlot) {
+    return { date: ["V tento den je zavřeno. Zvolte prosím jiné datum."] };
+  }
+
+  // the day closes when the last bookable slot ends
+  const closingTime = formatDateTime(
+    start.toFormat("yyyy-MM-dd"),
+    lastTimeSlot
+  ).plus({ minutes: SINGLE_RESERVATION_DURATION });
+
+  const end = start.plus({ minutes: calculateDuration(peopleCount) });
+
+  if (end > closingTime) {
+    const label = PEOPLE_COUNT_LABEL[peopleCount] ?? `${peopleCount} osob`;
+    return {
+      time: [
+        `Zvolte jiný čas. Pro ${label} nelze zarezervovat časový blok těsně před koncem otvírací doby.`,
+      ],
+    };
   }
 };
 

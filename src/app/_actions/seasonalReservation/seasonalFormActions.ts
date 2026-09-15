@@ -16,6 +16,7 @@ import ReservationConfirmationEmail from "../../../../emails/templates/reservati
 import { config } from "../../../lib/config";
 import { findConflictingSeasonalReservations } from "./seasonalReservationActions";
 import { SeasonalReservationResult, SeasonalReservationSchema } from "@/lib/types/seasonalReservationTypes";
+import { TIMESLOTS } from "@/lib/constants";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -66,7 +67,8 @@ export async function createSeasonalReservation(
   // check if reservation time is within opening hours
   const openingHoursError = isWithinOpeningHours(
     newStartDate,
-    data.peopleCount
+    data.peopleCount,
+    TIMESLOTS
   );
   if (openingHoursError) {
     return {
@@ -212,7 +214,8 @@ export async function updateSeasonalReservation(
   // check if reservation time is within opening hours
   const openingHoursError = isWithinOpeningHours(
     newStartDate,
-    data.peopleCount
+    data.peopleCount,
+    TIMESLOTS
   );
   if (openingHoursError) {
     return {

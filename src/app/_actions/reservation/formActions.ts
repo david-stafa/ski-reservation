@@ -18,6 +18,7 @@ import { Resend } from "resend";
 import ReservationConfirmationEmail from "../../../../emails/templates/reservation-confirmation";
 import { config } from "../../../lib/config";
 import * as Sentry from "@sentry/nextjs";
+import { STANDARD_TIME_SLOTS, WeekDay } from "@/lib/constants";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -68,7 +69,8 @@ export async function createReservation(
   // check if reservation time is within opening hours
   const openingHoursError = isWithinOpeningHours(
     newStartDate,
-    data.peopleCount
+    data.peopleCount,
+    STANDARD_TIME_SLOTS[dateTime.weekday as WeekDay]
   );
   if (openingHoursError) {
     return {
@@ -214,7 +216,8 @@ export async function updateReservation(
   // check if reservation time is within opening hours
   const openingHoursError = isWithinOpeningHours(
     newStartDate,
-    data.peopleCount
+    data.peopleCount,
+    STANDARD_TIME_SLOTS[dateTime.weekday as WeekDay]
   );
   if (openingHoursError) {
     return {
