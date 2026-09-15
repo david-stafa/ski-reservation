@@ -24,7 +24,8 @@ export const columns: ColumnDef<Reservation>[] = [
     header: "Akce",
     cell: ({ row }) => {
       const reservation = row.original;
-      const label = `${reservation.firstName} ${reservation.lastName}, ${formatDateTime(reservation.startDate)}`;
+      // dates arrive as strings: unstable_cache serialises them through JSON
+      const label = `${reservation.firstName} ${reservation.lastName}, ${formatDateTime(new Date(reservation.startDate))}`;
 
       return (
         <DropdownMenu>
