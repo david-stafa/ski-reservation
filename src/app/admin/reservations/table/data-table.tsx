@@ -31,21 +31,14 @@ import {
 import { useState } from "react";
 import { getColumnLabel } from "@/lib/enums";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  /**
-   * Identifies a row by its own id instead of its position. Without it the row
-   * id is the index, so React reuses a row's components after a delete and an
-   * open dialog silently ends up pointing at a different record.
-   */
-  getRowId?: (row: TData) => string;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends { id: string }, TValue>({
   columns,
   data,
-  getRowId,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
@@ -58,7 +51,10 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getRowId,
+    // identify a row by its own id, not its position: with the default index
+    // React reuses a row's components after the list refreshes and an open
+    // dialog ends up pointing at whichever record moved into that slot
+    getRowId: (row) => row.id,
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
