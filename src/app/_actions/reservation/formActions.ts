@@ -12,7 +12,7 @@ import {
   formatDateTime,
   isWithinOpeningHours,
   isWithinReservationTime,
-} from "./helpers/helpers";
+} from "../helpers/reservationHelpers";
 import { findConflictingReservations } from "./reservationActions";
 import { Resend } from "resend";
 import ReservationConfirmationEmail from "../../../../emails/templates/reservation-confirmation";

@@ -83,44 +83,6 @@ export async function getAllReservationsDates(date: string) {
   }
 }
 
-export async function getSumOfReservations() {
-  const reservations = await prisma.reservation.findMany({
-    where: {
-      isSeasonal: false,
-    },
-    select: {
-      startDate: true,
-      peopleCount: true,
-    },
-  });
-
-  const groupedByDate = reservations.reduce(
-    (acc, reservation) => {
-      const dateKey = reservation.startDate.toISOString().split("T")[0];
-      if (!acc[dateKey]) {
-        acc[dateKey] = { _count: 0, startDate: new Date(dateKey) };
-      }
-      acc[dateKey]._count += reservation.peopleCount;
-      acc._total += reservation.peopleCount;
-      return acc;
-    },
-    { _total: 0 } as Record<string, { _count: number; startDate: Date }> & {
-      _total: number;
-    }
-  );
-
-  return groupedByDate;
-}
-
-// TODO: Find out if this is the right way to use cache
-export const getCachedSumOfReservations = unstable_cache(
-  async () => await getSumOfReservations(),
-  ["reservations"], // key
-  {
-    tags: ["reservations"], // 💡 tag to revalidate
-  }
-);
-
 export async function getReservationById(id: string) {
   try {
     // Input validation
