@@ -17,7 +17,7 @@ const OffSeasonLP = () => {
         />
       </div>
       <section className="flex flex-col gap-4">
-        <h1 className="font-bold text-2xl">Sezóna 2025/2026 je ukončena</h1>
+        <h1 className="font-bold text-2xl">Sezóna 2026/2027 je ukončena</h1>
         <p className="text-lg text-zinc-600">
           Byla to jízda! Děkujeme všem našim zákazníkům a těšíme se na vás v
           příští sezóně!

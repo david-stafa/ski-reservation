@@ -4,6 +4,9 @@ import { SEASONAL_COUNTDOWN_END } from "@/lib/constants";
 import { DateTime } from "luxon";
 import { redirect } from "next/navigation";
 
+// "ve" before weekdays starting with a consonant cluster (čtvrtek, středa), "v" otherwise
+const czechDayPreposition = (weekday: number) => (weekday === 3 || weekday === 4 ? "ve" : "v");
+
 const Countdown = () => {
   // redirect to home page if countdown end is reached
   if (DateTime.now().setZone("Europe/Prague") >= SEASONAL_COUNTDOWN_END) {
@@ -13,7 +16,9 @@ const Countdown = () => {
   return (
     <div className="w-full h-[100dvh] flex flex-col items-center justify-center gap-4 p-2">
       <h1 className="text-xl font-semibold mb-4">
-        Rezervace spustíme v pátek, 26. září.
+        Rezervace spustíme{" "}
+        {czechDayPreposition(SEASONAL_COUNTDOWN_END.weekday)}{" "}
+        {SEASONAL_COUNTDOWN_END.setLocale("cs").toFormat("cccc, d. MMMM")}.
       </h1>
       <p className="text-sm text-zinc-600">Jak to bude probíhat?</p>
       <ul className="list-disc pl-5 text-sm text-zinc-600 flex flex-col gap-1 justify-center items-center">
@@ -23,7 +28,7 @@ const Countdown = () => {
         <li>
           Ve vámi vybraný den a hodinu se k nám dostavíte a vyzkoušíte si
           lyžařský set.
-          <span className="font-semibold">Prosíme, přijďte včas!</span>
+          <span className="font-semibold"> Prosíme, přijďte včas!</span>
         </li>
         <li>
           Do 14 dní se vám ozveme a vy si k nám půjdete vše vyzvednout a
