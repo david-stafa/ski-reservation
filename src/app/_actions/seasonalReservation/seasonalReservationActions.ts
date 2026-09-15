@@ -2,12 +2,18 @@
 
 import { prisma } from "@/db/prisma";
 import { unstable_cache } from "next/cache";
+import { SEASONAL_ENDDATE, SEASONAL_STARTDATE } from "@/lib/constants";
 import * as Sentry from "@sentry/nextjs";
 
 const getSumOfSeasonalReservations = async () => {
   const reservations = await prisma.reservation.findMany({
     where: {
       isSeasonal: true,
+      // only the current season, otherwise previous seasons count towards SEASONAL_SKI_SETS_LIMIT
+      startDate: {
+        gte: SEASONAL_STARTDATE.startOf("day").toJSDate(),
+        lte: SEASONAL_ENDDATE.endOf("day").toJSDate(),
+      },
     },
     select: {
       startDate: true,

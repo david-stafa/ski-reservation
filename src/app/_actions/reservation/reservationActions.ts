@@ -4,6 +4,7 @@ import { prisma } from "@/db/prisma";
 import * as Sentry from "@sentry/nextjs";
 import { DateTime } from "luxon";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { SEASONAL_STARTDATE } from "@/lib/constants";
 
 
 // input: date in format 2025-10-07
@@ -146,7 +147,7 @@ export async function getAllReservations() {
     },
     where: {
       startDate: {
-        gte: DateTime.fromObject({ year: 2025, month: 10 }).toJSDate(),
+        gte: SEASONAL_STARTDATE.startOf("month").toJSDate(),
       },
     },
   });
