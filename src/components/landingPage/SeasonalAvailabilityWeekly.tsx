@@ -1,5 +1,6 @@
 import { getCachedSumOfSeasonalReservations } from "@/app/_actions/seasonalReservation/seasonalReservationActions";
 import { SEASONAL_STARTDATE, TIMESLOTS } from "@/lib/constants";
+import { isDisabledSeasonalDay } from "./helpers/helpers";
 
 const SKIPPED_DAYS = [5, 6];
 
@@ -35,13 +36,14 @@ export default async function SeasonalAvailabilityWeekly({week}: {week: 0 | 1}) 
             TIMESLOTS.length - (reservations?.[key]?._count || 0);
           const isLow = available <= 5;
           const isFull = available === 0;
+          const isDisabled = isDisabledSeasonalDay(date);
 
           return (
             <div key={key} className="flex items-center gap-2">
               <span className="text-zinc-600 min-w-14">{label}</span>
               <span
                 className={`rounded-full w-2 h-2 my-auto ${
-                  isFull
+                  isDisabled || isFull
                     ? "bg-red-600"
                     : isLow
                       ? "bg-yellow-600"
