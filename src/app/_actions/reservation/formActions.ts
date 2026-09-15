@@ -12,6 +12,8 @@ import {
   formatDateTime,
   isWithinOpeningHours,
   isWithinReservationTime,
+  isSlotAlreadyTakenError,
+  SLOT_ALREADY_TAKEN_ERROR,
 } from "../helpers/reservationHelpers";
 import { findConflictingReservations } from "./reservationActions";
 import { Resend } from "resend";
@@ -129,6 +131,10 @@ export async function createReservation(
       reservationId: reservation.id,
     };
   } catch (error: unknown) {
+    if (isSlotAlreadyTakenError(error)) {
+      return { success: false, error: SLOT_ALREADY_TAKEN_ERROR };
+    }
+
     console.log(error);
     Sentry.logger.error(
       `Reservation creation failed. ${JSON.stringify(error)}`
@@ -254,6 +260,10 @@ export async function updateReservation(
       reservationId: updatedReservation.id,
     };
   } catch (error: unknown) {
+    if (isSlotAlreadyTakenError(error)) {
+      return { success: false, error: SLOT_ALREADY_TAKEN_ERROR };
+    }
+
     console.log(error);
     Sentry.logger.error(`Reservation update failed. ${JSON.stringify(error)}`);
     return {

@@ -1,5 +1,6 @@
 import { SINGLE_RESERVATION_DURATION } from "@/lib/constants";
 import { DateTime } from "luxon";
+import { Prisma } from "@prisma/client";
 
 export const calculateDuration = (peopleCount: number) => {
   return SINGLE_RESERVATION_DURATION * peopleCount;
@@ -71,4 +72,17 @@ export const isWithinReservationTime = (
   actualEndDate: Date
 ): boolean => {
   return (newStartDate >= actualStartDate && newEndDate <= actualEndDate);
+};
+
+/**
+ * A reservation can still lose a race between the conflict check and the insert,
+ * because startDate/endDate carry a unique constraint in the database.
+ * Recognising it lets the user see the same message as a detected conflict
+ * instead of a generic failure.
+ */
+export const isSlotAlreadyTakenError = (error: unknown): boolean =>
+  error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002";
+
+export const SLOT_ALREADY_TAKEN_ERROR = {
+  date: ["Tato rezervace už je bohužel obsazena."],
 };
