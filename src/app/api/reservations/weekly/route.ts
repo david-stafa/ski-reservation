@@ -118,11 +118,12 @@ export async function GET(req: NextRequest) {
 
   const { start, end } = week;
 
-  // The feed only ever hands out what is still ahead. Without this floor the
-  // `week` parameter is a walk back through every past week, which turns one
-  // leaked key into the whole season's customer list rather than a few days of
-  // upcoming appointments.
-  const floor = DateTime.now().setZone(ZONE);
+  // The feed only ever hands out today and what is still ahead. Without this
+  // floor the `week` parameter is a walk back through every past week, which
+  // turns one leaked key into the whole season's customer list rather than a
+  // few days of upcoming appointments. The floor is the start of today, so
+  // today's appointments stay in even after they have finished.
+  const floor = DateTime.now().setZone(ZONE).startOf("day");
 
   try {
     const reservations = await prisma.reservation.findMany({
@@ -131,8 +132,6 @@ export async function GET(req: NextRequest) {
           gte: start.toUTC().toJSDate(),
           lte: end.toUTC().toJSDate(),
         },
-        // an appointment that has started but not finished is still upcoming
-        // work for whoever is reading this, so it stays in
         endDate: { gte: floor.toUTC().toJSDate() },
       },
       // Only the columns the rental app actually displays. Selecting rather than
