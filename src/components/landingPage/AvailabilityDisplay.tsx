@@ -1,14 +1,19 @@
+import { getCachedSumOfSeasonalReservations } from "@/app/_actions/seasonalReservation/seasonalReservationActions";
 import {
   SEASONAL_STARTDATE,
   STANDARD_ENDDATE,
   STANDARD_STARTDATE,
 } from "@/lib/constants";
-import { NOW } from "@/lib/utils";
+import { isSeasonalSoldOut, NOW } from "@/lib/utils";
 import SeasonalAvailabilityWeekly from "./SeasonalAvailabilityWeekly";
 import StandardAvailabilityWeekly from "./StandardAvailabilityWeekly";
 
 export default async function AvailabilityDisplay() {
   const now = NOW();
+  const { _total } = await getCachedSumOfSeasonalReservations();
+
+  if (isSeasonalSoldOut(_total) && now < STANDARD_STARTDATE) return null;
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-2">Dostupnost rezervací</h2>

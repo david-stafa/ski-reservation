@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge";
+import { SEASONAL_SKI_SETS_LIMIT } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -39,6 +40,10 @@ export function formatPhone(phone: string) {
 
 export function NOW(){
   return DateTime.now().setZone("Europe/Prague");
+}
+
+export function isSeasonalSoldOut(totalReserved: number) {
+  return totalReserved >= SEASONAL_SKI_SETS_LIMIT;
 }
 
 // Add this mapping object (maybe in utils.ts or at the top of the component)
