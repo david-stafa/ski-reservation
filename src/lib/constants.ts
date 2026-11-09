@@ -129,7 +129,7 @@ export const STANDARD_TIME_SLOTS: Record<WeekDay, TimeString[]> = {
 
 export const STANDARD_HOLIDAYS: {from: DateTime, to: DateTime}[] = [
   {from: DateTime.fromISO("2026-10-28", { zone: "Europe/Prague" }), to: DateTime.fromISO("2026-10-28", { zone: "Europe/Prague" })}, // Den vzniku samostatného československého státu
-  {from: DateTime.fromISO("2026-11-17", { zone: "Europe/Prague" }), to: DateTime.fromISO("2026-11-17", { zone: "Europe/Prague" })}, // Den boje za svobodu a demokracii a Mezinárodní den studentstva
+  {from: DateTime.fromISO("2026-11-16", { zone: "Europe/Prague" }), to: DateTime.fromISO("2026-11-17", { zone: "Europe/Prague" })}, // Den boje za svobodu a demokracii a Mezinárodní den studentstva
   {from: DateTime.fromISO("2026-12-24", { zone: "Europe/Prague" }), to: DateTime.fromISO("2027-01-01", { zone: "Europe/Prague" })}, // Vánoce a Nový rok
   {from: DateTime.fromISO("2027-03-26", { zone: "Europe/Prague" }), to: DateTime.fromISO("2027-03-26", { zone: "Europe/Prague" })}, // Velký pátek
   {from: DateTime.fromISO("2027-03-29", { zone: "Europe/Prague" }), to: DateTime.fromISO("2027-03-29", { zone: "Europe/Prague" })}, // Velikonoční pondělí
